@@ -14,8 +14,8 @@ If you are running the Pi headless, connect to your Raspberry Pi using ssh.
 Copy the files from this repository onto the Pi, or clone using:
 
 ```
-git clone https://github.com/llvllch/btcframe.git
-cd btcframe
+git clone https://github.com/llvllch/btcticker.git
+cd btcticker
 ```
 
 
@@ -25,7 +25,7 @@ Install the required modules using pip:
 pip install -r requirements.txt
 ```
 
-and install the Waveshare Python module following the instructions on their [Wiki](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT)
+and install the Waveshare Python module following the instructions on their [Wiki](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT).
 
 If you'd like the script to persist once you close the session, use [screen](https://linuxize.com/post/how-to-use-linux-screen/).
 
@@ -51,7 +51,7 @@ To contribute, please fork the repository and use a feature branch. Pull request
 
 # Links
 
-- A low(er)-effort kit and frame can be obtained at [https://llvll.ch/btcframe](llvll.ch/btcframe/)
+- A low(er)-effort kit and frame can be obtained at [https://llvll.ch/btcframe](llvll.ch/btcticker.html)
 
 
 # Licencing
