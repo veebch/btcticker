@@ -47,6 +47,8 @@ Detatch from the screen session using CTRL-A followed by CTRL-D
 
 The ticker will now pull data every 10 minutes and update the display. 
 
+# Settings
+
 Screen orientation and screen inversion can be toggled using the on-screen keys. Update frequency can be changed in the config.yaml file (default is 600 seconds).
 
 # Contributing
