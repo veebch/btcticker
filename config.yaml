@@ -1,0 +1,6 @@
+display:
+  inverted: false
+  orientation: 90
+ticker:
+  hidden: false
+  updatefrequency: 600
