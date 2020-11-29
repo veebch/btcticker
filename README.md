@@ -38,7 +38,7 @@ screen bash
 Run the script using:
 
 ```
-python3 btcframe.py
+python3 btcticker.py
 ```
 
 Detatch from the screen session using CTRL-A followed by CTRL-D
@@ -51,7 +51,7 @@ To contribute, please fork the repository and use a feature branch. Pull request
 
 # Links
 
-- A low(er)-effort kit and frame can be obtained at [https://llvll.ch/btcframe](llvll.ch/btcticker.html)
+- A low(er)-effort kit and frame can be obtained at [https://llvll.ch/btcticker](llvll.ch/btcticker)
 
 
 # Licencing
