@@ -57,7 +57,7 @@ To contribute, please fork the repository and use a feature branch. Pull request
 
 # Links
 
-- A low(er)-effort kit and frame can be obtained at [https://llvll.ch/btcticker](https://llvll.ch/btcticker)
+- A low(er)-effort kit and frame can be obtained at [https://llvll.ch/btcticker.html](https://llvll.ch/btcticker.html)
 
 
 # Licencing
