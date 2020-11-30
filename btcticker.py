@@ -233,8 +233,6 @@ def main():
                         time.sleep(0.2)
             else:
                 logging.info("No Internet")
-                epd2in7.epdconfig.module_exit()
-                exit()
 
 
     except IOError as e:
