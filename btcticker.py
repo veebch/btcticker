@@ -16,6 +16,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import yaml 
 import socket
+picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
+fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts')
+configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
 
 def internet(host="8.8.8.8", port=53, timeout=3):
     """
@@ -35,7 +38,7 @@ def hideDisplay(config):
     """
     Hides everything but the date until a button is pressed. Currently of limited use. 
     """
-    font_date = ImageFont.truetype('fonts/PixelSplitter-Bold.ttf',11)
+    font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf',11))
     epd = epd2in7.EPD()
     epd.Init_4Gray()
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
@@ -66,11 +69,12 @@ def updateDisplay(config):
     """
     The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
     """
+
     logging.info("Updating Display")   
     logging.info("Getting Data From CoinAPI")
-    font = ImageFont.truetype('fonts/googlefonts/Roboto-Medium.ttf', 40)    
-    fontHorizontal = ImageFont.truetype('fonts/googlefonts/Roboto-Medium.ttf', 50)
-    font_date = ImageFont.truetype('fonts/PixelSplitter-Bold.ttf',11)
+    font = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 40)
+    fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 50)
+    font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
     now_msec_from_epoch = int(round(time.time() * 1000))
     days_ago = 7
     endtime = now_msec_from_epoch
@@ -112,13 +116,13 @@ def updateDisplay(config):
     ax.axhline(c='k', linewidth=4, linestyle=(0, (5, 2, 1, 2)))
 
     # Save the resulting bmp file to the images directory
-    plt.savefig('images/spark.png', dpi=17)
-    imgspk = Image.open('images/spark.png')
-    file_out = "images/spark.bmp"
+    plt.savefig(os.path.join(picdir,'spark.png'), dpi=17)
+    imgspk = Image.open(os.path.join(picdir,'spark.png'))
+    file_out = os.path.join(picdir,'spark.bmp')
     imgspk.save(file_out) 
 
-    bmp = Image.open('images/BTC.bmp')
-    bmp2 = Image.open('images/spark.bmp')
+    bmp = Image.open(os.path.join(picdir,'BTC.bmp'))
+    bmp2 = Image.open(os.path.join(picdir,'spark.bmp'))
 
 
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
@@ -159,12 +163,14 @@ def updateDisplay(config):
     epd.sleep()
 
 def main():
+
     logging.basicConfig(level=logging.DEBUG)
 
     try:
         logging.info("epd2in7 BTC Frame")
 #       Get the configuration from config.yaml
-        with open('config.yaml') as f:
+
+        with open(configfile) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         logging.info(config)
         GPIO.setmode(GPIO.BCM)
