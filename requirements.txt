@@ -1,5 +1,5 @@
-matplotlib==3.0.3
-requests==2.12.4
-numpy==1.12.1
+matplotlib==3.0.2
+requests==2.25.0
+numpy==1.16.2
 Pillow==8.0.1
 PyYAML==5.3.1
