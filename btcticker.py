@@ -1,17 +1,17 @@
- #!/usr/bin/env python
+#!/usr/bin/python3
 from PIL import Image, ImageOps
 from PIL import ImageFont
 from PIL import ImageDraw
-import subprocess
 import os
 import sys
 import logging
-import traceback
 import RPi.GPIO as GPIO
 from waveshare_epd import epd2in7
 import time
 import requests
 import urllib, json
+import matplotlib as mpl
+mpl.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import yaml 
