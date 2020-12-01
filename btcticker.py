@@ -38,7 +38,7 @@ def hideDisplay(config):
     """
     Hides everything but the date until a button is pressed. Currently of limited use. 
     """
-    font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf',11))
+    font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
     epd = epd2in7.EPD()
     epd.Init_4Gray()
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
