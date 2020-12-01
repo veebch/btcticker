@@ -24,7 +24,7 @@ cd btcticker
 Install the required modules using pip:
 
 ```
-python3 pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 ```
 
 and install the Waveshare Python module following the instructions on their [Wiki](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT).
