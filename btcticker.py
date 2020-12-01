@@ -239,7 +239,7 @@ def main():
                         time.sleep(0.2)
             else:
                 logging.info("No Internet")
-
+                time.sleep(2)
 
     except IOError as e:
         logging.info(e)
