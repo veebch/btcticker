@@ -201,16 +201,11 @@ def main():
         GPIO.setup(key3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-# get data 
-        pricestack=getData()
-        # save time of last data update 
+
+# save time of script initiation
+        rantimes=0 
         lastcoinfetch = time.time()
      
-# generate sparkline
-        makeSpark(pricestack)
-# update display
-        updateDisplay(config, pricestack)
-  
         while True:
             key1state = GPIO.input(key1)
             key2state = GPIO.input(key2)
@@ -257,7 +252,7 @@ def main():
                         config['ticker']['hidden'] = True 
                     updateDisplay(config, pricestack)
                     time.sleep(0.2)
-                if time.time() - lastcoinfetch > float(config['ticker']['updatefrequency']):
+                if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (rantimes==0):
                     # get data
                     pricestack=getData()
                     # save time of last data update 
@@ -266,6 +261,7 @@ def main():
                     makeSpark(pricestack)
                     # update display
                     updateDisplay(config, pricestack)
+                    rantimes=1
                     lastcoinfetch=time.time()
                     time.sleep(0.2)
 
