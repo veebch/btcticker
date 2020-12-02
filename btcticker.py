@@ -202,8 +202,9 @@ def main():
         GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
-# save time of script initiation
-        rantimes=0 
+#       Note that there has been no data pull yet
+        datapulled=False 
+#       Time of start
         lastcoinfetch = time.time()
      
         while True:
@@ -252,7 +253,7 @@ def main():
                         config['ticker']['hidden'] = True 
                     updateDisplay(config, pricestack)
                     time.sleep(0.2)
-                if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (rantimes==0):
+                if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
                     # get data
                     pricestack=getData()
                     # save time of last data update 
@@ -261,7 +262,8 @@ def main():
                     makeSpark(pricestack)
                     # update display
                     updateDisplay(config, pricestack)
-                    rantimes=1
+                    # Note that we've visited the internet
+                    datapulled = True
                     lastcoinfetch=time.time()
                     time.sleep(0.2)
 
