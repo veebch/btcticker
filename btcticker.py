@@ -37,42 +37,6 @@ def internet(host="8.8.8.8", port=53, timeout=3):
         print(ex)
         return False
 
-def hideDisplay(config):
-    """
-    Changes Readout to current price of 1BTC being 1BTC. Your cue to stop obsessing. 
-    """
-
-    epd = epd2in7.EPD()
-    epd.Init_4Gray()
-    bmp = Image.open(os.path.join(picdir,'BTC.bmp'))
-
-    if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
-        epd = epd2in7.EPD()
-        epd.Init_4Gray()
-        image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
-        image.paste(bmp, (10,20)) 
-        draw = ImageDraw.Draw(image)
-        draw.text((5,200),"1 BTC",font =font,fill = 0)             
-        draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
-        if config['display']['orientation'] == 180 :
-            image=image.rotate(180, expand=True)
-
-
-    if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
-        epd = epd2in7.EPD()
-        epd.Init_4Gray()
-        image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
-        image.paste(bmp, (0,0))
-        draw = ImageDraw.Draw(image)
-        draw.text((20,120),"1 BTC",font =fontHorizontal,fill = 0)
-        draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
-        if config['display']['orientation'] == 270 :
-            image=image.rotate(180, expand=True)
-#       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
-        image = ImageOps.mirror(image)
-    epd.display_4Gray(epd.getbuffer_4Gray(image))
-    epd.sleep()    
-
 
 def getData():
     """
@@ -143,37 +107,61 @@ def updateDisplay(config,pricestack):
     BTC = pricestack[-1]
     bmp = Image.open(os.path.join(picdir,'BTC.bmp'))
     bmp2 = Image.open(os.path.join(picdir,'spark.bmp'))
+    if config['ticker']['hidden'] == True:
+        if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
+            epd = epd2in7.EPD()
+            epd.Init_4Gray()
+            image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
+            image.paste(bmp, (10,20)) 
+            draw = ImageDraw.Draw(image)
+            draw.text((5,200),"1 BTC",font =font,fill = 0)             
+            draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
+            if config['display']['orientation'] == 180 :
+                image=image.rotate(180, expand=True)
 
 
-    if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
-        epd = epd2in7.EPD()
-        epd.Init_4Gray()
-        image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
-        draw = ImageDraw.Draw(image)              
-        draw.text((110,80),"7day :",font =font_date,fill = 0)
-        draw.text((110,95),str("%+d" % round((pricestack[-1]-pricestack[1])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
-        draw.text((5,200),"$"+format(int(round(BTC)),","),font =font,fill = 0)
-        draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
-        image.paste(bmp, (10,20))
-        image.paste(bmp2,(10,125))
-        if config['display']['orientation'] == 180 :
-            image=image.rotate(180, expand=True)
+        if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
+            epd = epd2in7.EPD()
+            epd.Init_4Gray()
+            image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
+            image.paste(bmp, (0,0))
+            draw = ImageDraw.Draw(image)
+            draw.text((20,120),"1 BTC",font =fontHorizontal,fill = 0)
+            draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
+            if config['display']['orientation'] == 270 :
+                image=image.rotate(180, expand=True)
+    #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
+            image = ImageOps.mirror(image)
+    else:
+        if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
+            epd = epd2in7.EPD()
+            epd.Init_4Gray()
+            image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
+            draw = ImageDraw.Draw(image)              
+            draw.text((110,80),"7day :",font =font_date,fill = 0)
+            draw.text((110,95),str("%+d" % round((pricestack[-1]-pricestack[1])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
+            draw.text((5,200),"$"+format(int(round(BTC)),","),font =font,fill = 0)
+            draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
+            image.paste(bmp, (10,20))
+            image.paste(bmp2,(10,125))
+            if config['display']['orientation'] == 180 :
+                image=image.rotate(180, expand=True)
 
 
-    if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
-        epd = epd2in7.EPD()
-        epd.Init_4Gray()
-        image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
-        draw = ImageDraw.Draw(image)   
-        draw.text((100,100),"7day : "+str("%+d" % round((pricestack[-1]-pricestack[1])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
-        draw.text((20,120),"$"+format(int(round(BTC)),","),font =fontHorizontal,fill = 0)
-        image.paste(bmp2,(80,50))
-        image.paste(bmp, (0,0))
-        draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
-        if config['display']['orientation'] == 270 :
-            image=image.rotate(180, expand=True)
-#       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
-        image = ImageOps.mirror(image)
+        if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
+            epd = epd2in7.EPD()
+            epd.Init_4Gray()
+            image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
+            draw = ImageDraw.Draw(image)   
+            draw.text((100,100),"7day : "+str("%+d" % round((pricestack[-1]-pricestack[1])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
+            draw.text((20,120),"$"+format(int(round(BTC)),","),font =fontHorizontal,fill = 0)
+            image.paste(bmp2,(80,50))
+            image.paste(bmp, (0,0))
+            draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
+            if config['display']['orientation'] == 270 :
+                image=image.rotate(180, expand=True)
+    #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
+            image = ImageOps.mirror(image)
 
 #   If the display is inverted, invert the image usinng ImageOps        
     if config['display']['inverted'] == True:
@@ -208,12 +196,14 @@ def main():
 
 # get data 
         pricestack=getData()
+        # save time of last data update 
+        lastcoinfetch = time.time()
+     
 # generate sparkline
         makeSpark(pricestack)
 # update display
         updateDisplay(config, pricestack)
-        lastpresscoin=1
-        lastcoinfetch = time.time()
+  
         while True:
             key1state = GPIO.input(key1)
             key2state = GPIO.input(key2)
@@ -225,12 +215,13 @@ def main():
                     logging.info('Force Refresh')
                     # get data
                     pricestack=getData()
+                    # save time of last data update 
+                    lastcoinfetch = time.time()
                     # generate sparkline
                     makeSpark(pricestack)
                     # update display
                     updateDisplay(config, pricestack)
                     time.sleep(0.2)
-                    laspresscoin=1
                 if key2state == False:
                     logging.info('ROTATE90')
                     config['display']['orientation'] = (config['display']['orientation']+90) % 360
@@ -239,7 +230,6 @@ def main():
                     updateDisplay(config, pricestack)
                     with open('config.yaml', 'w') as f:
                        data = yaml.dump(config, f)
-                    lastpresscoin=1
                 if key3state == False:
                     logging.info('INVERT')
                     if config['display']['inverted'] == True:
@@ -250,30 +240,27 @@ def main():
                     updateDisplay(config, pricestack)
                     with open('config.yaml', 'w') as f:
                        data = yaml.dump(config, f)
-                    lastpresscoin=1
                     lastcoinfetch=time.time() 
                     time.sleep(0.2)
                 if key4state == False:
                     logging.info('HIDE')
                     if config['ticker']['hidden'] == True:
                         config['ticker']['hidden'] = False
-                        # update display
-                        updateDisplay(config, pricestack)
                     else:
                         config['ticker']['hidden'] = True 
-                        hideDisplay(config)
+                    updateDisplay(config, pricestack)
                     time.sleep(0.2)
-                    lastpresscoin=0
-                if lastpresscoin==1:
-                    if time.time() - lastcoinfetch > float(config['ticker']['updatefrequency']):
-                        # get data
-                        pricestack=getData()
-                        # generate sparkline
-                        makeSpark(pricestack)
-                        # update display
-                        updateDisplay(config)
-                        lastcoinfetch=time.time()
-                        time.sleep(0.2)
+                if time.time() - lastcoinfetch > float(config['ticker']['updatefrequency']):
+                    # get data
+                    pricestack=getData()
+                    # save time of last data update 
+                    lastcoinfetch = time.time()
+                    # generate sparkline
+                    makeSpark(pricestack)
+                    # update display
+                    updateDisplay(config)
+                    lastcoinfetch=time.time()
+                    time.sleep(0.2)
 
     except IOError as e:
         logging.info(e)
