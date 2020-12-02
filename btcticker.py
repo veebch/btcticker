@@ -149,7 +149,7 @@ def updateDisplay(config,pricestack):
             draw.text((110,95),str("%+d" % round((pricestack[-1]-pricestack[1])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
             draw.text((5,200),"$"+format(int(round(BTC)),","),font =font,fill = 0)
             draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
-            image.paste(bmp, (10,20))
+            image.paste(bmp, (10,25))
             image.paste(bmp2,(10,125))
             if config['display']['orientation'] == 180 :
                 image=image.rotate(180, expand=True)
