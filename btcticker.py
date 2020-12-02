@@ -46,8 +46,22 @@ def getData():
     logging.info("Updating Display")   
     logging.info("Getting Historical Data From CoinAPI")
 
+
     try:
-            # Form api call
+        livecoinapi= "https://api.coincap.io/v2/assets/bitcoin/"
+        rawlivecoin = requests.get(livecoinapi).json()
+        liveprice= rawlivecoin['data']   
+        BTC = float(liveprice['priceUsd'])
+        logging.info("Got Live Data From CoinAPI")
+    except:
+        fallbackpriceurl = "https://api.coinbase.com/v2/prices/spot?currency=USD"
+        rawlivecoin = requests.get(fallbackpriceurl).json()
+        liveprice= rawlivecoin['data']   
+        BTC = float(liveprice['amount'])
+        logging.info("Got Live Data From Coinbase")
+
+    try:
+        # Form the Coinapi call
         now_msec_from_epoch = int(round(time.time() * 1000))
         days_ago = 7
         endtime = now_msec_from_epoch
@@ -56,6 +70,7 @@ def getData():
         rawtimeseries = requests.get(coinapi).json()
         logging.info("Got Historic Data For Last Week")
     except:
+        #coinbase doesn't seem to do time-series data without an API key use a stored pool of 1 week of BTC USD price data
         fallbackurl = "https://llvll.ch/fallbackurlhistoric.json"
         rawtimeseries = requests.get(fallbackurl).json()
     timeseriesarray = rawtimeseries['data']
@@ -67,15 +82,7 @@ def getData():
         i+=1
     # Get the live price from coinapi
 
-    try:
-        livecoinapi= "https://api.coincap.io/v2/assets/bitcoin/"
-        rawlivecoin = requests.get(livecoinapi).json()
-        logging.info("Got Live Data From CoinAPI")
-    except:
-        fallbackurl = "https://llvll.ch/fallbackurllive.json"
-        rawlivecoin = requests.get(livecoinapi).json()
-    liveprice= rawlivecoin['data']   
-    BTC = float(liveprice['priceUsd'])
+
 
     # Add live price to timeseriesstack
     timeseriesstack.append(BTC)
