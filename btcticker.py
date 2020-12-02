@@ -19,6 +19,9 @@ import socket
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
+font = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 40)
+fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 50)
+font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
 
 def internet(host="8.8.8.8", port=53, timeout=3):
     """
@@ -36,16 +39,23 @@ def internet(host="8.8.8.8", port=53, timeout=3):
 
 def hideDisplay(config):
     """
-    Hides everything but the date until a button is pressed. Currently of limited use. 
+    Changes Readout to current price of 1BTC being 1BTC. Your cue to stop obsessing. 
     """
+<<<<<<< HEAD
+=======
     font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
+>>>>>>> c579e81ce43c945841fb9caa665a21eda8833106
     epd = epd2in7.EPD()
     epd.Init_4Gray()
+    bmp = Image.open(os.path.join(picdir,'BTC.bmp'))
+
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
         epd = epd2in7.EPD()
         epd.Init_4Gray()
         image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
-        draw = ImageDraw.Draw(image)              
+        image.paste(bmp, (10,20)) 
+        draw = ImageDraw.Draw(image)
+        draw.text((5,200),"1 BTC",font =font,fill = 0)             
         draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
         if config['display']['orientation'] == 180 :
             image=image.rotate(180, expand=True)
@@ -55,7 +65,9 @@ def hideDisplay(config):
         epd = epd2in7.EPD()
         epd.Init_4Gray()
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
-        draw = ImageDraw.Draw(image)   
+        image.paste(bmp, (0,0))
+        draw = ImageDraw.Draw(image)
+        draw.text((20,120),"1 BTC",font =fontHorizontal,fill = 0)
         draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
@@ -65,23 +77,26 @@ def hideDisplay(config):
     epd.sleep()    
 
 
-def updateDisplay(config):
+def getData():
     """
     The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
     """
 
     logging.info("Updating Display")   
-    logging.info("Getting Data From CoinAPI")
-    font = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 40)
-    fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 50)
-    font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
-    now_msec_from_epoch = int(round(time.time() * 1000))
-    days_ago = 7
-    endtime = now_msec_from_epoch
-    starttime = endtime - 1000*60*60*24*days_ago
-    coinapi = "https://api.coincap.io/v2/assets/bitcoin/history?interval=h1&start="+str(starttime)+"&end="+str(endtime)
-    rawtimeseries = requests.get(coinapi).json()
-    logging.info("Got Historic Data For Last Week")
+    logging.info("Getting Historical Data From CoinAPI")
+
+    try:
+            # Form api call
+        now_msec_from_epoch = int(round(time.time() * 1000))
+        days_ago = 7
+        endtime = now_msec_from_epoch
+        starttime = endtime - 1000*60*60*24*days_ago
+        coinapi = "https://api.coincap.io/v2/assets/bitcoin/history?interval=h1&start="+str(starttime)+"&end="+str(endtime)
+        rawtimeseries = requests.get(coinapi).json()
+        logging.info("Got Historic Data For Last Week")
+    except:
+        fallbackurl = "http://llvll.ch/fallbackurlhistoric.json"
+        rawtimeseries = requests.get(fallbackurl).json()
     timeseriesarray = rawtimeseries['data']
     timeseriesstack = []
     length=len (timeseriesarray)
@@ -89,20 +104,26 @@ def updateDisplay(config):
     while i < length:
         timeseriesstack.append(float (timeseriesarray[i]['priceUsd']))
         i+=1
-
     # Get the live price from coinapi
-    livecoinapi= "https://api.coincap.io/v2/assets/bitcoin/"
-    rawlivecoin = requests.get(livecoinapi).json()
-    logging.info("Got Live Data")
-    liveprice= rawlivecoin['data']
-    
+
+    try:
+        livecoinapi= "https://api.coincap.io/v2/assets/bitcoin/"
+        rawlivecoin = requests.get(livecoinapi).json()
+        logging.info("Got Live Data From CoinAPI")
+    except:
+        fallbackurl = "http://llvll.ch/fallbackurllive.json"
+        rawlivecoin = requests.get(livecoinapi).json()
+    liveprice= rawlivecoin['data']   
     BTC = float(liveprice['priceUsd'])
 
     # Add live price to timeseriesstack
     timeseriesstack.append(BTC)
+    return timeseriesstack
+
+def makeSpark(pricestack):
 
     # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)    
-    x = timeseriesstack-np.mean(timeseriesstack)
+    x = pricestack-np.mean(pricestack)
 
     fig, ax = plt.subplots(1,1,figsize=(10,3))
     plt.plot(x, color='k', linewidth=6)
@@ -121,6 +142,8 @@ def updateDisplay(config):
     file_out = os.path.join(picdir,'spark.bmp')
     imgspk.save(file_out) 
 
+def updateDisplay(config,pricestack):    
+    BTC = pricestack[-1]
     bmp = Image.open(os.path.join(picdir,'BTC.bmp'))
     bmp2 = Image.open(os.path.join(picdir,'spark.bmp'))
 
@@ -131,7 +154,7 @@ def updateDisplay(config):
         image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)              
         draw.text((110,80),"7day :",font =font_date,fill = 0)
-        draw.text((110,95),str("%+d" % round((timeseriesstack[-1]-timeseriesstack[1])/timeseriesstack[-1]*100,2))+"%",font =font_date,fill = 0)
+        draw.text((110,95),str("%+d" % round((pricestack[-1]-pricestack[1])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
         draw.text((5,200),"$"+format(int(round(BTC)),","),font =font,fill = 0)
         draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
         image.paste(bmp, (10,20))
@@ -145,7 +168,7 @@ def updateDisplay(config):
         epd.Init_4Gray()
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)   
-        draw.text((100,100),"7day : "+str("%+d" % round((timeseriesstack[-1]-timeseriesstack[1])/timeseriesstack[-1]*100,2))+"%",font =font_date,fill = 0)
+        draw.text((100,100),"7day : "+str("%+d" % round((pricestack[-1]-pricestack[1])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
         draw.text((20,120),"$"+format(int(round(BTC)),","),font =fontHorizontal,fill = 0)
         image.paste(bmp2,(80,50))
         image.paste(bmp, (0,0))
@@ -185,8 +208,13 @@ def main():
         GPIO.setup(key2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(key3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-     
-        updateDisplay(config)
+
+# get data 
+        pricestack=getData()
+# generate sparkline
+        makeSpark(pricestack)
+# update display
+        updateDisplay(config, pricestack)
         lastpresscoin=1
         lastcoinfetch = time.time()
         while True:
@@ -198,14 +226,20 @@ def main():
             if internet():
                 if key1state == False:
                     logging.info('Force Refresh')
-                    updateDisplay(config)
+                    # get data
+                    pricestack=getData()
+                    # generate sparkline
+                    makeSpark(pricestack)
+                    # update display
+                    updateDisplay(config, pricestack)
                     time.sleep(0.2)
                     laspresscoin=1
                 if key2state == False:
                     logging.info('ROTATE90')
                     config['display']['orientation'] = (config['display']['orientation']+90) % 360
                     time.sleep(0.2)
-                    updateDisplay(config)
+                    # updatedisplay
+                    updateDisplay(config, pricestack)
                     with open('config.yaml', 'w') as f:
                        data = yaml.dump(config, f)
                     lastpresscoin=1
@@ -215,10 +249,10 @@ def main():
                        config['display']['inverted'] = False
                     else:
                        config['display']['inverted'] = True 
-                    updateDisplay(config)
+                    #update display
+                    updateDisplay(config, pricestack)
                     with open('config.yaml', 'w') as f:
                        data = yaml.dump(config, f)
-
                     lastpresscoin=1
                     lastcoinfetch=time.time() 
                     time.sleep(0.2)
@@ -226,7 +260,8 @@ def main():
                     logging.info('HIDE')
                     if config['ticker']['hidden'] == True:
                         config['ticker']['hidden'] = False
-                        updateDisplay(config)
+                        # update display
+                        updateDisplay(config, pricestack)
                     else:
                         config['ticker']['hidden'] = True 
                         hideDisplay(config)
@@ -234,6 +269,11 @@ def main():
                     lastpresscoin=0
                 if lastpresscoin==1:
                     if time.time() - lastcoinfetch > float(config['ticker']['updatefrequency']):
+                        # get data
+                        pricestack=getData()
+                        # generate sparkline
+                        makeSpark(pricestack)
+                        # update display
                         updateDisplay(config)
                         lastcoinfetch=time.time()
                         time.sleep(0.2)
