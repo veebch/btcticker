@@ -265,7 +265,7 @@ def main():
                     # generate sparkline
                     makeSpark(pricestack)
                     # update display
-                    updateDisplay(config)
+                    updateDisplay(config, pricestack)
                     lastcoinfetch=time.time()
                     time.sleep(0.2)
 
