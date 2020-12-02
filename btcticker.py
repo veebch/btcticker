@@ -56,7 +56,7 @@ def getData():
         rawtimeseries = requests.get(coinapi).json()
         logging.info("Got Historic Data For Last Week")
     except:
-        fallbackurl = "http://llvll.ch/fallbackurlhistoric.json"
+        fallbackurl = "https://llvll.ch/fallbackurlhistoric.json"
         rawtimeseries = requests.get(fallbackurl).json()
     timeseriesarray = rawtimeseries['data']
     timeseriesstack = []
@@ -72,7 +72,7 @@ def getData():
         rawlivecoin = requests.get(livecoinapi).json()
         logging.info("Got Live Data From CoinAPI")
     except:
-        fallbackurl = "http://llvll.ch/fallbackurllive.json"
+        fallbackurl = "https://llvll.ch/fallbackurllive.json"
         rawlivecoin = requests.get(livecoinapi).json()
     liveprice= rawlivecoin['data']   
     BTC = float(liveprice['priceUsd'])
