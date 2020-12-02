@@ -41,10 +41,7 @@ def hideDisplay(config):
     """
     Changes Readout to current price of 1BTC being 1BTC. Your cue to stop obsessing. 
     """
-<<<<<<< HEAD
-=======
-    font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
->>>>>>> c579e81ce43c945841fb9caa665a21eda8833106
+
     epd = epd2in7.EPD()
     epd.Init_4Gray()
     bmp = Image.open(os.path.join(picdir,'BTC.bmp'))
