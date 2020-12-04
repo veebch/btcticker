@@ -9,9 +9,21 @@ A few minutes work gives you a desk ornament that will tastefully monitor BTC's 
 
 # Getting started
 
+## Prerequisite
+
 (These instructions assume that your Raspberry Pi is already connected to the Internet, happily running pip and has Python3 installed)
 
 If you are running the Pi headless, connect to your Raspberry Pi using ssh.
+
+Install the Waveshare Python module following the instructions on their [Wiki](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT).
+
+(To install the waveshare_epd python module, you need to run the setup file in their repository)
+
+```
+cd e-Paper/RaspberryPi\&JetsonNano/python
+sudo python3 setup.py install
+```
+## Install
 
 Copy the files from this repository onto the Pi, or clone using:
 
@@ -26,8 +38,6 @@ Install the required modules using pip:
 ```
 python3 -m pip install -r requirements.txt
 ```
-
-and install the Waveshare Python module following the instructions on their [Wiki](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT).
 
 If you'd like the script to persist once you close the session, use [screen](https://linuxize.com/post/how-to-use-linux-screen/).
 
