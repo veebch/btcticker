@@ -231,7 +231,7 @@ def main():
                     time.sleep(0.2)
                     # updatedisplay
                     updateDisplay(config, pricestack)
-                    with open('config.yaml', 'w') as f:
+                    with open(configfile, 'w') as f:
                        data = yaml.dump(config, f)
                 if key3state == False:
                     logging.info('INVERT')
@@ -241,7 +241,7 @@ def main():
                        config['display']['inverted'] = True 
                     #update display
                     updateDisplay(config, pricestack)
-                    with open('config.yaml', 'w') as f:
+                    with open(configfile, 'w') as f:
                        data = yaml.dump(config, f)
                     lastcoinfetch=time.time() 
                     time.sleep(0.2)
