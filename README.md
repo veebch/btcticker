@@ -9,7 +9,7 @@ A few minutes work gives you a desk ornament that will tastefully monitor BTC's 
 
 # Getting started
 
-## Prerequisite
+## Prerequisites
 
 (These instructions assume that your Raspberry Pi is already connected to the Internet, happily running pip and has Python3 installed)
 
@@ -23,7 +23,7 @@ Install the Waveshare Python module following the instructions on their [Wiki](h
 cd e-Paper/RaspberryPi\&JetsonNano/python
 sudo python3 setup.py install
 ```
-## Install
+## Install & Run
 
 Copy the files from this repository onto the Pi, or clone using:
 
