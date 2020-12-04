@@ -238,8 +238,13 @@ def main():
 			if internet():
 				if key1state == False:
 					logging.info('Cycle currencies')
-					coinnumber = (coinnumber + 1) % len (crypto_list)
-					CURRENCY=crypto_list[coinnumber]
+					# Rotate the array of currencies from config
+					crypto_list = crypto_list[1:]+crypto_list[:1]
+					CURRENCY=crypto_list[0]
+					# Write back to config file
+					config['ticker']['currency']=",".join(crypto_list)
+					with open(configfile, 'w') as f:
+					   data = yaml.dump(config, f)
 					logging.info(CURRENCY)
 					# get data
 					pricestack=getData(CURRENCY)
@@ -249,7 +254,6 @@ def main():
 					makeSpark(pricestack)
 					# update display
 					updateDisplay(config, pricestack, CURRENCY)
-					time.sleep(0.2)
 				if key2state == False:
 					logging.info('Rotate - 90')
 					config['display']['orientation'] = (config['display']['orientation']+90) % 360
