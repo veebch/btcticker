@@ -125,7 +125,7 @@ def updateDisplay(config,pricestack,whichcoin):
   
 
 	pricenow = pricestack[-1]
-	currencythumbnail= whichcoin+'.bmp'
+	currencythumbnail= 'currency/'+whichcoin+'.bmp'
 	bmp = Image.open(os.path.join(picdir,currencythumbnail))
 	bmp2 = Image.open(os.path.join(picdir,'spark.bmp'))
 	if config['ticker']['hidden'] == True:
