@@ -4,7 +4,7 @@ A Python3 ePaper Bitcoin (BTC) price ticker that runs on a Raspberry Pi connecte
 
 A few minutes work gives you a desk ornament that will tastefully monitor BTC's journey moonward.
 
-![Action Shot](/images/BasicLunar.jpg)
+![Action Shot](/images/actionshot/BasicLunar.jpg)
 
 
 # Getting started
