@@ -57,8 +57,11 @@ Detatch from the screen session using CTRL-A followed by CTRL-D
 
 The ticker will now pull data every 10 minutes and update the display. 
 
-# Settings
+# Interface
 
+The ePaper is slow. so there is a lag of a few seconds between button press and a change to the display. 
+
+Here's what they do:
 - Button 1: Toggle to next currency listed in config.yaml
 - Button 2: Rotate Display -90 degrees
 - Button 3: Invert Display
