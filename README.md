@@ -59,7 +59,7 @@ The ticker will now pull data every 10 minutes and update the display.
 
 # Interface
 
-The ePaper is slow. so there is a lag of a few seconds between button press and a change to the display. 
+The ePaper is slow. There is a lag of a few seconds between button press and a change to the display. 
 
 Here's what they do:
 - Button 1: Toggle to next currency listed in config.yaml
