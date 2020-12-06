@@ -48,8 +48,8 @@ def getData(whichcoin):
 	days_ago = 7
 	endtime = now_msec_from_epoch
 	starttime = endtime - 1000*60*60*24*days_ago
-	starttimeseconds = round(starttime/1000).  #CoinGecko Uses seconds
-	endtimeseconds = round(endtime/1000).      #CoinGecko Uses seconds
+	starttimeseconds = round(starttime/1000)  #CoinGecko Uses seconds
+	endtimeseconds = round(endtime/1000)      #CoinGecko Uses seconds
 
     # Get the live price 
 	try:
