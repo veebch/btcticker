@@ -42,35 +42,52 @@ def getData(whichcoin):
 	"""
 	The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
 	"""
-
-	logging.info("Updating Display")   
-	logging.info("Getting Historical Data From CoinAPI")
-
+    # Fget the week window in msec from epoch. This is used in the api calls
+	logging.info("Getting Data")   
+	now_msec_from_epoch = int(round(time.time() * 1000))
+	days_ago = 7
+	endtime = now_msec_from_epoch
+	starttime = endtime - 1000*60*60*24*days_ago
     # Get the live price 
 
 	try:
-		livecoinapi= "https://api.coincap.io/v2/assets/"+whichcoin+"/"
-		rawlivecoin = requests.get(livecoinapi).json()
+		geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids="+whichcoin
+		logging.info(geckourl)
+		rawlivecoin = requests.get(geckourl).json()
+		liveprice= rawlivecoin[0]   
+		pricenow= float(liveprice['current_price'])
+		logging.info("Got Live Data From CoinGecko")
+	except urllib.error.URLError:
+		coinapiurl= "https://api.coincap.io/v2/assets/"+whichcoin+"/"
+		rawlivecoin = requests.get(coinapiurl).json()
 		liveprice= rawlivecoin['data']   
 		pricenow = float(liveprice['priceUsd'])
-		logging.info("Got Live Data From CoinAPI")
-	except:
-		fallbackpriceurl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids="+whichcoin
-		rawlivecoin = requests.get(fallbackpriceurl).json()
-		liveprice= rawlivecoin['0']   
-		pricenow= float(liveprice['current_price'])
-		logging.info("Got Live Data From Coingecko")
+		logging.info("Got Live Data From CoinApi")
     
     # Get the time series
+
 	try:
+		#Coingecko as first choice 
+		#example call https://api.coingecko.com/api/v3/coins/ethereum/market_chart/range?vs_currency=usd&from=1592577232&to=1622577232
+		starttimeseconds = round(starttime/1000)
+		endtimeseconds = round(endtime/1000)
+		geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency=usd&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
+		logging.info(geckourlhistorical)
+		rawtimeseries = requests.get(geckourlhistorical).json()
+		logging.info("Got Historical Data For Last Week from CoinGecko")
+		timeseriesarray = rawtimeseries['prices']
+		timeseriesstack = []
+		length=len (timeseriesarray)
+		i=0
+		while i < length:
+			timeseriesstack.append(float (timeseriesarray[i][1]))
+			i+=1
+
+	except urllib.error.URLError:
 		# Form the Coinapi call
-		now_msec_from_epoch = int(round(time.time() * 1000))
-		days_ago = 7
-		endtime = now_msec_from_epoch
-		starttime = endtime - 1000*60*60*24*days_ago
 		coinapi = "https://api.coincap.io/v2/assets/"+whichcoin+"/history?interval=h1&start="+str(starttime)+"&end="+str(endtime)
 		rawtimeseries = requests.get(coinapi).json()
-		logging.info("Got Historic Data For Last Week from coinapi")
+		logging.info("Got Historic Data For Last Week from CoinApi")
 		timeseriesarray = rawtimeseries['data']
 		timeseriesstack = []
 		length=len (timeseriesarray)
@@ -78,21 +95,8 @@ def getData(whichcoin):
 		while i < length:
 			timeseriesstack.append(float (timeseriesarray[i]['priceUsd']))
 			i+=1
-	except:
-		#coingecko as fallback
-		#example call https://api.coingecko.com/api/v3/coins/ethereum/market_chart/range?vs_currency=usd&from=1592577232&to=1622577232
-		fallbackurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency=usd&from="+str(starttime)+"&to="+str(endtime)
-		rawtimeseries = requests.get(fallbackurl).json()
-		logging.info("Got Historic Data For Last Week from coingecko")
-		timeseriesarray = rawtimeseries['prices']
-		timeseriesstack = []
-		length=len (timeseriesarray)
-		i=0
-		while i < length:
-			timeseriesstack.append(float (timeseriesarray[i]['1']))
-			i+=1
-	
 
+	
 
 	# Add live price to timeseriesstack
 	timeseriesstack.append(pricenow)
@@ -238,7 +242,7 @@ def main():
 			if internet():
 				if key1state == False:
 					logging.info('Cycle currencies')
-					# Rotate the array of currencies from config
+					# Rotate the array of currencies from config.... [a b c] becomes [b c a]
 					crypto_list = crypto_list[1:]+crypto_list[:1]
 					CURRENCY=crypto_list[0]
 					# Write back to config file
