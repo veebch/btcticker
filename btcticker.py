@@ -42,14 +42,16 @@ def getData(whichcoin):
 	"""
 	The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
 	"""
-    # Fget the week window in msec from epoch. This is used in the api calls
+    # Get the week window in msec from epoch. This is used in the api calls
 	logging.info("Getting Data")   
 	now_msec_from_epoch = int(round(time.time() * 1000))
 	days_ago = 7
 	endtime = now_msec_from_epoch
 	starttime = endtime - 1000*60*60*24*days_ago
-    # Get the live price 
+	starttimeseconds = round(starttime/1000).  #CoinGecko Uses seconds
+	endtimeseconds = round(endtime/1000).      #CoinGecko Uses seconds
 
+    # Get the live price 
 	try:
 		geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids="+whichcoin
 		logging.info(geckourl)
@@ -65,12 +67,10 @@ def getData(whichcoin):
 		logging.info("Got Live Data From CoinApi")
     
     # Get the time series
-
 	try:
 		#Coingecko as first choice 
 		#example call https://api.coingecko.com/api/v3/coins/ethereum/market_chart/range?vs_currency=usd&from=1592577232&to=1622577232
-		starttimeseconds = round(starttime/1000)
-		endtimeseconds = round(endtime/1000)
+
 		geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency=usd&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
 		logging.info(geckourlhistorical)
 		rawtimeseries = requests.get(geckourlhistorical).json()
