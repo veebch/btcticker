@@ -164,7 +164,7 @@ def updateDisplay(config,pricestack,whichcoin):
 			image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
 			draw = ImageDraw.Draw(image)              
 			draw.text((110,80),"7day :",font =font_date,fill = 0)
-			draw.text((110,95),str("%+d" % round((pricestack[-1]-pricestack[1])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
+			draw.text((110,95),str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
 			draw.text((5,200),"$"+format(int(round(pricenow)),","),font =font,fill = 0)
 			draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
 			image.paste(bmp, (10,25))
@@ -178,7 +178,7 @@ def updateDisplay(config,pricestack,whichcoin):
 			epd.Init_4Gray()
 			image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
 			draw = ImageDraw.Draw(image)   
-			draw.text((100,100),"7day : "+str("%+d" % round((pricestack[-1]-pricestack[1])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
+			draw.text((100,100),"7day : "+str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
 			draw.text((20,120),"$"+format(int(round(pricenow)),","),font =fontHorizontal,fill = 0)
 			image.paste(bmp2,(80,50))
 			image.paste(bmp, (0,0))
