@@ -59,7 +59,12 @@ The ticker will now pull data every 10 minutes and update the display.
 
 # Settings
 
-Screen orientation and screen inversion can be toggled using the on-screen keys. Update frequency can be changed in the config.yaml file (default is 600 seconds).
+- Button 1: Toggle to next currency listed in config.yaml
+- Button 2: Rotate Display -90 degrees
+- Button 3: Invert Display
+- Button 4: Hide Display. Replace with 1 coin = 1 coin message.
+
+Update frequency can be changed in the config.yaml file (default is 600 seconds).
 
 # Contributing
 
