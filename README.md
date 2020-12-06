@@ -61,11 +61,11 @@ The ticker will now pull data every 10 minutes and update the display.
 
 The ePaper is slow. There is a lag of a few seconds between button press and a change to the display. 
 
-Here's what they do:
+Here's what the buttons do:
 - Button 1: Toggle to next currency listed in config.yaml
 - Button 2: Rotate Display -90 degrees
 - Button 3: Invert Display
-- Button 4: Hide Display. Replace with 1 coin = 1 coin message.
+- Button 4: Hide Display. Replace with 1 coin = 1 coin message
 
 Update frequency can be changed in the config.yaml file (default is 600 seconds).
 
