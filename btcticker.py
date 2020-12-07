@@ -131,14 +131,14 @@ def updateDisplay(config,pricestack,whichcoin):
 
 	pricenow = pricestack[-1]
 	currencythumbnail= 'currency/'+whichcoin+'.bmp'
-	bmp = Image.open(os.path.join(picdir,currencythumbnail))
-	bmp2 = Image.open(os.path.join(picdir,'spark.bmp'))
+	tokenimage = Image.open(os.path.join(picdir,currencythumbnail))
+	sparkbitmap = Image.open(os.path.join(picdir,'spark.bmp'))
 	if config['ticker']['hidden'] == True:
 		if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
 			epd = epd2in7.EPD()
 			epd.Init_4Gray()
 			image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
-			image.paste(bmp, (10,20)) 
+			image.paste(tokenimage, (10,20)) 
 			draw = ImageDraw.Draw(image)
 			draw.text((5,200),"1 "+ whichcoin,font =font,fill = 0)             
 			draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
@@ -150,7 +150,7 @@ def updateDisplay(config,pricestack,whichcoin):
 			epd = epd2in7.EPD()
 			epd.Init_4Gray()
 			image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
-			image.paste(bmp, (0,0))
+			image.paste(tokenimage, (0,0))
 			draw = ImageDraw.Draw(image)
 			draw.text((20,120),"1 "+ whichcoin,font =fontHorizontal,fill = 0)
 			draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
@@ -166,10 +166,11 @@ def updateDisplay(config,pricestack,whichcoin):
 			draw = ImageDraw.Draw(image)              
 			draw.text((110,80),"7day :",font =font_date,fill = 0)
 			draw.text((110,95),str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
+			# Print price to 5 significant figures
 			draw.text((5,200),"$"+format(float('%.5g' % pricenow),","),font =font,fill = 0)
 			draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
-			image.paste(bmp, (10,25))
-			image.paste(bmp2,(10,125))
+			image.paste(tokenimage, (10,25))
+			image.paste(sparkbitmap,(10,125))
 			if config['display']['orientation'] == 180 :
 				image=image.rotate(180, expand=True)
 
@@ -180,9 +181,10 @@ def updateDisplay(config,pricestack,whichcoin):
 			image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
 			draw = ImageDraw.Draw(image)   
 			draw.text((100,100),"7day : "+str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
+			# Print price to 5 significant figures
 			draw.text((20,120),"$"+format(float('%.5g' % pricenow),","),font =fontHorizontal,fill = 0)
-			image.paste(bmp2,(80,50))
-			image.paste(bmp, (0,0))
+			image.paste(sparkbitmap,(80,50))
+			image.paste(tokenimage, (0,0))
 			draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
 			if config['display']['orientation'] == 270 :
 				image=image.rotate(180, expand=True)
