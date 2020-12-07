@@ -278,6 +278,8 @@ def main():
 					else:
 					   config['display']['inverted'] = True 
 					#update display
+					pricestack=getData(CURRENCY)
+					lastcoinfetch = time.time()
 					updateDisplay(config, pricestack, CURRENCY)
 					with open(configfile, 'w') as f:
 					   data = yaml.dump(config, f)
