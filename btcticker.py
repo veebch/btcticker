@@ -124,6 +124,7 @@ def makeSpark(pricestack):
 	file_out = os.path.join(picdir,'spark.bmp')
 	imgspk.save(file_out) 
 
+
 def updateDisplay(config,pricestack,whichcoin):
 
   
@@ -165,7 +166,7 @@ def updateDisplay(config,pricestack,whichcoin):
 			draw = ImageDraw.Draw(image)              
 			draw.text((110,80),"7day :",font =font_date,fill = 0)
 			draw.text((110,95),str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
-			draw.text((5,200),"$"+format(int(round(pricenow)),","),font =font,fill = 0)
+			draw.text((5,200),"$"+format(float('%.5g' % pricenow),","),font =font,fill = 0)
 			draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
 			image.paste(bmp, (10,25))
 			image.paste(bmp2,(10,125))
@@ -179,7 +180,7 @@ def updateDisplay(config,pricestack,whichcoin):
 			image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
 			draw = ImageDraw.Draw(image)   
 			draw.text((100,100),"7day : "+str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
-			draw.text((20,120),"$"+format(int(round(pricenow)),","),font =fontHorizontal,fill = 0)
+			draw.text((20,120),"$"+format(float('%.5g' % pricenow),","),font =fontHorizontal,fill = 0)
 			image.paste(bmp2,(80,50))
 			image.paste(bmp, (0,0))
 			draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
