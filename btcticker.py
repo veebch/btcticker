@@ -266,6 +266,8 @@ def main():
 					config['display']['orientation'] = (config['display']['orientation']+90) % 360
 					time.sleep(0.2)
 					# updatedisplay
+					pricestack=getData(CURRENCY)
+					lastcoinfetch = time.time()
 					updateDisplay(config, pricestack, CURRENCY)
 					with open(configfile, 'w') as f:
 					   data = yaml.dump(config, f)
@@ -286,7 +288,9 @@ def main():
 					if config['ticker']['hidden'] == True:
 						config['ticker']['hidden'] = False
 					else:
-						config['ticker']['hidden'] = True 
+						config['ticker']['hidden'] = True
+					pricestack=getData(CURRENCY)
+					lastcoinfetch = time.time()
 					updateDisplay(config, pricestack, CURRENCY)
 					time.sleep(0.2)
 				if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
