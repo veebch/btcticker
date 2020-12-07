@@ -269,42 +269,36 @@ def main():
 					makeSpark(pricestack)
 					# update display
 					updateDisplay(config, pricestack, CURRENCY)
+#					time.sleep(0.2)
 				if key2state == False:
 					logging.info('Rotate - 90')
 					config['display']['orientation'] = (config['display']['orientation']+90) % 360
-					time.sleep(0.2)
-					# updatedisplay
-					pricestack=getData(CURRENCY)
-					lastcoinfetch = time.time()
+					# update display
 					updateDisplay(config, pricestack, CURRENCY)
+					# Write back to config file
 					with open(configfile, 'w') as f:
 					   data = yaml.dump(config, f)
+#					time.sleep(0.2)
 				if key3state == False:
 					logging.info('Invert Display')
 					if config['display']['inverted'] == True:
 					   config['display']['inverted'] = False
 					else:
 					   config['display']['inverted'] = True 
-					#update display
-					pricestack=getData(CURRENCY)
-					makeSpark(pricestack)
-					lastcoinfetch = time.time()
+					# update display
 					updateDisplay(config, pricestack, CURRENCY)
 					with open(configfile, 'w') as f:
 					   data = yaml.dump(config, f)
 					lastcoinfetch=time.time() 
-					time.sleep(0.2)
+#					time.sleep(0.2)
 				if key4state == False:
 					logging.info('Hide')
 					if config['ticker']['hidden'] == True:
 						config['ticker']['hidden'] = False
 					else:
 						config['ticker']['hidden'] = True
-					pricestack=getData(CURRENCY)
-					makeSpark(pricestack)
-					lastcoinfetch = time.time()
 					updateDisplay(config, pricestack, CURRENCY)
-					time.sleep(0.2)
+#					time.sleep(0.2)
 				if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
 					# get data
 					pricestack=getData(CURRENCY)
@@ -317,7 +311,7 @@ def main():
 					# Note that we've visited the internet
 					datapulled = True
 					lastcoinfetch=time.time()
-					time.sleep(0.2)
+#					time.sleep(0.2)
 
 	except IOError as e:
 		logging.info(e)
