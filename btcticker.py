@@ -19,6 +19,7 @@ import socket
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
+fonthiddenprice = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 30)
 font = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 40)
 fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 50)
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
@@ -42,7 +43,7 @@ def getData(whichcoin):
 	"""
 	The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
 	"""
-    # Get the week window in msec from epoch. This is used in the api calls
+	# Get the week window in msec from epoch. This is used in the api calls
 	logging.info("Getting Data")   
 	now_msec_from_epoch = int(round(time.time() * 1000))
 	days_ago = 7
@@ -51,7 +52,7 @@ def getData(whichcoin):
 	starttimeseconds = round(starttime/1000)  #CoinGecko Uses seconds
 	endtimeseconds = round(endtime/1000)      #CoinGecko Uses seconds
 
-    # Get the live price 
+	# Get the live price 
 	try:
 		geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids="+whichcoin
 		logging.info(geckourl)
@@ -65,8 +66,8 @@ def getData(whichcoin):
 		liveprice= rawlivecoin['data']   
 		pricenow = float(liveprice['priceUsd'])
 		logging.info("Got Live Data From CoinApi")
-    
-    # Get the time series
+	
+	# Get the time series
 	try:
 		#Coingecko as first choice 
 		#example call https://api.coingecko.com/api/v3/coins/ethereum/market_chart/range?vs_currency=usd&from=1592577232&to=1622577232
@@ -140,7 +141,7 @@ def updateDisplay(config,pricestack,whichcoin):
 			image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
 			image.paste(tokenimage, (10,20)) 
 			draw = ImageDraw.Draw(image)
-			draw.text((5,200),"1 "+ whichcoin,font =font,fill = 0)             
+			draw.text((5,200),"1 "+ whichcoin,font =fonthiddenprice ,fill = 0)             
 			draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
 			if config['display']['orientation'] == 180 :
 				image=image.rotate(180, expand=True)
@@ -159,7 +160,13 @@ def updateDisplay(config,pricestack,whichcoin):
 	#       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
 			image = ImageOps.mirror(image)
 	else:
+		# Get the numbers
 		pricechange = str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%"
+		if pricenow > 1000:
+			pricenowstring =format(int(pricenow),",")
+		else:
+			pricenowstring =str(float('%.5g' % pricenow))
+
 		if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
 			epd = epd2in7.EPD()
 			epd.Init_4Gray()
@@ -168,7 +175,7 @@ def updateDisplay(config,pricestack,whichcoin):
 			draw.text((110,80),"7day :",font =font_date,fill = 0)
 			draw.text((110,95),pricechange,font =font_date,fill = 0)
 			# Print price to 5 significant figures
-			draw.text((5,200),"$"+format(float('%.5g' % pricenow),","),font =font,fill = 0)
+			draw.text((5,200),"$"+pricenowstring,font =font,fill = 0)
 			draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
 			image.paste(tokenimage, (10,25))
 			image.paste(sparkbitmap,(10,125))
@@ -183,7 +190,7 @@ def updateDisplay(config,pricestack,whichcoin):
 			draw = ImageDraw.Draw(image)   
 			draw.text((100,100),"7day : "+pricechange,font =font_date,fill = 0)
 			# Print price to 5 significant figures
-			draw.text((20,120),"$"+format(float('%.5g' % pricenow),","),font =fontHorizontal,fill = 0)
+			draw.text((20,120),"$"+pricenowstring,font =fontHorizontal,fill = 0)
 			image.paste(sparkbitmap,(80,50))
 			image.paste(tokenimage, (0,0))
 			draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
