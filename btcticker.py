@@ -159,13 +159,14 @@ def updateDisplay(config,pricestack,whichcoin):
 	#       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
 			image = ImageOps.mirror(image)
 	else:
+		pricechange = str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%"
 		if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
 			epd = epd2in7.EPD()
 			epd.Init_4Gray()
 			image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
 			draw = ImageDraw.Draw(image)              
 			draw.text((110,80),"7day :",font =font_date,fill = 0)
-			draw.text((110,95),str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
+			draw.text((110,95),pricechange,font =font_date,fill = 0)
 			# Print price to 5 significant figures
 			draw.text((5,200),"$"+format(float('%.5g' % pricenow),","),font =font,fill = 0)
 			draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
@@ -180,7 +181,7 @@ def updateDisplay(config,pricestack,whichcoin):
 			epd.Init_4Gray()
 			image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
 			draw = ImageDraw.Draw(image)   
-			draw.text((100,100),"7day : "+str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%",font =font_date,fill = 0)
+			draw.text((100,100),"7day : "+pricechange,font =font_date,fill = 0)
 			# Print price to 5 significant figures
 			draw.text((20,120),"$"+format(float('%.5g' % pricenow),","),font =fontHorizontal,fill = 0)
 			image.paste(sparkbitmap,(80,50))
@@ -279,6 +280,7 @@ def main():
 					   config['display']['inverted'] = True 
 					#update display
 					pricestack=getData(CURRENCY)
+					makeSpark(pricestack)
 					lastcoinfetch = time.time()
 					updateDisplay(config, pricestack, CURRENCY)
 					with open(configfile, 'w') as f:
@@ -292,6 +294,7 @@ def main():
 					else:
 						config['ticker']['hidden'] = True
 					pricestack=getData(CURRENCY)
+					makeSpark(pricestack)
 					lastcoinfetch = time.time()
 					updateDisplay(config, pricestack, CURRENCY)
 					time.sleep(0.2)
