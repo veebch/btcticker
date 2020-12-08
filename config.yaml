@@ -1,7 +1,7 @@
 display:
-  inverted: false
+  inverted: true 
   orientation: 90
 ticker:
-  currency: litecoin,bitcoin,ethereum
+  currency: bitcoin,litecoin,ethereum
   hidden: false
   updatefrequency: 600
