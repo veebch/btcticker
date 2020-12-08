@@ -1,6 +1,6 @@
 # Frames
 
-Directory for 3-D files for frames. Get a local CNC machinist or 3D printer to make yousomething to make your frame less naked. 
+Directory for 3-D files for frames. Get a local 3D printer or CNC machinist to make you something that makes your ticker less naked. 
 
 ## Frame v5
 
