@@ -4,7 +4,7 @@ Directory for 3-D files for frames. Get a local 3D printer or CNC machinist to m
 
 ## Frame v5
 
-Basic frame that removes access to buttons.
+Basic frame (that removes access to buttons).
 
 ![Action Shot](/images/actionshot/Framev5.jpg)
 
