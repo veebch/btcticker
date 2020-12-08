@@ -13,3 +13,4 @@ Basic frame that removes access to buttons.
 - Color: Black
 - Quality: Medium
 - Post Processing: Light Sanding
+(Display set to ```inverted: true``` in config.yaml)
