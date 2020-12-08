@@ -5,7 +5,7 @@ Directory for 3-D files for frames. Get a local CNC machinist or 3D printer to m
 ## Frame v5
 
 Basic frame that removes access 
-![Action Shot](/images/actionshot/FrameV5.jpg)
+![Action Shot](/images/actionshot/Framev5.jpg)
 
 - Process: Printed (FDM)
 - Material: PC 
