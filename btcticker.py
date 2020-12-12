@@ -60,7 +60,7 @@ def getData(whichcoin):
 		liveprice= rawlivecoin[0]   
 		pricenow= float(liveprice['current_price'])
 		logging.info("Got Live Data From CoinGecko")
-	except urllib.error.URLError:
+	except:
 		coinapiurl= "https://api.coincap.io/v2/assets/"+whichcoin+"/"
 		rawlivecoin = requests.get(coinapiurl).json()
 		liveprice= rawlivecoin['data']   
@@ -84,7 +84,7 @@ def getData(whichcoin):
 			timeseriesstack.append(float (timeseriesarray[i][1]))
 			i+=1
 
-	except urllib.error.URLError:
+	except:
 		# Form the Coinapi call
 		coinapi = "https://api.coincap.io/v2/assets/"+whichcoin+"/history?interval=h1&start="+str(starttime)+"&end="+str(endtime)
 		rawtimeseries = requests.get(coinapi).json()
