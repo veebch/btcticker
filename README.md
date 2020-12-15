@@ -1,8 +1,9 @@
-# Bitcoin (& other tokens) ePaper Ticker 
+# Cryptocurrency ePaper Ticker 
+(Currently: Bitcoin, Ethereum, Litecoin, Monero, Stellar)
 
 A Python3 ePaper Cryptocurrency price ticker that runs on a Raspberry Pi connected to a [Waveshare 2.7 inch monochrome ePaper display](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT). The script periodically (every 10 mins by default) takes data from CoinGecko and prints a summary to the ePaper.
 
-A few minutes work gives you a desk ornament that will tastefully monitor Bitcoin's journey moonward.
+A few minutes work gives you a desk ornament that will tastefully monitor a coin's journey moonward.
 
 ![Action Shot](/images/actionshot/BasicLunar.jpg)
 
