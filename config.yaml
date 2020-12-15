@@ -2,6 +2,6 @@ display:
   inverted: true 
   orientation: 90
 ticker:
-  currency: stellar,monero,litecoin,ethereum,bitcoin
+  currency: bitcoin,litecoin,ethereum,stellar,monero
   hidden: false
   updatefrequency: 600
