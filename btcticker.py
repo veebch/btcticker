@@ -311,7 +311,7 @@ def main():
 					# Note that we've visited the internet
 					datapulled = True
 					lastcoinfetch=time.time()
-			sleep(0.2)
+
 
 	except IOError as e:
 		logging.info(e)
