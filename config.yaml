@@ -3,6 +3,5 @@ display:
   orientation: 90
 ticker:
   currency: bitcoin,litecoin,ethereum,stellar,monero,link
-  hidden: false
   updatefrequency: 600
-  fiatcurrency: usd 
+  fiatcurrency: usd,eur,gbp,chf 
