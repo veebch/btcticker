@@ -66,7 +66,7 @@ Here's what the buttons do:
 - Button 1: Toggle to next currency listed in config.yaml
 - Button 2: Rotate Display -90 degrees
 - Button 3: Invert Display
-- Button 4: Hide Display. Replace with 1 coin = 1 coin message
+- Button 4: Toggle between fiat currencies listed in config.yaml
 
 Update frequency can be changed in the config.yaml file (default is 600 seconds).
 
