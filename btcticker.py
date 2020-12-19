@@ -107,74 +107,50 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
 
     symbolstring=currency.symbol(fiat.upper())
 
+
     pricenow = pricestack[-1]
     currencythumbnail= 'currency/'+whichcoin+'.bmp'
     tokenimage = Image.open(os.path.join(picdir,currencythumbnail))
     sparkbitmap = Image.open(os.path.join(picdir,'spark.bmp'))
-    if config['ticker']['hidden'] == True:
-        if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
-            epd = epd2in7.EPD()
-            epd.Init_4Gray()
-            image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
-            image.paste(tokenimage, (10,20)) 
-            draw = ImageDraw.Draw(image)
-            draw.text((5,200),"1 "+ whichcoin,font =fonthiddenprice ,fill = 0)             
-            draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
-            if config['display']['orientation'] == 180 :
-                image=image.rotate(180, expand=True)
 
 
-        if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
-            epd = epd2in7.EPD()
-            epd.Init_4Gray()
-            image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
-            image.paste(tokenimage, (0,0))
-            draw = ImageDraw.Draw(image)
-            draw.text((20,120),"1 "+ whichcoin,font =fontHorizontal,fill = 0)
-            draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
-            if config['display']['orientation'] == 270 :
-                image=image.rotate(180, expand=True)
-    #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
-            image = ImageOps.mirror(image)
+    pricechange = str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%"
+    if pricenow > 1000:
+        pricenowstring =format(int(pricenow),",")
     else:
-        # Get the numbers
-        pricechange = str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%"
-        if pricenow > 1000:
-            pricenowstring =format(int(pricenow),",")
-        else:
-            pricenowstring =str(float('%.5g' % pricenow))
+        pricenowstring =str(float('%.5g' % pricenow))
 
-        if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
-            epd = epd2in7.EPD()
-            epd.Init_4Gray()
-            image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
-            draw = ImageDraw.Draw(image)              
-            draw.text((110,80),"7day :",font =font_date,fill = 0)
-            draw.text((110,95),pricechange,font =font_date,fill = 0)
-            # Print price to 5 significant figures
-            draw.text((5,200),symbolstring+pricenowstring,font =font,fill = 0)
-            draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
-            image.paste(tokenimage, (10,25))
-            image.paste(sparkbitmap,(10,125))
-            if config['display']['orientation'] == 180 :
-                image=image.rotate(180, expand=True)
+    if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
+        epd = epd2in7.EPD()
+        epd.Init_4Gray()
+        image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
+        draw = ImageDraw.Draw(image)              
+        draw.text((110,80),"7day :",font =font_date,fill = 0)
+        draw.text((110,95),pricechange,font =font_date,fill = 0)
+        # Print price to 5 significant figures
+        draw.text((5,200),symbolstring+pricenowstring,font =font,fill = 0)
+        draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
+        image.paste(tokenimage, (10,25))
+        image.paste(sparkbitmap,(10,125))
+        if config['display']['orientation'] == 180 :
+            image=image.rotate(180, expand=True)
 
 
-        if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
-            epd = epd2in7.EPD()
-            epd.Init_4Gray()
-            image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
-            draw = ImageDraw.Draw(image)   
-            draw.text((100,100),"7day : "+pricechange,font =font_date,fill = 0)
-            # Print price to 5 significant figures
-            draw.text((20,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
-            image.paste(sparkbitmap,(80,50))
-            image.paste(tokenimage, (0,0))
-            draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
-            if config['display']['orientation'] == 270 :
-                image=image.rotate(180, expand=True)
-    #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
-            image = ImageOps.mirror(image)
+    if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
+        epd = epd2in7.EPD()
+        epd.Init_4Gray()
+        image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
+        draw = ImageDraw.Draw(image)   
+        draw.text((100,100),"7day : "+pricechange,font =font_date,fill = 0)
+        # Print price to 5 significant figures
+        draw.text((20,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
+        image.paste(sparkbitmap,(80,50))
+        image.paste(tokenimage, (0,0))
+        draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
+        if config['display']['orientation'] == 270 :
+            image=image.rotate(180, expand=True)
+#       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
+        image = ImageOps.mirror(image)
 
 #   If the display is inverted, invert the image usinng ImageOps        
     if config['display']['inverted'] == True:
@@ -202,10 +178,16 @@ def main():
         crypto_list = [x.strip(' ') for x in crypto_list]
         logging.info(crypto_list) 
 
+        fiatstring=config['ticker']['fiatcurrency']
+        fiat_list = fiatstring.split(",")
+        fiat_list = [x.strip(' ') for x in fiat_list]
+        logging.info(fiat_list) 
+
 
         coinnumber = 0
         CURRENCY=crypto_list[coinnumber]
-        FIAT=config['ticker']['fiatcurrency']
+        FIAT=fiat_list[coinnumber]
+
         logging.info(CURRENCY)
         logging.info(FIAT)
         key1 = 5
@@ -272,11 +254,22 @@ def main():
                     lastcoinfetch=time.time() 
 #                   time.sleep(0.2)
                 if key4state == False:
-                    logging.info('Hide')
-                    if config['ticker']['hidden'] == True:
-                        config['ticker']['hidden'] = False
-                    else:
-                        config['ticker']['hidden'] = True
+                    logging.info('Cycle fiat')
+                    # Rotate the array of currencies from config.... [a b c] becomes [b c a]
+                    fiat_list = fiat_list[1:]+fiat_list[:1]
+                    FIAT=fiat_list[0]
+                    # Write back to config file
+                    config['ticker']['fiatcurrency']=",".join(fiat_list)
+                    with open(configfile, 'w') as f:
+                       data = yaml.dump(config, f)
+                    logging.info(FIAT)
+                    # get data
+                    pricestack=getData(CURRENCY,FIAT)
+                    # save time of last data update 
+                    lastcoinfetch = time.time()
+                    # generate sparkline
+                    makeSpark(pricestack)
+                    # update display
                     updateDisplay(config, pricestack, CURRENCY,FIAT)
 #                   time.sleep(0.2)
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
