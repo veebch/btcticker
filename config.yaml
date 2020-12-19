@@ -5,4 +5,4 @@ ticker:
   currency: bitcoin,litecoin,ethereum,stellar,monero,link
   hidden: false
   updatefrequency: 600
-  fiatcurrency: eur
+  fiatcurrency: usd 
