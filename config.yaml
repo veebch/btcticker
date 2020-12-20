@@ -1,7 +1,7 @@
 display:
-  inverted: true 
+  inverted: true
   orientation: 90
 ticker:
-  currency: bitcoin,litecoin,ethereum,stellar,monero,link
+  currency: bitcoin,tron,litecoin,bitcoin-cash,ethereum,stellar,monero
+  fiatcurrency: usd,eur,gbp,jpy,chf
   updatefrequency: 600
-  fiatcurrency: usd,eur,gbp,chf 
