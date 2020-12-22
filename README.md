@@ -85,7 +85,7 @@ Some people have had errors on a clean install of Rasbian on Pi 3b. If you do, r
 
 ```sudo apt-get install libopenjp2-7```
 
-and re-run.
+and re-run the script.
 
 # Licencing
 
