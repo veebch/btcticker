@@ -81,8 +81,11 @@ To contribute, please fork the repository and use a feature branch. Pull request
 
 # Troubleshooting
 
-Some people have had errors on a clean install of Rasbian on Pi 3b. If you do, try:
+Some people have had errors on a clean install of Rasbian on Pi 3b. If you do, run:
+
 ```sudo apt-get install libopenjp2-7```
+
+and re-run.
 
 # Licencing
 
