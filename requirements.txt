@@ -1,6 +1,6 @@
-matplotlib==3.0.3
-numpy==1.16.2
-requests==2.21.0
-Pillow==6.0.0
-PyYAML==5.3.1
-nh-currency==1.0.1
+matplotlib>=3.0.3
+numpy>=1.16.2
+requests>=2.21.0
+pillow>=7.1.0
+PyYAML>=5.3.1
+nh-currency>=1.0.1
