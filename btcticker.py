@@ -128,8 +128,8 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
         draw.text((110,80),"7day :",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
         # Print price to 5 significant figures
-        draw.text((5,200),symbolstring+pricenowstring,font =font,fill = 0)
-        draw.text((0,10),str(time.strftime("%c")),font =font_date,fill = 0)
+        draw.text((15,200),symbolstring+pricenowstring,font =font,fill = 0)
+        draw.text((10,10),str(time.strftime("%a %H:%M %d %b %Y")),font =font_date,fill = 0)
         image.paste(tokenimage, (10,25))
         image.paste(sparkbitmap,(10,125))
         if config['display']['orientation'] == 180 :
@@ -146,7 +146,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
         draw.text((20,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         image.paste(sparkbitmap,(80,50))
         image.paste(tokenimage, (0,0))
-        draw.text((85,5),str(time.strftime("%c")),font =font_date,fill = 0)
+        draw.text((85,5),str(time.strftime("%a %H:%M %d %b %Y")),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
