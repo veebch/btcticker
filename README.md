@@ -79,6 +79,13 @@ To contribute, please fork the repository and use a feature branch. Pull request
 - Video of the unit working [here](https://youtu.be/TN8lMPppR1c)
 - A low(er)-effort kit and frame can be obtained at [https://llvll.ch/btcticker.html](https://llvll.ch/btcticker.html)
 
+# Troubleshooting
+
+Some people have had errors on a clean install of Rasbian on Pi 3b. If you do, run:
+
+```sudo apt-get install libopenjp2-7```
+
+and re-run the script.
 
 # Licencing
 

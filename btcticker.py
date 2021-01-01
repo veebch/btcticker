@@ -106,7 +106,8 @@ def makeSpark(pricestack):
 def updateDisplay(config,pricestack,whichcoin,fiat):
 
     symbolstring=currency.symbol(fiat.upper())
-
+    if fiat=="jpy":
+        symbolstring="¥"
 
     pricenow = pricestack[-1]
     currencythumbnail= 'currency/'+whichcoin+'.bmp'
@@ -143,7 +144,8 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
         draw = ImageDraw.Draw(image)   
         draw.text((100,100),"7day : "+pricechange,font =font_date,fill = 0)
         # Print price to 5 significant figures
-        draw.text((20,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
+ #       draw.text((20,120),symbolstring,font =fonthiddenprice,fill = 0)
+        draw.text((10,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         image.paste(sparkbitmap,(80,50))
         image.paste(tokenimage, (0,0))
         draw.text((85,5),str(time.strftime("%a %H:%M %d %b %Y")),font =font_date,fill = 0)
