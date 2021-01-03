@@ -72,12 +72,21 @@ def getData(whichcoin,fiat):
         while i < length:
             timeseriesstack.append(float (timeseriesarray[i][1]))
             i+=1
+        timeseriesstack.append(pricenow)
     except:
-        logging.info("Coingecko is unreachable - Exit the script")
+        logging.info("Coingecko is unreachable - Show disconnected screen, Exit the script")
+        thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
+        epd = epd2in7.EPD()
+        epd.Init_4Gray()
+        image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
+        draw = ImageDraw.Draw(image)
+        image.paste(thebean, (60,15))
+        image = ImageOps.mirror(image)
+        epd.display_4Gray(epd.getbuffer_4Gray(image))
+        epd.sleep()
+        epd2in7.epdconfig.module_exit()
         sys.exit()
-    
     # Add live price to timeseriesstack
-    timeseriesstack.append(pricenow)
     return timeseriesstack
 
 def makeSpark(pricestack):
