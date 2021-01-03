@@ -72,7 +72,8 @@ def getData(whichcoin,fiat):
         while i < length:
             timeseriesstack.append(float (timeseriesarray[i][1]))
             i+=1
-    except:
+    except Exception as error:
+        logging.info(error)
         logging.info("Coingecko is unreachable - Show disconnected screen, Exit the script")
         thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
         epd = epd2in7.EPD()
