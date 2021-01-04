@@ -64,7 +64,7 @@ def getData(config,whichcoin,fiat):
             logging.info(geckourl)
             rawlivecoin = requests.get(geckourl).json()
             liveprice= rawlivecoin['tickers'][0]
-            if liveprice == rawlivecoin['tickers']['target']!='USD':
+            if  liveprice['target']!='USD':
                 logging.info("The exhange is not listing in USD")
                 beanaproblem()
                 sys.exit()
