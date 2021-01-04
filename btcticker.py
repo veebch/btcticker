@@ -44,7 +44,6 @@ def getData(config,whichcoin,fiat):
     """
     The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
     """
-    # Get the week window in msec from epoch. This is used in the api calls
     logging.info("Getting Data")
     days_ago=int(config['ticker']['sparklinedays'])   
     endtime = int(round(time.time()))
@@ -91,6 +90,7 @@ def getData(config,whichcoin,fiat):
     return timeseriesstack
 
 def beanaproblem():
+#   A visual cue that the wheels have fallen off
     thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
     epd = epd2in7.EPD()
     epd.Init_4Gray()
@@ -103,6 +103,7 @@ def beanaproblem():
     epd2in7.epdconfig.module_exit()
 
 def makeSpark(pricestack):
+    # Draw and save the sparkline that represents historical data
 
     # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)    
     x = pricestack-np.mean(pricestack)
@@ -127,6 +128,11 @@ def makeSpark(pricestack):
 
 
 def updateDisplay(config,pricestack,whichcoin,fiat):
+    """   
+    Takes the price data, the desired coin/fiat combo along with the config info for formatting
+    if config is re-written following adustment we could avoid passing the last two arguments as
+    they will just be the first two items of their string in config 
+    """
     days_ago=int(config['ticker']['sparklinedays'])   
     symbolstring=currency.symbol(fiat.upper())
     if fiat=="jpy":
@@ -185,6 +191,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
     epd.sleep()
 
 def currencystringtolist(currstring):
+    # Takes the string for currencies in the config.yaml file and turns it into a list
     curr_list = currstring.split(",")
     curr_list = [x.strip(' ') for x in curr_list]
     return curr_list
@@ -197,7 +204,11 @@ def currencycycle(curr_list):
 def main():
     
     def fullupdate():
-        # get data
+        """  
+        The steps required for a full update of the display
+        Earlier versions of the code didn't grab new data for some operations
+        but the e-Paper is too slow to bother the coingecko API 
+        """
         pricestack=getData(config,CURRENCY,FIAT)
         # generate sparkline
         makeSpark(pricestack)
@@ -207,6 +218,11 @@ def main():
         return lastgrab
 
     def configwrite():
+        """  
+        Write the config file following an adjustment made using the buttons
+        This is so that the unit returns to its last state after it has been 
+        powered off 
+        """ 
         config['ticker']['currency']=",".join(crypto_list)
         config['ticker']['fiatcurrency']=",".join(fiat_list)
         with open(configfile, 'w') as f:
@@ -262,7 +278,6 @@ def main():
                     logging.info('Cycle currencies')
                     crypto_list = currencycycle(crypto_list)
                     CURRENCY=crypto_list[0]
-                    # Write back to config file
                     logging.info(CURRENCY)
                     lastcoinfetch=fullupdate()
                     configwrite()
@@ -280,7 +295,6 @@ def main():
                     logging.info('Cycle fiat')
                     fiat_list = currencycycle(fiat_list)
                     FIAT=fiat_list[0]
-                    # Write back to config file
                     logging.info(FIAT)
                     lastcoinfetch=fullupdate()
                     configwrite()
