@@ -24,7 +24,6 @@ fonthiddenprice = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Me
 font = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 40)
 fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 50)
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
-days_ago=1 # Number of days for sparkline
 
 def internet(host="8.8.8.8", port=53, timeout=3):
     """
@@ -41,12 +40,13 @@ def internet(host="8.8.8.8", port=53, timeout=3):
         return False
 
 
-def getData(whichcoin,fiat):
+def getData(config,whichcoin,fiat):
     """
     The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
     """
     # Get the week window in msec from epoch. This is used in the api calls
-    logging.info("Getting Data")   
+    logging.info("Getting Data")
+    days_ago=int(config['ticker']['sparklinedays'])   
     endtime = int(round(time.time()))
     starttime = endtime - 60*60*24*days_ago
     starttimeseconds = round(starttime)  
@@ -113,7 +113,7 @@ def makeSpark(pricestack):
 
 
 def updateDisplay(config,pricestack,whichcoin,fiat):
-
+    days_ago=int(config['ticker']['sparklinedays'])   
     symbolstring=currency.symbol(fiat.upper())
     if fiat=="jpy":
         symbolstring="¥"
@@ -184,7 +184,7 @@ def main():
     
     def fullupdate():
         # get data
-        pricestack=getData(CURRENCY,FIAT)
+        pricestack=getData(config,CURRENCY,FIAT)
         # generate sparkline
         makeSpark(pricestack)
         # update display
