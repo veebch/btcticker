@@ -24,6 +24,7 @@ fonthiddenprice = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Me
 font = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 40)
 fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 50)
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
+days_ago=1 # Number of days for sparkline
 
 def internet(host="8.8.8.8", port=53, timeout=3):
     """
@@ -46,13 +47,10 @@ def getData(whichcoin,fiat):
     """
     # Get the week window in msec from epoch. This is used in the api calls
     logging.info("Getting Data")   
-    now_msec_from_epoch = int(round(time.time() * 1000))
-    days_ago = 7
-    endtime = now_msec_from_epoch
-    starttime = endtime - 1000*60*60*24*days_ago
-    starttimeseconds = round(starttime/1000)  #CoinGecko Uses seconds
-    endtimeseconds = round(endtime/1000)      #CoinGecko Uses seconds
-
+    endtime = int(round(time.time()))
+    starttime = endtime - 60*60*24*days_ago
+    starttimeseconds = round(starttime)  
+    endtimeseconds = round(endtime)      
     # Get the price 
     try:
         geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
@@ -137,7 +135,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
         epd.Init_4Gray()
         image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)              
-        draw.text((110,80),"7day :",font =font_date,fill = 0)
+        draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
         # Print price to 5 significant figures
         draw.text((15,200),symbolstring+pricenowstring,font =font,fill = 0)
@@ -153,7 +151,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
         epd.Init_4Gray()
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)   
-        draw.text((100,100),"7day : "+pricechange,font =font_date,fill = 0)
+        draw.text((100,100),str(days_ago)+"day : "+pricechange,font =font_date,fill = 0)
         # Print price to 5 significant figures
  #       draw.text((20,120),symbolstring,font =fonthiddenprice,fill = 0)
         draw.text((10,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
@@ -172,34 +170,53 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
     epd.display_4Gray(epd.getbuffer_4Gray(image))
     epd.sleep()
 
+def currencystringtolist(currstring):
+    curr_list = currstring.split(",")
+    curr_list = [x.strip(' ') for x in curr_list]
+    return curr_list
+
+def currencycycle(curr_list):
+    # Rotate the array of currencies from config.... [a b c] becomes [b c a]
+    curr_list = curr_list[1:]+curr_list[:1]
+    return curr_list    
+
 def main():
+    
+    def fullupdate():
+        # get data
+        pricestack=getData(CURRENCY,FIAT)
+        # generate sparkline
+        makeSpark(pricestack)
+        # update display
+        updateDisplay(config, pricestack, CURRENCY,FIAT)
+        lastgrab=time.time()
+        return lastgrab
+
+    def configwrite():
+        config['ticker']['currency']=",".join(crypto_list)
+        config['ticker']['fiatcurrency']=",".join(fiat_list)
+        with open(configfile, 'w') as f:
+            data = yaml.dump(config, f)    
 
     logging.basicConfig(level=logging.DEBUG)
 
     try:
         logging.info("epd2in7 BTC Frame")
 #       Get the configuration from config.yaml
-
         with open(configfile) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         logging.info(config)
         GPIO.setmode(GPIO.BCM)
         config['display']['orientation']=int(config['display']['orientation'])
 
-        currencystring = config['ticker']['currency']
-        crypto_list = currencystring.split(",")
-        crypto_list = [x.strip(' ') for x in crypto_list]
+        crypto_list = currencystringtolist(config['ticker']['currency'])
         logging.info(crypto_list) 
 
-        fiatstring=config['ticker']['fiatcurrency']
-        fiat_list = fiatstring.split(",")
-        fiat_list = [x.strip(' ') for x in fiat_list]
+        fiat_list=currencystringtolist(config['ticker']['fiatcurrency'])
         logging.info(fiat_list) 
 
-
-        coinnumber = 0
-        CURRENCY=crypto_list[coinnumber]
-        FIAT=fiat_list[coinnumber]
+        CURRENCY=crypto_list[0]
+        FIAT=fiat_list[0]
 
         logging.info(CURRENCY)
         logging.info(FIAT)
@@ -229,74 +246,34 @@ def main():
                 if key1state == False:
                     logging.info('Cycle currencies')
                     # Rotate the array of currencies from config.... [a b c] becomes [b c a]
-                    crypto_list = crypto_list[1:]+crypto_list[:1]
+                    crypto_list = currencycycle(crypto_list)
                     CURRENCY=crypto_list[0]
                     # Write back to config file
-                    config['ticker']['currency']=",".join(crypto_list)
-                    with open(configfile, 'w') as f:
-                       data = yaml.dump(config, f)
+                    configwrite()
                     logging.info(CURRENCY)
-                    # get data
-                    pricestack=getData(CURRENCY,FIAT)
-                    # save time of last data update 
-                    lastcoinfetch = time.time()
-                    # generate sparkline
-                    makeSpark(pricestack)
-                    # update display
-                    updateDisplay(config, pricestack, CURRENCY,FIAT)
-#                   time.sleep(0.2)
+                    lastcoinfetch=fullupdate()
                 if key2state == False:
                     logging.info('Rotate - 90')
                     config['display']['orientation'] = (config['display']['orientation']+90) % 360
-                    # update display
-                    updateDisplay(config, pricestack, CURRENCY,FIAT)
-                    # Write back to config file
-                    with open(configfile, 'w') as f:
-                       data = yaml.dump(config, f)
-#                   time.sleep(0.2)
+                    lastcoinfetch=fullupdate()
+                    configwrite()
                 if key3state == False:
                     logging.info('Invert Display')
-                    if config['display']['inverted'] == True:
-                       config['display']['inverted'] = False
-                    else:
-                       config['display']['inverted'] = True 
-                    # update display
-                    updateDisplay(config, pricestack, CURRENCY,FIAT)
-                    with open(configfile, 'w') as f:
-                       data = yaml.dump(config, f)
-                    lastcoinfetch=time.time() 
-#                   time.sleep(0.2)
+                    config['display']['inverted']= not config['display']['inverted']
+                    lastcoinfetch=fullupdate()
+                    configwrite()
                 if key4state == False:
                     logging.info('Cycle fiat')
-                    # Rotate the array of currencies from config.... [a b c] becomes [b c a]
-                    fiat_list = fiat_list[1:]+fiat_list[:1]
+                    fiat_list = currencycycle(fiat_list)
                     FIAT=fiat_list[0]
                     # Write back to config file
-                    config['ticker']['fiatcurrency']=",".join(fiat_list)
-                    with open(configfile, 'w') as f:
-                       data = yaml.dump(config, f)
+                    configwrite()
                     logging.info(FIAT)
-                    # get data
-                    pricestack=getData(CURRENCY,FIAT)
-                    # save time of last data update 
-                    lastcoinfetch = time.time()
-                    # generate sparkline
-                    makeSpark(pricestack)
-                    # update display
-                    updateDisplay(config, pricestack, CURRENCY,FIAT)
-#                   time.sleep(0.2)
+                    lastcoinfetch=fullupdate()
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
-                    # get data
-                    pricestack=getData(CURRENCY,FIAT)
-                    # save time of last data update 
-                    lastcoinfetch = time.time()
-                    # generate sparkline
-                    makeSpark(pricestack)
-                    # update display
-                    updateDisplay(config, pricestack,CURRENCY,FIAT)
-                    # Note that we've visited the internet
+                    lastcoinfetch=fullupdate()
                     datapulled = True
-                    lastcoinfetch=time.time()
+
 
 
     except IOError as e:
