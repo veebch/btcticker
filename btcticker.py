@@ -53,16 +53,27 @@ def getData(config,whichcoin,fiat):
     endtimeseconds = round(endtime)      
     # Get the price 
     try:
-        geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
-        logging.info(geckourl)
-        rawlivecoin = requests.get(geckourl).json()
-        liveprice= rawlivecoin[0]   
-        pricenow= float(liveprice['current_price'])
+        if config['ticker']['exchange']=='default' or fiat!='usd':
+            geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
+            logging.info(geckourl)
+            rawlivecoin = requests.get(geckourl).json()
+            liveprice= rawlivecoin[0]   
+            pricenow= float(liveprice['current_price'])
+        else:
+            geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
+            logging.info(geckourl)
+            rawlivecoin = requests.get(geckourl).json()
+            liveprice= rawlivecoin['tickers'][0]
+            if liveprice == rawlivecoin['tickers']['target']!='USD':
+                logging.info("The exhange is not listing in USD")
+                beanaproblem()
+                sys.exit()
+            pricenow= float(liveprice['last'])
         logging.info("Got Live Data From CoinGecko")
         geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
         logging.info(geckourlhistorical)
         rawtimeseries = requests.get(geckourlhistorical).json()
-        logging.info("Got Historical Data For Last Week from CoinGecko")
+        logging.info("Got price for the last "+str(days_ago)+" days from CoinGecko")
         timeseriesarray = rawtimeseries['prices']
         timeseriesstack = []
         length=len (timeseriesarray)
@@ -73,20 +84,23 @@ def getData(config,whichcoin,fiat):
     except Exception as error:
         logging.info(error)
         logging.info("Coingecko is unreachable - Show disconnected screen, Exit the script")
-        thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
-        epd = epd2in7.EPD()
-        epd.Init_4Gray()
-        image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
-        draw = ImageDraw.Draw(image)
-        image.paste(thebean, (60,15))
-        image = ImageOps.mirror(image)
-        epd.display_4Gray(epd.getbuffer_4Gray(image))
-        epd.sleep()
-        epd2in7.epdconfig.module_exit()
+        beanaproblem()
         sys.exit()
     # Add live price to timeseriesstack
     timeseriesstack.append(pricenow)
     return timeseriesstack
+
+def beanaproblem():
+    thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
+    epd = epd2in7.EPD()
+    epd.Init_4Gray()
+    image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
+    draw = ImageDraw.Draw(image)
+    image.paste(thebean, (60,15))
+    image = ImageOps.mirror(image)
+    epd.display_4Gray(epd.getbuffer_4Gray(image))
+    epd.sleep()
+    epd2in7.epdconfig.module_exit()
 
 def makeSpark(pricestack):
 
