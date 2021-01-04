@@ -263,9 +263,9 @@ def main():
                     crypto_list = currencycycle(crypto_list)
                     CURRENCY=crypto_list[0]
                     # Write back to config file
-                    configwrite()
                     logging.info(CURRENCY)
                     lastcoinfetch=fullupdate()
+                    configwrite()
                 if key2state == False:
                     logging.info('Rotate - 90')
                     config['display']['orientation'] = (config['display']['orientation']+90) % 360
@@ -281,9 +281,9 @@ def main():
                     fiat_list = currencycycle(fiat_list)
                     FIAT=fiat_list[0]
                     # Write back to config file
-                    configwrite()
                     logging.info(FIAT)
                     lastcoinfetch=fullupdate()
+                    configwrite()
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
                     lastcoinfetch=fullupdate()
                     datapulled = True
