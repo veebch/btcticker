@@ -206,7 +206,6 @@ def main():
         with open(configfile) as f:
             config = yaml.load(f, Loader=yaml.FullLoader)
         logging.info(config)
-        GPIO.setmode(GPIO.BCM)
         config['display']['orientation']=int(config['display']['orientation'])
 
         crypto_list = currencystringtolist(config['ticker']['currency'])
@@ -220,6 +219,8 @@ def main():
 
         logging.info(CURRENCY)
         logging.info(FIAT)
+
+        GPIO.setmode(GPIO.BCM)
         key1 = 5
         key2 = 6
         key3 = 13
@@ -245,7 +246,6 @@ def main():
             if internet():
                 if key1state == False:
                     logging.info('Cycle currencies')
-                    # Rotate the array of currencies from config.... [a b c] becomes [b c a]
                     crypto_list = currencycycle(crypto_list)
                     CURRENCY=crypto_list[0]
                     # Write back to config file
