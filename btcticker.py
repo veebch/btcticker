@@ -51,41 +51,36 @@ def getData(config,whichcoin,fiat):
     starttimeseconds = round(starttime)  
     endtimeseconds = round(endtime)      
     # Get the price 
-    try:
-        if config['ticker']['exchange']=='default' or fiat!='usd':
-            geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
-            logging.info(geckourl)
-            rawlivecoin = requests.get(geckourl).json()
-            liveprice= rawlivecoin[0]   
-            pricenow= float(liveprice['current_price'])
-        else:
-            geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
-            logging.info(geckourl)
-            rawlivecoin = requests.get(geckourl).json()
-            liveprice= rawlivecoin['tickers'][0]
-            if  liveprice['target']!='USD':
-                logging.info("The exhange is not listing in USD")
-                beanaproblem()
-                sys.exit()
-            pricenow= float(liveprice['last'])
-        logging.info("Got Live Data From CoinGecko")
-        geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
-        logging.info(geckourlhistorical)
-        rawtimeseries = requests.get(geckourlhistorical).json()
-        logging.info("Got price for the last "+str(days_ago)+" days from CoinGecko")
-        timeseriesarray = rawtimeseries['prices']
-        timeseriesstack = []
-        length=len (timeseriesarray)
-        i=0
-        while i < length:
-            timeseriesstack.append(float (timeseriesarray[i][1]))
-            i+=1
-    except Exception as error:
-        logging.info(error)
-        logging.info("Coingecko is unreachable - Show disconnected screen, Exit the script")
-        beanaproblem()
-        sys.exit()
-    # Add live price to timeseriesstack
+
+    if config['ticker']['exchange']=='default' or fiat!='usd':
+        geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
+        logging.info(geckourl)
+        rawlivecoin = requests.get(geckourl).json()
+        liveprice= rawlivecoin[0]   
+        pricenow= float(liveprice['current_price'])
+    else:
+        geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
+        logging.info(geckourl)
+        rawlivecoin = requests.get(geckourl).json()
+        liveprice= rawlivecoin['tickers'][0]
+        if  liveprice['target']!='USD':
+            logging.info("The exhange is not listing in USD")
+            beanaproblem()
+            sys.exit()
+        pricenow= float(liveprice['last'])
+    logging.info("Got Live Data From CoinGecko")
+    geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
+    logging.info(geckourlhistorical)
+    rawtimeseries = requests.get(geckourlhistorical).json()
+    logging.info("Got price for the last "+str(days_ago)+" days from CoinGecko")
+    timeseriesarray = rawtimeseries['prices']
+    timeseriesstack = []
+    length=len (timeseriesarray)
+    i=0
+    while i < length:
+        timeseriesstack.append(float (timeseriesarray[i][1]))
+        i+=1
+
     timeseriesstack.append(pricenow)
     return timeseriesstack
 
@@ -209,12 +204,17 @@ def main():
         Earlier versions of the code didn't grab new data for some operations
         but the e-Paper is too slow to bother the coingecko API 
         """
-        pricestack=getData(config,CURRENCY,FIAT)
-        # generate sparkline
-        makeSpark(pricestack)
-        # update display
-        updateDisplay(config, pricestack, CURRENCY,FIAT)
-        lastgrab=time.time()
+        try:
+            pricestack=getData(config,CURRENCY,FIAT)
+            # generate sparkline
+            makeSpark(pricestack)
+            # update display
+            updateDisplay(config, pricestack, CURRENCY,FIAT)
+            lastgrab=time.time()
+        except:
+            beanaproblem()
+            sleep(10)
+            lastgrab=lastcoinfetch
         return lastgrab
 
     def configwrite():
