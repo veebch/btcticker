@@ -213,7 +213,7 @@ def main():
             lastgrab=time.time()
         except:
             beanaproblem()
-            sleep(10)
+            time.sleep(10)
             lastgrab=lastcoinfetch
         return lastgrab
 
