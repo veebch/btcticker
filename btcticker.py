@@ -171,7 +171,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
  #       draw.text((20,120),symbolstring,font =fonthiddenprice,fill = 0)
         draw.text((10,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         image.paste(sparkbitmap,(80,40))
-        image.paste(tokenimage, (0,0))
+        image.paste(tokenimage, (0,10))
         draw.text((95,15),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
@@ -213,7 +213,7 @@ def main():
             lastgrab=time.time()
         except:
             beanaproblem()
-            sleep(10)
+            time.sleep(10)
             lastgrab=lastcoinfetch
         return lastgrab
 
