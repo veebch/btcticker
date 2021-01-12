@@ -46,7 +46,7 @@ def getData(config,whichcoin,fiat):
     """
     logging.info("Getting Data")
     days_ago=int(config['ticker']['sparklinedays'])   
-    endtime = int(round(time.time()))
+    endtime = int(time.time())
     starttime = endtime - 60*60*24*days_ago
     starttimeseconds = starttime
     endtimeseconds = endtime     
