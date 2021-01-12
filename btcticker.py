@@ -48,8 +48,8 @@ def getData(config,whichcoin,fiat):
     days_ago=int(config['ticker']['sparklinedays'])   
     endtime = int(round(time.time()))
     starttime = endtime - 60*60*24*days_ago
-    starttimeseconds = round(starttime)  
-    endtimeseconds = round(endtime)      
+    starttimeseconds = starttime
+    endtimeseconds = endtime     
     # Get the price 
 
     if config['ticker']['exchange']=='default' or fiat!='usd':
