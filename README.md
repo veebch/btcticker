@@ -93,6 +93,8 @@ sudo apt install libatlas-base-dev
 
 and re-run the script.
 
+If the unit is freezing, try switching to another power supply. 
+
 # Licencing
 
 The code in this project is licensed under MIT license.
