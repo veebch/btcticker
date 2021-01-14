@@ -137,7 +137,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
     currencythumbnail= 'currency/'+whichcoin+'.bmp'
     tokenfilename = os.path.join(picdir,currencythumbnail)
     sparkbitmap = Image.open(os.path.join(picdir,'spark.bmp'))
-
+#   Check for token image, if there isn't one, get on off coingecko, resize it and pop it on a white background
     if os.path.isfile(tokenfilename):
         logging.info("Getting token Image from Image directory")
         tokenimage = Image.open(tokenfilename)
