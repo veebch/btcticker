@@ -56,7 +56,8 @@ def getData(config,whichcoin,fiat):
         geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
         logging.info(geckourl)
         rawlivecoin = requests.get(geckourl).json()
-        liveprice= rawlivecoin[0]   
+        logging.info(rawlivecoin[0])   
+        liveprice = rawlivecoin[0]
         pricenow= float(liveprice['current_price'])
     else:
         geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
@@ -65,7 +66,8 @@ def getData(config,whichcoin,fiat):
         liveprice= rawlivecoin['tickers'][0]
         if  liveprice['target']!='USD':
             logging.info("The exhange is not listing in USD, misconfigured - shutting down script")
-            beanaproblem()
+            message="Misconfiguration Problem"
+            beanaproblem(message)
             sys.exit()
         pricenow= float(liveprice['last'])
     logging.info("Got Live Data From CoinGecko")
@@ -84,14 +86,15 @@ def getData(config,whichcoin,fiat):
     timeseriesstack.append(pricenow)
     return timeseriesstack
 
-def beanaproblem():
+def beanaproblem(message):
 #   A visual cue that the wheels have fallen off
     thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
     epd = epd2in7.EPD()
     epd.Init_4Gray()
     image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
     draw = ImageDraw.Draw(image)
-    image.paste(thebean, (60,15))
+    image.paste(thebean, (60,15), font=font_date)
+    draw.text((15,200),message)
     image = ImageOps.mirror(image)
     epd.display_4Gray(epd.getbuffer_4Gray(image))
     epd.sleep()
@@ -212,7 +215,8 @@ def main():
             updateDisplay(config, pricestack, CURRENCY,FIAT)
             lastgrab=time.time()
         except:
-            beanaproblem()
+            message="Data pull/print problem"
+            beanaproblem(message)
             time.sleep(10)
             lastgrab=lastcoinfetch
         return lastgrab
@@ -255,6 +259,7 @@ def main():
         key2 = 6
         key3 = 13
         key4 = 19
+
 
         GPIO.setup(key1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(key2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
