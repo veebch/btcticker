@@ -229,7 +229,7 @@ def main():
             lastgrab=time.time()
         except Exception as e:
             message="Data pull/print problem"
-            beanaproblem(e)
+            beanaproblem(str(e))
             time.sleep(10)
             lastgrab=lastcoinfetch
         return lastgrab
