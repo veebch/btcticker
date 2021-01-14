@@ -93,12 +93,10 @@ def beanaproblem(message):
     epd.Init_4Gray()
     image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
     draw = ImageDraw.Draw(image)
-    image.paste(thebean, (60,15), font=font_date)
-    draw.text((15,200),message)
+    image.paste(thebean, (60,15))
+    draw.text((15,150),message, font=font_date,fill = 0)
     image = ImageOps.mirror(image)
     epd.display_4Gray(epd.getbuffer_4Gray(image))
-    epd.sleep()
-    epd2in7.epdconfig.module_exit()
 
 def makeSpark(pricestack):
     # Draw and save the sparkline that represents historical data
@@ -135,11 +133,26 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
     symbolstring=currency.symbol(fiat.upper())
     if fiat=="jpy":
         symbolstring="¥"
-
     pricenow = pricestack[-1]
     currencythumbnail= 'currency/'+whichcoin+'.bmp'
-    tokenimage = Image.open(os.path.join(picdir,currencythumbnail))
+    tokenfilename = os.path.join(picdir,currencythumbnail)
     sparkbitmap = Image.open(os.path.join(picdir,'spark.bmp'))
+
+    if os.path.isfile(tokenfilename):
+        logging.info("Getting token Image from Image directory")
+        tokenimage = Image.open(tokenfilename)
+    else:
+        logging.info("Getting token Image from Coingecko")
+        tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
+        rawimage = requests.get(tokenimageurl).json()
+        tokenimage = Image.open(requests.get(rawimage['image']['large'], stream=True).raw)
+        resize = 100,100
+        tokenimage.thumbnail(resize, Image.ANTIALIAS)
+        new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pizel border
+        new_image.paste(tokenimage, (10, 10), tokenimage)   
+        tokenimage=new_image
+        tokenimage.thumbnail((100,100),Image.ANTIALIAS)
+        tokenimage.save(tokenfilename)
 
 
     pricechange = str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%"
@@ -214,9 +227,9 @@ def main():
             # update display
             updateDisplay(config, pricestack, CURRENCY,FIAT)
             lastgrab=time.time()
-        except:
+        except Exception as e:
             message="Data pull/print problem"
-            beanaproblem(message)
+            beanaproblem(e)
             time.sleep(10)
             lastgrab=lastcoinfetch
         return lastgrab
