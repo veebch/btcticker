@@ -298,27 +298,25 @@ def main():
                     CURRENCY=crypto_list[0]
                     logging.info(CURRENCY)
                     lastcoinfetch=fullupdate()
-                    configwrite()
                 if key2state == False:
                     logging.info('Rotate - 90')
                     config['display']['orientation'] = (config['display']['orientation']+90) % 360
                     lastcoinfetch=fullupdate()
-                    configwrite()
                 if key3state == False:
                     logging.info('Invert Display')
                     config['display']['inverted']= not config['display']['inverted']
                     lastcoinfetch=fullupdate()
-                    configwrite()
                 if key4state == False:
                     logging.info('Cycle fiat')
                     fiat_list = currencycycle(fiat_list)
                     FIAT=fiat_list[0]
                     logging.info(FIAT)
                     lastcoinfetch=fullupdate()
-                    configwrite()
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
                     lastcoinfetch=fullupdate()
                     datapulled = True
+                    # Moved due to suspicion that button pressing was corrupting config file
+                    configwrite()
 
 
 
