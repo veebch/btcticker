@@ -227,6 +227,7 @@ def main():
             # update display
             updateDisplay(config, pricestack, CURRENCY,FIAT)
             lastgrab=time.time()
+            time.sleep(.2)
         except Exception as e:
             message="Data pull/print problem"
             beanaproblem(str(e))
