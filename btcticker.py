@@ -97,6 +97,10 @@ def beanaproblem(message):
     draw.text((15,150),message, font=font_date,fill = 0)
     image = ImageOps.mirror(image)
     epd.display_4Gray(epd.getbuffer_4Gray(image))
+    logging.info("epd2in7 BTC Frame")
+#   Reload last good config.yaml
+    with open(configfile) as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
 
 def makeSpark(pricestack):
     # Draw and save the sparkline that represents historical data
