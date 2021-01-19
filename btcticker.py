@@ -40,7 +40,7 @@ def internet(host="8.8.8.8", port=53, timeout=3):
         return False
 
 
-def getData(config,whichcoin,fiat):
+def getData(config,whichcoin,fiat,ATH):
     """
     The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
     """
@@ -59,6 +59,7 @@ def getData(config,whichcoin,fiat):
         logging.info(rawlivecoin[0])   
         liveprice = rawlivecoin[0]
         pricenow= float(liveprice['current_price'])
+        alltimehigh = float(liveprice['ath'])
     else:
         geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
         logging.info(geckourl)
@@ -84,7 +85,11 @@ def getData(config,whichcoin,fiat):
         i+=1
 
     timeseriesstack.append(pricenow)
-    return timeseriesstack
+    if pricenow>alltimehigh:
+        ATH=True
+    else:
+        ATH=False
+    return timeseriesstack, ATH
 
 def beanaproblem(message):
 #   A visual cue that the wheels have fallen off
@@ -127,7 +132,7 @@ def makeSpark(pricestack):
     plt.clf() # Close plot to prevent memory error
 
 
-def updateDisplay(config,pricestack,whichcoin,fiat):
+def updateDisplay(config,pricestack,whichcoin,fiat,ATH):
     """   
     Takes the price data, the desired coin/fiat combo along with the config info for formatting
     if config is re-written following adustment we could avoid passing the last two arguments as
@@ -141,6 +146,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
     currencythumbnail= 'currency/'+whichcoin+'.bmp'
     tokenfilename = os.path.join(picdir,currencythumbnail)
     sparkbitmap = Image.open(os.path.join(picdir,'spark.bmp'))
+    ATHbitmap= Image.open(os.path.join(picdir,'ATH.bmp'))
 #   Check for token image, if there isn't one, get on off coingecko, resize it and pop it on a white background
     if os.path.isfile(tokenfilename):
         logging.info("Getting token Image from Image directory")
@@ -192,6 +198,8 @@ def updateDisplay(config,pricestack,whichcoin,fiat):
         draw.text((10,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         image.paste(sparkbitmap,(80,40))
         image.paste(tokenimage, (0,10))
+        if ATH==True:
+            image.paste(ATHbitmap,(185,65))
         draw.text((95,15),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
@@ -224,12 +232,13 @@ def main():
         Earlier versions of the code didn't grab new data for some operations
         but the e-Paper is too slow to bother the coingecko API 
         """
+        ATH=False
         try:
-            pricestack=getData(config,CURRENCY,FIAT)
+            pricestack, ATH = getData(config,CURRENCY,FIAT, ATH)
             # generate sparkline
             makeSpark(pricestack)
             # update display
-            updateDisplay(config, pricestack, CURRENCY,FIAT)
+            updateDisplay(config, pricestack, CURRENCY,FIAT, ATH)
             lastgrab=time.time()
             time.sleep(.2)
         except Exception as e:
