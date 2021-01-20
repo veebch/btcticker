@@ -71,6 +71,7 @@ def getData(config,whichcoin,fiat,ATH):
             beanaproblem(message)
             sys.exit()
         pricenow= float(liveprice['last'])
+        alltimehigh = 1000000.0   # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
     logging.info("Got Live Data From CoinGecko")
     geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
     logging.info(geckourlhistorical)
