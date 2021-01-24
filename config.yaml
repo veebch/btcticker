@@ -1,9 +1,9 @@
 display:
-  inverted: false
+  inverted: true
   orientation: 90
 ticker:
-  currency: ethereum,litecoin,bitcoin-cash,stellar,monero,uniswap,bitcoin
+  currency: bitcoin,litecoin, monero,ethereum
   exchange: default
-  fiatcurrency: eur,jpy,chf,gbp,usd
+  fiatcurrency: usd,eur,gbp
+  sparklinedays: 28
   updatefrequency: 600
-  sparklinedays: 3 
