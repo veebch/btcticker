@@ -39,8 +39,16 @@ def internet(host="8.8.8.8", port=53, timeout=3):
         logging.info("No internet")
         return False
 
+def human_format(num):
+    num = float('{:.3g}'.format(num))
+    magnitude = 0
+    while abs(num) >= 1000:
+        magnitude += 1
+        num /= 1000.0
+    return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
 
-def getData(config,whichcoin,fiat,ATH):
+
+def getData(config,whichcoin,fiat,other):
     """
     The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
     """
@@ -60,6 +68,7 @@ def getData(config,whichcoin,fiat,ATH):
         liveprice = rawlivecoin[0]
         pricenow= float(liveprice['current_price'])
         alltimehigh = float(liveprice['ath'])
+        other['volume'] = float(liveprice['total_volume'])
     else:
         geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
         logging.info(geckourl)
@@ -71,6 +80,7 @@ def getData(config,whichcoin,fiat,ATH):
             beanaproblem(message)
             sys.exit()
         pricenow= float(liveprice['last'])
+        other['volume'] = float(liveprice['converted_volume']['usd'])
         alltimehigh = 1000000.0   # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
     logging.info("Got Live Data From CoinGecko")
     geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
@@ -87,10 +97,10 @@ def getData(config,whichcoin,fiat,ATH):
 
     timeseriesstack.append(pricenow)
     if pricenow>alltimehigh:
-        ATH=True
+        other['ATH']=True
     else:
-        ATH=False
-    return timeseriesstack, ATH
+        other['ATH']=False
+    return timeseriesstack, other
 
 def beanaproblem(message):
 #   A visual cue that the wheels have fallen off
@@ -133,7 +143,7 @@ def makeSpark(pricestack):
     plt.clf() # Close plot to prevent memory error
 
 
-def updateDisplay(config,pricestack,whichcoin,fiat,ATH):
+def updateDisplay(config,pricestack,whichcoin,fiat,other):
     """   
     Takes the price data, the desired coin/fiat combo along with the config info for formatting
     if config is re-written following adustment we could avoid passing the last two arguments as
@@ -193,13 +203,13 @@ def updateDisplay(config,pricestack,whichcoin,fiat,ATH):
         epd.Init_4Gray()
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)   
-        draw.text((110,90),str(days_ago)+"day : "+pricechange,font =font_date,fill = 0)
-        # Print price to 5 significant figures
- #       draw.text((20,120),symbolstring,font =fonthiddenprice,fill = 0)
+        draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
+ #.     uncomment the line below to show volume
+ #       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
         draw.text((10,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         image.paste(sparkbitmap,(80,40))
         image.paste(tokenimage, (0,10))
-        if ATH==True:
+        if other['ATH']==True:
             image.paste(ATHbitmap,(185,65))
         draw.text((95,15),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
@@ -233,13 +243,13 @@ def main():
         Earlier versions of the code didn't grab new data for some operations
         but the e-Paper is too slow to bother the coingecko API 
         """
-        ATH=False
+        other={}
         try:
-            pricestack, ATH = getData(config,CURRENCY,FIAT, ATH)
+            pricestack, ATH = getData(config,CURRENCY,FIAT, other)
             # generate sparkline
             makeSpark(pricestack)
             # update display
-            updateDisplay(config, pricestack, CURRENCY,FIAT, ATH)
+            updateDisplay(config, pricestack, CURRENCY,FIAT, other)
             lastgrab=time.time()
             time.sleep(.2)
         except Exception as e:
