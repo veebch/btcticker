@@ -151,7 +151,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
     """
     days_ago=int(config['ticker']['sparklinedays'])   
     symbolstring=currency.symbol(fiat.upper())
-    if fiat=="jpy":
+    if fiat=="jpy" or fiat=="cny":
         symbolstring="¥"
     pricenow = pricestack[-1]
     currencythumbnail= 'currency/'+whichcoin+'.bmp'
@@ -169,7 +169,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         tokenimage = Image.open(requests.get(rawimage['image']['large'], stream=True).raw)
         resize = 100,100
         tokenimage.thumbnail(resize, Image.ANTIALIAS)
-        new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pizel border
+        new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pixel border
         new_image.paste(tokenimage, (10, 10), tokenimage)   
         tokenimage=new_image
         tokenimage.thumbnail((100,100),Image.ANTIALIAS)
