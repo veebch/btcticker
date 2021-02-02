@@ -210,7 +210,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         image.paste(sparkbitmap,(80,40))
         image.paste(tokenimage, (0,10))
         if other['ATH']==True:
-            image.paste(ATHbitmap,(185,65))
+            image.paste(ATHbitmap,(190,65))
         draw.text((95,15),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
