@@ -338,6 +338,9 @@ def main():
                     logging.info(FIAT)
                     lastcoinfetch=fullupdate()
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
+                    if config['display']['cycle']==True:
+                        crypto_list = currencycycle(crypto_list)
+                        CURRENCY=crypto_list[0]
                     lastcoinfetch=fullupdate()
                     datapulled = True
                     # Moved due to suspicion that button pressing was corrupting config file
