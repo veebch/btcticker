@@ -141,6 +141,7 @@ def makeSpark(pricestack):
     file_out = os.path.join(picdir,'spark.bmp')
     imgspk.save(file_out) 
     plt.clf() # Close plot to prevent memory error
+    ax.cla() # Close axis to prevent memory error
 
 
 def updateDisplay(config,pricestack,whichcoin,fiat,other):
