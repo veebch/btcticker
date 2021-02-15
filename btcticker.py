@@ -142,7 +142,7 @@ def makeSpark(pricestack):
     imgspk.save(file_out) 
     plt.clf() # Close plot to prevent memory error
     ax.cla() # Close axis to prevent memory error
-
+    plt.close(fig) # Close plot
 
 def updateDisplay(config,pricestack,whichcoin,fiat,other):
     """   
@@ -209,7 +209,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
  #       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
         draw.text((10,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
         if other['ATH']==True:
-            image.paste(ATHbitmap,(190,65))
+            image.paste(ATHbitmap,(190,85))
         image.paste(sparkbitmap,(80,40))
         image.paste(tokenimage, (0,10))
 
