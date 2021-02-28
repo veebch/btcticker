@@ -21,7 +21,7 @@ Install the Waveshare Python module following the instructions on their [Wiki](h
 (To install the waveshare_epd python module, you need to run the setup file in their repository)
 
 ```
-cd e-Paper/RaspberryPi\&JetsonNano/python
+cd e-Paper/RaspberryPi_JetsonNano/python
 sudo python3 setup.py install
 ```
 ## Install & Run
