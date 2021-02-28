@@ -225,7 +225,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         image = ImageOps.invert(image)
 #   Send the image to the screen        
     epd.display_4Gray(epd.getbuffer_4Gray(image))
-    epd.sleep()
+#    epd.sleep()
 
 def currencystringtolist(currstring):
     # Takes the string for currencies in the config.yaml file and turns it into a list
@@ -314,6 +314,7 @@ def main():
         lastcoinfetch = time.time()
      
         while True:
+
             key1state = GPIO.input(key1)
             key2state = GPIO.input(key2)
             key3state = GPIO.input(key3)
