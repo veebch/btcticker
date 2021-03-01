@@ -121,6 +121,8 @@ sudo reboot
 
 to reboot and test.
 
+This method runs the script automatically after login which we have set to do automatically. Keep in mind this also means when you SSH into the device and login it will attempt to run the script again immediately and will require you to press Ctrl+C to cancel the script loading again and to get the command prompt.
+
 # Contributing
 
 To contribute, please fork the repository and use a feature branch. Pull requests are welcome.
