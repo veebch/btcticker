@@ -29,12 +29,21 @@ sudo python3 setup.py install
 
 Copy the files from this repository onto the Pi, or clone using:
 
+Original
+
 ```
 cd ~
 git clone https://github.com/llvllch/btcticker.git
 cd btcticker
 ```
 
+This fork
+
+```
+cd ~
+git clone https://github.com/llvllch/btcticker.git
+cd btcticker
+```
 
 Install the required modules using pip:
 
