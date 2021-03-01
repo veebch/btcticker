@@ -7,7 +7,7 @@ A few minutes work gives you a desk ornament that will tastefully monitor a coin
 
 ![Action Shot](/images/actionshot/BasicLunar.jpg)
 
-![Action Shot](/images/actionshot/ws213v2.jpg)
+![Action Shot](/images/actionshot/Ws213v2.jpg)
 
 # Getting started
 
