@@ -81,6 +81,46 @@ Here's what the buttons do:
 
 Update frequency can be changed in the config.yaml file (default is 600 seconds).
 
+# Run on boot
+
+If you would like the script to run on boot do the following:
+
+Enter the following in command prompt
+
+```
+sudo raspi-config
+```
+
+Navigate to the boot options in raspiconfig and enable auto-login.
+
+Once completed enter the following into the command prompt:
+
+```
+sudo nano /etc/profile
+```
+
+Scroll all teh way to the bottom of the file and insert at the end:
+
+For the 2.7 inch version
+
+```
+sudo python /home/pi/btcticker/btcticker.py
+```
+
+For the 2.13 inch version
+
+```
+sudo python /home/pi/btcticker/btcticker2in13.py
+```
+
+Ctrl+x to exit and 'Y' to save.
+From there use:
+```
+sudo reboot
+```
+
+to reboot and test.
+
 # Contributing
 
 To contribute, please fork the repository and use a feature branch. Pull requests are welcome.
