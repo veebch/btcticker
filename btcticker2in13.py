@@ -208,7 +208,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
 
  #.     uncomment the line below to show volume
  #       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
-        draw.text((135,100),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
+        draw.text((100,100),symbolstring+pricenowstring+"/"+whichcoin,font =fontHorizontal,fill = 0)
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))
         image.paste(sparkbitmap,(80,25))
