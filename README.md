@@ -99,7 +99,7 @@ Once completed enter the following into the command prompt:
 sudo nano /etc/profile
 ```
 
-Scroll all teh way to the bottom of the file and insert at the end:
+Scroll all the way to the bottom of the file and insert at the end:
 
 For the 2.7 inch version
 
