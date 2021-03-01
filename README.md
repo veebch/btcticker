@@ -41,7 +41,7 @@ This fork
 
 ```
 cd ~
-git clone https://github.com/llvllch/btcticker.git
+git clone https://github.com/estacaco/btcticker.git
 cd btcticker
 ```
 
