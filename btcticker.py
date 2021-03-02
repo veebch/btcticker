@@ -162,12 +162,12 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
 #   Check for token image, if there isn't one, get on off coingecko, resize it and pop it on a white background
     if os.path.isfile(tokenfilename):
         logging.info("Getting token Image from Image directory")
-        tokenimage = Image.open(tokenfilename)
+        tokenimage = Image.open(tokenfilename).convert("RGBA")
     else:
         logging.info("Getting token Image from Coingecko")
         tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
         rawimage = requests.get(tokenimageurl).json()
-        tokenimage = Image.open(requests.get(rawimage['image']['large'], stream=True).raw)
+        tokenimage = Image.open(requests.get(rawimage['image']['large'], stream=True).raw).convert("RGBA")
         resize = 100,100
         tokenimage.thumbnail(resize, Image.ANTIALIAS)
         new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pixel border
