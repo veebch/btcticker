@@ -167,7 +167,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         logging.info("Getting token Image from Coingecko")
         tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
         rawimage = requests.get(tokenimageurl).json()
-        tokenimage = Image.open(requests.get(rawimage['image']['large'], stream=True).raw)
+        tokenimage = Image.open(requests.get(rawimage['image']['large'], stream=True).raw).convert("RGBA")
         resize = 100,100
         tokenimage.thumbnail(resize, Image.ANTIALIAS)
         new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pixel border
