@@ -208,12 +208,16 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
 
  #.     uncomment the line below to show volume
  #       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
-        draw.text((100,100),symbolstring+pricenowstring+"/"+whichcoin,font =fontHorizontal,fill = 0)
+        if config['ticker']['coinname'] == True :
+            draw.text((100,100),symbolstring+pricenowstring+"/"+whichcoin,font =fontHorizontal,fill = 0)
+        else:
+            draw.text((135,100),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
+
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))
         image.paste(sparkbitmap,(80,25))
         image.paste(tokenimage, (0,10))
- #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
+ #       draw.text((5,110),"Inretrospect, it was inevitable",font =font_date,fill = 0)
         draw.text((95,1),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
