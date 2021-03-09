@@ -97,3 +97,4 @@ If the unit is freezing, try switching to another power supply.
 
 # Licencing
 
+GNU GENERAL PUBLIC LICENSE Version 3.0
