@@ -5,6 +5,6 @@ display:
 ticker:
   currency: bitcoin,ethereum,litecoin,bitcoin
   exchange: default
-  fiatcurrency: gbp,usd,eur
+  fiatcurrency: gbp,usd,eur,gbp
   sparklinedays: 28
   updatefrequency: 300
