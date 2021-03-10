@@ -1,10 +1,10 @@
 display:
-  cycle: true
-  inverted: true
+  cycle: false
+  inverted: false
   orientation: 90
 ticker:
-  currency: bitcoin,ethereum,litecoin
+  currency: bitcoin,ethereum,litecoin,bitcoin
   exchange: default
-  fiatcurrency: usd,eur,gbp
-  sparklinedays: 1
-  updatefrequency: 120
+  fiatcurrency: gbp,usd,eur
+  sparklinedays: 28
+  updatefrequency: 300
