@@ -230,7 +230,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
     ATHbitmap.close()
     sparkbitmap.close()
     tokenimage.close()
-    epd.sleep()
+#    epd.sleep()
 
 def currencystringtolist(currstring):
     # Takes the string for currencies in the config.yaml file and turns it into a list
