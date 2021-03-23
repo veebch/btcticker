@@ -77,8 +77,8 @@ To contribute, please fork the repository and use a feature branch. Pull request
 
 # Links
 
-- Video of the unit working [here](https://youtu.be/TN8lMPppR1c)
-- A low(er)-effort kit and frames can be obtained at [https://llvll.ch/btcticker.html](https://llvll.ch/btcticker.html)
+- Video of the unit working [here](https://youtu.be/DNLUmJb7Mj8)
+- A low(er)-effort kit and frames can be obtained at [https://veeb.ch/store](https://veeb.ch/store)
 
 # Troubleshooting
 
