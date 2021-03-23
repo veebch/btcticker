@@ -113,6 +113,7 @@ def beanaproblem(message):
     draw.text((15,150),message, font=font_date,fill = 0)
     image = ImageOps.mirror(image)
     epd.display_4Gray(epd.getbuffer_4Gray(image))
+    thebean.close()
     logging.info("epd2in7 BTC Frame")
 #   Reload last good config.yaml
     with open(configfile) as f:
@@ -143,6 +144,7 @@ def makeSpark(pricestack):
     plt.clf() # Close plot to prevent memory error
     ax.cla() # Close axis to prevent memory error
     plt.close(fig) # Close plot
+    imgspk.close()
 
 def updateDisplay(config,pricestack,whichcoin,fiat,other):
     """   
@@ -225,7 +227,10 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         image = ImageOps.invert(image)
 #   Send the image to the screen        
     epd.display_4Gray(epd.getbuffer_4Gray(image))
-#    epd.sleep()
+    ATHbitmap.close()
+    sparkbitmap.close()
+    tokenimage.close()
+    epd.sleep()
 
 def currencystringtolist(currstring):
     # Takes the string for currencies in the config.yaml file and turns it into a list
