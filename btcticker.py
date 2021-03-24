@@ -109,6 +109,7 @@ def beanaproblem(message):
     epd.Init_4Gray()
     image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
     draw = ImageDraw.Draw(image)
+    draw.text((95,15),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
     image.paste(thebean, (60,15))
     draw.text((15,150),message, font=font_date,fill = 0)
     image = ImageOps.mirror(image)
