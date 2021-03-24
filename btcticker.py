@@ -144,8 +144,6 @@ def makeSpark(pricestack):
     imgspk.save(file_out) 
     plt.clf() # Close plot to prevent memory error
     ax.cla() # Close axis to prevent memory error
-    plt.close(fig) # Close plot
-    imgspk.close()
 
 def updateDisplay(config,pricestack,whichcoin,fiat,other):
     """   
@@ -228,9 +226,8 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         image = ImageOps.invert(image)
 #   Send the image to the screen        
     epd.display_4Gray(epd.getbuffer_4Gray(image))
-    ATHbitmap.close()
-    sparkbitmap.close()
-    tokenimage.close()
+
+
 #    epd.sleep()
 
 def currencystringtolist(currstring):
