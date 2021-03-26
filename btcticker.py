@@ -298,7 +298,10 @@ def main():
 
         logging.info(CURRENCY)
         logging.info(FIAT)
-
+        key1 = 5
+        key2 = 6
+        key3 = 13
+        key4 = 19
 
 
 #       Note that there has been no data pull yet
@@ -308,10 +311,6 @@ def main():
      
         while True:
             GPIO.setmode(GPIO.BCM)
-            key1 = 5
-            key2 = 6
-            key3 = 13
-            key4 = 19
 
 
             GPIO.setup(key1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
