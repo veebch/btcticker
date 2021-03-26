@@ -227,9 +227,9 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         image = ImageOps.invert(image)
 #   Send the image to the screen        
     epd.display_4Gray(epd.getbuffer_4Gray(image))
+    image.save('last_img.png') # Simply a means of cleaning up memory
 
-
-#    epd.sleep()
+    epd.sleep() #To avoid the screen staying in high volatage mode
 
 def currencystringtolist(currstring):
     # Takes the string for currencies in the config.yaml file and turns it into a list
@@ -299,17 +299,6 @@ def main():
         logging.info(CURRENCY)
         logging.info(FIAT)
 
-        GPIO.setmode(GPIO.BCM)
-        key1 = 5
-        key2 = 6
-        key3 = 13
-        key4 = 19
-
-
-        GPIO.setup(key1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(key2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(key3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
 
 #       Note that there has been no data pull yet
@@ -318,6 +307,18 @@ def main():
         lastcoinfetch = time.time()
      
         while True:
+            GPIO.setmode(GPIO.BCM)
+            key1 = 5
+            key2 = 6
+            key3 = 13
+            key4 = 19
+
+
+            GPIO.setup(key1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(key2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(key3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+            GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
 
             key1state = GPIO.input(key1)
             key2state = GPIO.input(key2)
