@@ -1,7 +1,7 @@
 # Cryptocurrency ePaper Ticker 
 (supports all 6000+ coins/currencies listed on [CoinGecko](https://api.coingecko.com/api/v3/coins/list))
 
-A Python3 ePaper Cryptocurrency price ticker that runs on a Raspberry Pi connected to a [Waveshare 2.7 inch monochrome ePaper display](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT). The script periodically (every 2 mins by default) takes data from CoinGecko and prints a summary to the ePaper.
+A Python3 ePaper Cryptocurrency price ticker that runs on a Raspberry Pi connected to a [Waveshare 2.7 inch monochrome ePaper display](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT). The script periodically (every 5 mins by default) takes data from CoinGecko and prints a summary to the ePaper.
 
 A few minutes work gives you a desk ornament that will tastefully monitor a coin's journey moonward.
 
@@ -78,7 +78,7 @@ To contribute, please fork the repository and use a feature branch. Pull request
 # Links
 
 - Video of the unit working [here](https://youtu.be/DNLUmJb7Mj8)
-- A low(er)-effort kit and frames can be obtained at [https://llvll.ch/btcticker.html](https://llvll.ch/btcticker.html)
+- A low(er)-effort kit and frames can be obtained at [https://veeb.ch/store](https://veeb.ch/store)
 
 # Troubleshooting
 
