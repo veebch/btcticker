@@ -228,6 +228,9 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
 #   Send the image to the screen        
     epd.display_4Gray(epd.getbuffer_4Gray(image))
     image.save(picdir+'last_img.png') # Simply a means of cleaning up memory
+    del image
+    del sparkbitmap
+    del tokenimage
 
     epd.sleep() #To avoid the screen staying in high volatage mode
 
