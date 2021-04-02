@@ -105,8 +105,6 @@ def getData(config,whichcoin,fiat,other):
 def beanaproblem(message):
 #   A visual cue that the wheels have fallen off
     thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
-    epd = epd2in7.EPD()
-    epd.Init_4Gray()
     image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
     draw = ImageDraw.Draw(image)
     image.paste(thebean, (60,45))
@@ -116,10 +114,10 @@ def beanaproblem(message):
     image = ImageOps.mirror(image)
     epd.display_4Gray(epd.getbuffer_4Gray(image))
     thebean.close()
-    logging.info("epd2in7 BTC Frame")
 #   Reload last good config.yaml
     with open(configfile) as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
+    return image
 
 def makeSpark(pricestack):
     # Draw and save the sparkline that represents historical data
@@ -186,8 +184,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         pricenowstring =str(float('%.5g' % pricenow))
 
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
-        epd = epd2in7.EPD()
-        epd.Init_4Gray()
+
         image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)              
         draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
@@ -226,13 +223,10 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
     if config['display']['inverted'] == True:
         image = ImageOps.invert(image)
 #   Send the image to the screen        
-    epd.display_4Gray(epd.getbuffer_4Gray(image))
-    image.save(picdir+'last_img.png') # Simply a means of cleaning up memory
-    del image
-    del sparkbitmap
-    del tokenimage
 
-    epd.sleep() #To avoid the screen staying in high volatage mode
+    image.save(picdir+'last_img.png') # Simply a means of cleaning up memory
+
+    return image
 
 def currencystringtolist(currstring):
     # Takes the string for currencies in the config.yaml file and turns it into a list
@@ -245,9 +239,14 @@ def currencycycle(curr_list):
     curr_list = curr_list[1:]+curr_list[:1]
     return curr_list    
 
+def display_image(epd, img):
+
+    epd.display_4Gray(epd.getbuffer_4Gray(img))
+
+
 def main():
     
-    def fullupdate():
+    def fullupdate(epd):
         """  
         The steps required for a full update of the display
         Earlier versions of the code didn't grab new data for some operations
@@ -259,12 +258,14 @@ def main():
             # generate sparkline
             makeSpark(pricestack)
             # update display
-            updateDisplay(config, pricestack, CURRENCY,FIAT, other)
+            image=updateDisplay(config, pricestack, CURRENCY,FIAT, other)
+            display_image(epd,image)
             lastgrab=time.time()
             time.sleep(.2)
         except Exception as e:
             message="Data pull/print problem"
-            beanaproblem(str(e))
+            image=beanaproblem(str(e))
+            display_image(epd,image)
             time.sleep(10)
             lastgrab=lastcoinfetch
         return lastgrab
@@ -311,6 +312,8 @@ def main():
         datapulled=False 
 #       Time of start
         lastcoinfetch = time.time()
+        epd = epd2in7.EPD()
+        epd.Init_4Gray()
      
         while True:
             GPIO.setmode(GPIO.BCM)
@@ -333,7 +336,7 @@ def main():
                     crypto_list = currencycycle(crypto_list)
                     CURRENCY=crypto_list[0]
                     logging.info(CURRENCY)
-                    lastcoinfetch=fullupdate()
+                    lastcoinfetch=fullupdate(epd)
                 if key2state == False:
                     logging.info('Rotate - 90')
                     config['display']['orientation'] = (config['display']['orientation']+90) % 360
@@ -341,18 +344,18 @@ def main():
                 if key3state == False:
                     logging.info('Invert Display')
                     config['display']['inverted']= not config['display']['inverted']
-                    lastcoinfetch=fullupdate()
+                    lastcoinfetch=fullupdate(epd)
                 if key4state == False:
                     logging.info('Cycle fiat')
                     fiat_list = currencycycle(fiat_list)
                     FIAT=fiat_list[0]
                     logging.info(FIAT)
-                    lastcoinfetch=fullupdate()
+                    lastcoinfetch=fullupdate(epd)
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
                     if config['display']['cycle']==True:
                         crypto_list = currencycycle(crypto_list)
                         CURRENCY=crypto_list[0]
-                    lastcoinfetch=fullupdate()
+                    lastcoinfetch=fullupdate(epd)
                     datapulled = True
                     # Moved due to suspicion that button pressing was corrupting config file
                     configwrite()
