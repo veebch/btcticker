@@ -312,23 +312,24 @@ def main():
         datapulled=False 
 #       Time of start
         lastcoinfetch = time.time()
-        epd = epd2in7.EPD()
+        epd = epd2in7.EPD()  
         epd.Init_4Gray()
+        GPIO.setmode(GPIO.BCM)
+
+
+        GPIO.setup(key1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(key2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(key3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+
+        key1state = GPIO.input(key1)
+        key2state = GPIO.input(key2)
+        key3state = GPIO.input(key3)
+        key4state = GPIO.input(key4)
      
         while True:
-            GPIO.setmode(GPIO.BCM)
 
-
-            GPIO.setup(key1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(key2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(key3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-            GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-
-            key1state = GPIO.input(key1)
-            key2state = GPIO.input(key2)
-            key3state = GPIO.input(key3)
-            key4state = GPIO.input(key4)
 
             if internet():
                 if key1state == False:
