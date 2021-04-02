@@ -340,7 +340,7 @@ def main():
                 if key2state == False:
                     logging.info('Rotate - 90')
                     config['display']['orientation'] = (config['display']['orientation']+90) % 360
-                    lastcoinfetch=fullupdate()
+                    lastcoinfetch=fullupdate(epd)
                 if key3state == False:
                     logging.info('Invert Display')
                     config['display']['inverted']= not config['display']['inverted']
