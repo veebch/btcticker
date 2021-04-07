@@ -84,7 +84,6 @@ def getData(config,other):
     starttimeseconds = starttime
     endtimeseconds = endtime     
     # Get the price 
-
     if config['ticker']['exchange']=='default' or fiat!='usd':
         geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
         logging.info(geckourl)
@@ -117,7 +116,6 @@ def getData(config,other):
     while i < length:
         timeseriesstack.append(float (timeseriesarray[i][1]))
         i+=1
-
     timeseriesstack.append(pricenow)
     if pricenow>alltimehigh:
         other['ATH']=True
@@ -144,21 +142,17 @@ def beanaproblem(epd,message):
 
 def makeSpark(pricestack):
     # Draw and save the sparkline that represents historical data
-
     # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)    
     x = pricestack-np.mean(pricestack)
-
     fig, ax = plt.subplots(1,1,figsize=(10,3))
     plt.plot(x, color='k', linewidth=6)
     plt.plot(len(x)-1, x[-1], color='r', marker='o')
-
     # Remove the Y axis
     for k,v in ax.spines.items():
         v.set_visible(False)
     ax.set_xticks([])
     ax.set_yticks([])
     ax.axhline(c='k', linewidth=4, linestyle=(0, (5, 2, 1, 2)))
-
     # Save the resulting bmp file to the images directory
     plt.savefig(os.path.join(picdir,'spark.png'), dpi=17)
     imgspk = Image.open(os.path.join(picdir,'spark.png'))
@@ -354,8 +348,6 @@ def main():
                         configwrite(config)
                     lastcoinfetch=fullupdate(epd,config)
                     datapulled = True
-
-
     except IOError as e:
         logging.info(e)
         image=beanaproblem(epd,str(e))
