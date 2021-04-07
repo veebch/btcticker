@@ -25,7 +25,7 @@ configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.ya
 fonthiddenprice = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 30)
 font = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 40)
 fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 50)
-font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
+font_date = ImageFont.truetype(os.path.join(fontdir,'googlefonts/PixelSplitter-Bold.ttf'),11)
 
 def internet(host="8.8.8.8", port=53, timeout=3):
     """
@@ -57,7 +57,7 @@ def _place_text(img, text, x_offset=0, y_offset=0,fontsize=40,fontstring="Forum-
     draw = ImageDraw.Draw(img)
 
     try:
-        filename = os.path.join(dirname, './fonts/'+fontstring+'.ttf')
+        filename = os.path.join(dirname, './fonts/googlefonts/'+fontstring+'.ttf')
         font = ImageFont.truetype(filename, fontsize)
     except OSError:
         font = ImageFont.truetype('/usr/share/fonts/TTF/DejaVuSans.ttf', fontsize)
@@ -71,7 +71,7 @@ def _place_text(img, text, x_offset=0, y_offset=0,fontsize=40,fontstring="Forum-
 
     draw.text((draw_x, draw_y), text, font=font,fill=fill )
 
-def writewrappedlines(img,text,fontsize=18,y_text=20,height=15, width=25,fontstring="PixelSplitter-Bold.ttf"):
+def writewrappedlines(img,text,fontsize=16,y_text=20,height=15, width=25,fontstring="Roboto-Light.ttf"):
     lines = textwrap.wrap(text, width)
     numoflines=0
     for line in lines:
