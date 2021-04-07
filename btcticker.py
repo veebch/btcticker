@@ -233,28 +233,23 @@ def updateDisplay(epd,config,pricestack,other):
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)   
         draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
-
- #.     uncomment the line below to show volume
- #       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
+#       uncomment the line below to show volume
+#       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
         writewrappedlines(image, symbolstring+pricenowstring,50,55,8,10,"Roboto-Medium" )
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))
         image.paste(sparkbitmap,(80,40))
         image.paste(tokenimage, (0,10))
- #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
+#       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
         draw.text((95,15),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in 4Gray Horizontal
         image = ImageOps.mirror(image)
-
 #   If the display is inverted, invert the image usinng ImageOps        
     if config['display']['inverted'] == True:
         image = ImageOps.invert(image)
-#   Send the image to the screen        
-
-    image.save(picdir+'last_img.png') # Simply a means of cleaning up memory
-
+#   Return the ticker image
     return image
 
 def currencystringtolist(currstring):
