@@ -20,12 +20,9 @@ import socket
 import textwrap
 dirname = os.path.dirname(__file__)
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
-fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts')
+fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
-fonthiddenprice = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 30)
-font = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 40)
-fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 50)
-font_date = ImageFont.truetype(os.path.join(fontdir,'googlefonts/PixelSplitter-Bold.ttf'),11)
+font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
 
 def internet(host="8.8.8.8", port=53, timeout=3):
     """
@@ -80,10 +77,11 @@ def writewrappedlines(img,text,fontsize=16,y_text=20,height=15, width=25,fontstr
         numoflines+=1
     return img
 
-def getData(config,whichcoin,fiat,other):
+def getData(config,other):
     """
     The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
     """
+    whichcoin,fiat=configtocoinandfiat(config)
     logging.info("Getting Data")
     days_ago=int(config['ticker']['sparklinedays'])   
     endtime = int(time.time())
@@ -176,12 +174,13 @@ def makeSpark(pricestack):
     plt.clf() # Close plot to prevent memory error
     ax.cla() # Close axis to prevent memory error
 
-def updateDisplay(config,pricestack,whichcoin,fiat,other):
+def updateDisplay(epd,config,pricestack,other):
     """   
     Takes the price data, the desired coin/fiat combo along with the config info for formatting
     if config is re-written following adustment we could avoid passing the last two arguments as
     they will just be the first two items of their string in config 
     """
+    whichcoin,fiat=configtocoinandfiat(config)
     days_ago=int(config['ticker']['sparklinedays'])   
     symbolstring=currency.symbol(fiat.upper())
     if fiat=="jpy" or fiat=="cny":
@@ -222,7 +221,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
         draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
         # Print price to 5 significant figures
-        draw.text((15,200),symbolstring+pricenowstring,font =font,fill = 0)
+        writewrappedlines(image, symbolstring+pricenowstring,40,65,8,10,"Roboto-Medium" )
         draw.text((10,10),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
         image.paste(tokenimage, (10,25))
         image.paste(sparkbitmap,(10,125))
@@ -231,8 +230,6 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
 
 
     if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
-        epd = epd2in7.EPD()
-        epd.Init_4Gray()
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)   
         draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
@@ -266,7 +263,8 @@ def currencystringtolist(currstring):
     curr_list = [x.strip(' ') for x in curr_list]
     return curr_list
 
-def currencycycle(curr_list):
+def currencycycle(curr_string):
+    curr_list=currencystringtolist(curr_string)
     # Rotate the array of currencies from config.... [a b c] becomes [b c a]
     curr_list = curr_list[1:]+curr_list[:1]
     return curr_list    
@@ -275,46 +273,53 @@ def display_image(epd, img):
 
     epd.display_4Gray(epd.getbuffer_4Gray(img))
 
-
-def main():
-    
-    def fullupdate(epd):
-        """  
-        The steps required for a full update of the display
-        Earlier versions of the code didn't grab new data for some operations
-        but the e-Paper is too slow to bother the coingecko API 
-        """
-        other={}
-        try:
-            pricestack, ATH = getData(config,CURRENCY,FIAT, other)
-            # generate sparkline
-            makeSpark(pricestack)
-            # update display
-            image=updateDisplay(config, pricestack, CURRENCY,FIAT, other)
-  #          image=beanaproblem(epd,"Uncomment me to check how well the word wrapping works on error messages")
-            display_image(epd,image)
-            lastgrab=time.time()
-            time.sleep(.2)
-        except Exception as e:
-            message="Data pull/print problem"
-            image=beanaproblem(epd,str(e))
-            display_image(epd,image)
-            time.sleep(10)
-            lastgrab=lastcoinfetch
-        return lastgrab
-
-    def configwrite():
-        """  
+def configwrite(config):
+    """  
         Write the config file following an adjustment made using the buttons
         This is so that the unit returns to its last state after it has been 
         powered off 
         """ 
-        config['ticker']['currency']=",".join(crypto_list)
-        config['ticker']['fiatcurrency']=",".join(fiat_list)
-        with open(configfile, 'w') as f:
-            data = yaml.dump(config, f)    
+    with open(configfile, 'w') as f:
+        data = yaml.dump(config, f)
 
+def fullupdate(epd,config):
+    """  
+    The steps required for a full update of the display
+    Earlier versions of the code didn't grab new data for some operations
+    but the e-Paper is too slow to bother the coingecko API 
+    """
+    other={}
+    try:
+        pricestack, ATH = getData(config, other)
+        # generate sparkline
+        makeSpark(pricestack)
+        # update display
+        image=updateDisplay(epd,config, pricestack, other)
+#          image=beanaproblem(epd,"Uncomment me to check how well the word wrapping works on error messages")
+        display_image(epd,image)
+        lastgrab=time.time()
+        time.sleep(.2)
+    except Exception as e:
+        message="Data pull/print problem"
+        image=beanaproblem(epd,str(e))
+        display_image(epd,image)
+        time.sleep(10)
+        lastgrab=lastcoinfetch
+    return lastgrab
+
+def configtocoinandfiat(config):
+    crypto_list = currencystringtolist(config['ticker']['currency'])
+    fiat_list=currencystringtolist(config['ticker']['fiatcurrency'])
+    currency=crypto_list[0]
+    fiat=fiat_list[0]
+    return currency, fiat
+
+def main():
+    
     logging.basicConfig(level=logging.DEBUG)
+#   Initialise the display (once before loop)
+    epd = epd2in7.EPD()  
+    epd.Init_4Gray()
 
     try:
         logging.info("epd2in7 BTC Frame")
@@ -324,17 +329,6 @@ def main():
         logging.info(config)
         config['display']['orientation']=int(config['display']['orientation'])
 
-        crypto_list = currencystringtolist(config['ticker']['currency'])
-        logging.info(crypto_list) 
-
-        fiat_list=currencystringtolist(config['ticker']['fiatcurrency'])
-        logging.info(fiat_list) 
-
-        CURRENCY=crypto_list[0]
-        FIAT=fiat_list[0]
-
-        logging.info(CURRENCY)
-        logging.info(FIAT)
         key1 = 5
         key2 = 6
         key3 = 13
@@ -345,62 +339,62 @@ def main():
         datapulled=False 
 #       Time of start
         lastcoinfetch = time.time()
-        epd = epd2in7.EPD()  
-        epd.Init_4Gray()
+
+#       Get the buttons for 2.7in EPD set up
         GPIO.setmode(GPIO.BCM)
-
-
         GPIO.setup(key1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(key2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(key3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
-
-        key1state = GPIO.input(key1)
-        key2state = GPIO.input(key2)
-        key3state = GPIO.input(key3)
-        key4state = GPIO.input(key4)
      
         while True:
+#           Poll Keystates
+            key1state = GPIO.input(key1)
+            key2state = GPIO.input(key2)
+            key3state = GPIO.input(key3)
+            key4state = GPIO.input(key4)
 
-
+#           If there is an internet connection, respond to the keypresses
             if internet():
                 if key1state == False:
                     logging.info('Cycle currencies')
-                    crypto_list = currencycycle(crypto_list)
-                    CURRENCY=crypto_list[0]
-                    logging.info(CURRENCY)
-                    lastcoinfetch=fullupdate(epd)
+                    crypto_list = currencycycle(cconfig['ticker']['currency'])
+                    config['ticker']['currency']=",".join(crypto_list)
+                    lastcoinfetch=fullupdate(epd, config)
                 if key2state == False:
                     logging.info('Rotate - 90')
                     config['display']['orientation'] = (config['display']['orientation']+90) % 360
-                    lastcoinfetch=fullupdate(epd)
+                    lastcoinfetch=fullupdate(epd,config)
                 if key3state == False:
                     logging.info('Invert Display')
-                    config['display']['inverted']= not config['display']['inverted']
-                    lastcoinfetch=fullupdate(epd)
+                    config['display']['inverted'] = not config['display']['inverted']
+                    lastcoinfetch=fullupdate(epd,config)
                 if key4state == False:
                     logging.info('Cycle fiat')
-                    fiat_list = currencycycle(fiat_list)
-                    FIAT=fiat_list[0]
-                    logging.info(FIAT)
-                    lastcoinfetch=fullupdate(epd)
+                    fiat_list = currencycycle(config['ticker']['fiatcurrency'])
+                    config['ticker']['fiatcurrency']=",".join(fiat_list)
+                    lastcoinfetch=fullupdate(epd,config)
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
                     if config['display']['cycle']==True:
-                        crypto_list = currencycycle(crypto_list)
-                        CURRENCY=crypto_list[0]
-                    lastcoinfetch=fullupdate(epd)
+                        crypto_list = currencycycle(config['ticker']['currency'])
+                        config['ticker']['currency']=",".join(crypto_list)
+                    lastcoinfetch=fullupdate(epd,config)
                     datapulled = True
-                    # Moved due to suspicion that button pressing was corrupting config file
-                    configwrite()
+#               Write to the configfile
+                configwrite(config)
 
 
 
     except IOError as e:
         logging.info(e)
+        image=beanaproblem(epd,str(e))
+        display_image(epd,image)
     
     except KeyboardInterrupt:    
         logging.info("ctrl + c:")
+        image=beanaproblem(epd,"Keyboard Interrupt")
+        display_image(epd,image)
         epd2in7.epdconfig.module_exit()
         GPIO.cleanup()
         exit()
