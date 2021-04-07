@@ -100,9 +100,7 @@ def getData(config,other):
         rawlivecoin = requests.get(geckourl).json()
         liveprice= rawlivecoin['tickers'][0]
         if  liveprice['target']!='USD':
-            logging.info("The exhange is not listing in USD, misconfigured - shutting down script")
-            message="Misconfiguration Problem"
-            beanaproblem(message)
+            logging.info("The exchange is not listing in USD, misconfigured - shutting down script")
             sys.exit()
         pricenow= float(liveprice['last'])
         other['volume'] = float(liveprice['converted_volume']['usd'])
