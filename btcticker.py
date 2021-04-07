@@ -71,7 +71,7 @@ def _place_text(img, text, x_offset=0, y_offset=0,fontsize=40,fontstring="Forum-
 
     draw.text((draw_x, draw_y), text, font=font,fill=fill )
 
-def writewrappedlines(img,text,fontsize=16,y_text=20,height=15, width=25,fontstring="Roboto-Light.ttf"):
+def writewrappedlines(img,text,fontsize=16,y_text=20,height=15, width=25,fontstring="Roboto-Light"):
     lines = textwrap.wrap(text, width)
     numoflines=0
     for line in lines:
@@ -239,7 +239,7 @@ def updateDisplay(config,pricestack,whichcoin,fiat,other):
 
  #.     uncomment the line below to show volume
  #       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
-        draw.text((10,120),symbolstring+pricenowstring,font =fontHorizontal,fill = 0)
+        writewrappedlines(image, symbolstring+pricenowstring,50,55,8,10,"Roboto-Medium" )
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))
         image.paste(sparkbitmap,(80,40))
