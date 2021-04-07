@@ -50,22 +50,17 @@ def _place_text(img, text, x_offset=0, y_offset=0,fontsize=40,fontstring="Forum-
     '''
     Put some centered text at a location on the image.
     '''
-
     draw = ImageDraw.Draw(img)
-
     try:
         filename = os.path.join(dirname, './fonts/googlefonts/'+fontstring+'.ttf')
         font = ImageFont.truetype(filename, fontsize)
     except OSError:
         font = ImageFont.truetype('/usr/share/fonts/TTF/DejaVuSans.ttf', fontsize)
-
     img_width, img_height = img.size
     text_width, _ = font.getsize(text)
     text_height = fontsize
-
     draw_x = (img_width - text_width)//2 + x_offset
     draw_y = (img_height - text_height)//2 + y_offset
-
     draw.text((draw_x, draw_y), text, font=font,fill=fill )
 
 def writewrappedlines(img,text,fontsize=16,y_text=20,height=15, width=25,fontstring="Roboto-Light"):
@@ -206,16 +201,12 @@ def updateDisplay(epd,config,pricestack,other):
         tokenimage=new_image
         tokenimage.thumbnail((100,100),Image.ANTIALIAS)
         tokenimage.save(tokenfilename)
-
-
     pricechange = str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%"
     if pricenow > 1000:
         pricenowstring =format(int(pricenow),",")
     else:
         pricenowstring =str(float('%.5g' % pricenow))
-
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
-
         image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)              
         draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
@@ -227,8 +218,6 @@ def updateDisplay(epd,config,pricestack,other):
         image.paste(sparkbitmap,(10,125))
         if config['display']['orientation'] == 180 :
             image=image.rotate(180, expand=True)
-
-
     if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)   
@@ -265,7 +254,6 @@ def currencycycle(curr_string):
     return curr_list    
 
 def display_image(epd, img):
-
     epd.display_4Gray(epd.getbuffer_4Gray(img))
 
 def configwrite(config):
@@ -273,7 +261,7 @@ def configwrite(config):
         Write the config file following an adjustment made using the buttons
         This is so that the unit returns to its last state after it has been 
         powered off 
-        """ 
+    """ 
     with open(configfile, 'w') as f:
         data = yaml.dump(config, f)
 
@@ -309,13 +297,11 @@ def configtocoinandfiat(config):
     fiat=fiat_list[0]
     return currency, fiat
 
-def main():
-    
+def main():    
     logging.basicConfig(level=logging.DEBUG)
 #   Initialise the display (once before loop)
     epd = epd2in7.EPD()  
     epd.Init_4Gray()
-
     try:
         logging.info("epd2in7 BTC Frame")
 #       Get the configuration from config.yaml
@@ -323,33 +309,26 @@ def main():
             config = yaml.load(f, Loader=yaml.FullLoader)
         logging.info(config)
         config['display']['orientation']=int(config['display']['orientation'])
-
         key1 = 5
         key2 = 6
         key3 = 13
         key4 = 19
-
-
 #       Note that there has been no data pull yet
         datapulled=False 
 #       Time of start
         lastcoinfetch = time.time()
-
 #       Get the buttons for 2.7in EPD set up
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(key1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(key2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(key3, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-
-     
+        GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)   
         while True:
 #           Poll Keystates
             key1state = GPIO.input(key1)
             key2state = GPIO.input(key2)
             key3state = GPIO.input(key3)
             key4state = GPIO.input(key4)
-
 #           If there is an internet connection, respond to the keypresses
             if internet():
                 if key1state == False:
@@ -374,18 +353,15 @@ def main():
                     if config['display']['cycle']==True:
                         crypto_list = currencycycle(config['ticker']['currency'])
                         config['ticker']['currency']=",".join(crypto_list)
+                        configwrite(config)
                     lastcoinfetch=fullupdate(epd,config)
                     datapulled = True
-#               Write to the configfile
-                configwrite(config)
-
 
 
     except IOError as e:
         logging.info(e)
         image=beanaproblem(epd,str(e))
-        display_image(epd,image)
-    
+        display_image(epd,image)  
     except KeyboardInterrupt:    
         logging.info("ctrl + c:")
         image=beanaproblem(epd,"Keyboard Interrupt")
