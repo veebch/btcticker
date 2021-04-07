@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import yaml 
 import socket
+import textwrap
+dirname = os.path.dirname(__file__)
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
@@ -47,6 +49,36 @@ def human_format(num):
         num /= 1000.0
     return '{}{}'.format('{:f}'.format(num).rstrip('0').rstrip('.'), ['', 'K', 'M', 'B', 'T'][magnitude])
 
+def _place_text(img, text, x_offset=0, y_offset=0,fontsize=40,fontstring="Forum-Regular", fill=0):
+    '''
+    Put some centered text at a location on the image.
+    '''
+
+    draw = ImageDraw.Draw(img)
+
+    try:
+        filename = os.path.join(dirname, './fonts/'+fontstring+'.ttf')
+        font = ImageFont.truetype(filename, fontsize)
+    except OSError:
+        font = ImageFont.truetype('/usr/share/fonts/TTF/DejaVuSans.ttf', fontsize)
+
+    img_width, img_height = img.size
+    text_width, _ = font.getsize(text)
+    text_height = fontsize
+
+    draw_x = (img_width - text_width)//2 + x_offset
+    draw_y = (img_height - text_height)//2 + y_offset
+
+    draw.text((draw_x, draw_y), text, font=font,fill=fill )
+
+def writewrappedlines(img,text,fontsize=18,y_text=20,height=15, width=25,fontstring="PixelSplitter-Bold.ttf"):
+    lines = textwrap.wrap(text, width)
+    numoflines=0
+    for line in lines:
+        _place_text(img, line,0, y_text, fontsize,fontstring)
+        y_text += height
+        numoflines+=1
+    return img
 
 def getData(config,whichcoin,fiat,other):
     """
@@ -102,15 +134,15 @@ def getData(config,whichcoin,fiat,other):
         other['ATH']=False
     return timeseriesstack, other
 
-def beanaproblem(message):
+def beanaproblem(epd,message):
 #   A visual cue that the wheels have fallen off
     thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
     image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
     draw = ImageDraw.Draw(image)
     image.paste(thebean, (60,45))
     draw.text((95,15),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
-
-    draw.text((15,150),message, font=font_date,fill = 0)
+    writewrappedlines(image, "Problem:"+message)
+#    draw.text((15,150),message, font=font_date,fill = 0)
     image = ImageOps.mirror(image)
     epd.display_4Gray(epd.getbuffer_4Gray(image))
     thebean.close()
@@ -259,12 +291,13 @@ def main():
             makeSpark(pricestack)
             # update display
             image=updateDisplay(config, pricestack, CURRENCY,FIAT, other)
+  #          image=beanaproblem(epd,"Uncomment me to check how well the word wrapping works on error messages")
             display_image(epd,image)
             lastgrab=time.time()
             time.sleep(.2)
         except Exception as e:
             message="Data pull/print problem"
-            image=beanaproblem(str(e))
+            image=beanaproblem(epd,str(e))
             display_image(epd,image)
             time.sleep(10)
             lastgrab=lastcoinfetch
