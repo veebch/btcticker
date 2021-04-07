@@ -197,13 +197,13 @@ def updateDisplay(epd,config,pricestack,other):
     if pricenow > 1000:
         pricenowstring =format(int(pricenow),",")
     else:
+        # Print price to 5 significant figures
         pricenowstring =str(float('%.5g' % pricenow))
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
         image = Image.new('L', (epd.width, epd.height), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)              
         draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
-        # Print price to 5 significant figures
         writewrappedlines(image, symbolstring+pricenowstring,40,65,8,10,"Roboto-Medium" )
         draw.text((10,10),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
         image.paste(tokenimage, (10,25))
