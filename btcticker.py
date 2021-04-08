@@ -325,7 +325,7 @@ def main():
             if internet():
                 if key1state == False:
                     logging.info('Cycle currencies')
-                    crypto_list = currencycycle(cconfig['ticker']['currency'])
+                    crypto_list = currencycycle(config['ticker']['currency'])
                     config['ticker']['currency']=",".join(crypto_list)
                     lastcoinfetch=fullupdate(epd, config)
                 if key2state == False:
