@@ -76,7 +76,7 @@ Update frequency can be changed in the config.yaml file (default is 600 seconds)
 To contribute, please fork the repository and use a feature branch. Pull requests are welcome.
 
 # Links
-
+[![Watch the video](https://img.youtube.com/vi/DNLUmJb7Mj8/maxresdefault.jpg)](https://youtu.be/DNLUmJb7Mj8) 
 - Video of the unit working [here](https://youtu.be/DNLUmJb7Mj8)
 - A low(er)-effort kit and frames can be obtained at [https://veeb.ch/store](https://veeb.ch/store)
 
