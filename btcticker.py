@@ -211,10 +211,10 @@ def updateDisplay(epd,config,pricestack,other):
         if config['display']['orientation'] == 180 :
             image=image.rotate(180, expand=True)
     if config['display']['orientation'] == 90 or config['display']['orientation'] == 270 :
-        if other['ATH']==True:
-            image.paste(ATHbitmap,(190,85))
         image = Image.new('L', (epd.height, epd.width), 255)    # 255: clear the image with white
-        draw = ImageDraw.Draw(image)   
+        draw = ImageDraw.Draw(image) 
+        if other['ATH']==True:
+            image.paste(ATHbitmap,(190,85))  
         draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
 #       uncomment the line below to show volume
 #       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
