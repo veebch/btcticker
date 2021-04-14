@@ -4,3 +4,4 @@ matplotlib==3.0.3
 Pillow==8.2.0
 PyYAML==5.4.1
 RPi==0.0.1
+nh-currency==1.0.1
