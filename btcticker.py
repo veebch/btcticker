@@ -257,7 +257,7 @@ def configwrite(config):
     with open(configfile, 'w') as f:
         data = yaml.dump(config, f)
 
-def fullupdate(epd,config):
+def fullupdate(epd,config,lastcoinfetch):
     """  
     The steps required for a full update of the display
     Earlier versions of the code didn't grab new data for some operations
@@ -327,26 +327,26 @@ def main():
                     logging.info('Cycle currencies')
                     crypto_list = currencycycle(config['ticker']['currency'])
                     config['ticker']['currency']=",".join(crypto_list)
-                    lastcoinfetch=fullupdate(epd, config)
+                    lastcoinfetch=fullupdate(epd, config, lastcoinfetch)
                 if key2state == False:
                     logging.info('Rotate - 90')
                     config['display']['orientation'] = (config['display']['orientation']+90) % 360
-                    lastcoinfetch=fullupdate(epd,config)
+                    lastcoinfetch=fullupdate(epd,config,lastcoinfetch)
                 if key3state == False:
                     logging.info('Invert Display')
                     config['display']['inverted'] = not config['display']['inverted']
-                    lastcoinfetch=fullupdate(epd,config)
+                    lastcoinfetch=fullupdate(epd,config,lastcoinfetch)
                 if key4state == False:
                     logging.info('Cycle fiat')
                     fiat_list = currencycycle(config['ticker']['fiatcurrency'])
                     config['ticker']['fiatcurrency']=",".join(fiat_list)
-                    lastcoinfetch=fullupdate(epd,config)
+                    lastcoinfetch=fullupdate(epd,config,lastcoinfetch)
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
                     if config['display']['cycle']==True:
                         crypto_list = currencycycle(config['ticker']['currency'])
                         config['ticker']['currency']=",".join(crypto_list)
                         configwrite(config)
-                    lastcoinfetch=fullupdate(epd,config)
+                    lastcoinfetch=fullupdate(epd,config,lastcoinfetch)
                     datapulled = True
     except IOError as e:
         logging.info(e)
