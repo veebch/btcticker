@@ -278,7 +278,7 @@ def fullupdate(epd,config,lastcoinfetch):
         message="Data pull/print problem"
         image=beanaproblem(epd,str(e))
         display_image(epd,image)
-        time.sleep(10)
+        time.sleep(20)
         lastgrab=lastcoinfetch
     return lastgrab
 
