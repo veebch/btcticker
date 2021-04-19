@@ -18,11 +18,11 @@ import numpy as np
 import yaml 
 import socket
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
-fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts')
+fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
-fonthiddenprice = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 30)
-font = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 40)
-fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'googlefonts/Roboto-Medium.ttf'), 16)
+fonthiddenprice = ImageFont.truetype(os.path.join(fontdir,'Roboto-Medium.ttf'), 30)
+font = ImageFont.truetype(os.path.join(fontdir,'Roboto-Medium.ttf'), 40)
+fontHorizontal = ImageFont.truetype(os.path.join(fontdir,'Roboto-Medium.ttf'), 16)
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
 
 def internet(host="8.8.8.8", port=53, timeout=3):
