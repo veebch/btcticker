@@ -328,24 +328,28 @@ def main():
                     crypto_list = currencycycle(config['ticker']['currency'])
                     config['ticker']['currency']=",".join(crypto_list)
                     lastcoinfetch=fullupdate(epd, config, lastcoinfetch)
+                    configwrite(config) 
                 if key2state == False:
                     logging.info('Rotate - 90')
                     config['display']['orientation'] = (config['display']['orientation']+90) % 360
                     lastcoinfetch=fullupdate(epd,config,lastcoinfetch)
+                    configwrite(config)
                 if key3state == False:
                     logging.info('Invert Display')
                     config['display']['inverted'] = not config['display']['inverted']
                     lastcoinfetch=fullupdate(epd,config,lastcoinfetch)
+                    configwrite(config)
                 if key4state == False:
                     logging.info('Cycle fiat')
                     fiat_list = currencycycle(config['ticker']['fiatcurrency'])
                     config['ticker']['fiatcurrency']=",".join(fiat_list)
                     lastcoinfetch=fullupdate(epd,config,lastcoinfetch)
+                    configwrite(config)
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
                     if config['display']['cycle']==True:
                         crypto_list = currencycycle(config['ticker']['currency'])
                         config['ticker']['currency']=",".join(crypto_list)
-                        configwrite(config)
+                        # configwrite(config)
                     lastcoinfetch=fullupdate(epd,config,lastcoinfetch)
                     datapulled = True
     except IOError as e:
