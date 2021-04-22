@@ -1,10 +1,10 @@
 display:
-  cycle: false 
-  inverted: true 
+  cycle: true
+  inverted: false
   orientation: 90
 ticker:
-  currency: bitcoin,ethereum,litecoin,monero
+  currency: safemoon,bitcoin,ethereum
   exchange: default
   fiatcurrency: usd,eur,gbp
   sparklinedays: 28
-  updatefrequency: 120
+  updatefrequency: 60
