@@ -30,18 +30,18 @@ def internet(hostname="8.8.8.8"):
     OpenPort: 53/tcp
     Service: domain (DNS/TCP)
     """
-  try:
-    # see if we can resolve the host name -- tells us if there is
-    # a DNS listening
-    host = socket.gethostbyname(hostname)
-    # connect to the host -- tells us if the host is actually
-    # reachable
-    s = socket.create_connection((host, 80), 2)
-    s.close()
-    return True
-  except:
-     pass
-  return False
+	try:
+    	# see if we can resolve the host name -- tells us if there is
+    	# a DNS listening
+    	host = socket.gethostbyname(hostname)
+    	# connect to the host -- tells us if the host is actually
+    	# reachable
+   		s = socket.create_connection((host, 80), 2)
+    	s.close()
+    	return True
+ 	except:
+    	pass
+  	return False
 
 def human_format(num):
     num = float('{:.3g}'.format(num))
