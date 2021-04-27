@@ -24,19 +24,24 @@ fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googl
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
 
-def internet(host="8.8.8.8", port=53, timeout=3):
+def internet(hostname="8.8.8.8"):
     """
     Host: 8.8.8.8 (google-public-dns-a.google.com)
     OpenPort: 53/tcp
     Service: domain (DNS/TCP)
     """
-    try:
-        socket.setdefaulttimeout(timeout)
-        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
-        return True
-    except socket.error as ex:
-        logging.info("No internet:", format(ex))
-        return False
+  try:
+    # see if we can resolve the host name -- tells us if there is
+    # a DNS listening
+    host = socket.gethostbyname(hostname)
+    # connect to the host -- tells us if the host is actually
+    # reachable
+    s = socket.create_connection((host, 80), 2)
+    s.close()
+    return True
+  except:
+     pass
+  return False
 
 def human_format(num):
     num = float('{:.3g}'.format(num))
