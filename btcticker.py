@@ -24,7 +24,7 @@ fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googl
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
 
-def internet(hostname="8.8.8.8"):
+def internet(hostname="google.com"):
     """
     Host: 8.8.8.8 (google-public-dns-a.google.com)
     OpenPort: 53/tcp
