@@ -1,9 +1,9 @@
 display:
   cycle: true
-  inverted: true
+  inverted: false
   orientation: 90
 ticker:
-  currency: theta-token,ethereum
+  currency: bitcoin,ethereum
   exchange: default
   fiatcurrency: usd,eur,gbp
   sparklinedays: 28
