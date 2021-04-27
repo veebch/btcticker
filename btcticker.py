@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#No !/usr/bin/python3
 from PIL import Image, ImageOps
 from PIL import ImageFont
 from PIL import ImageDraw
@@ -35,7 +35,7 @@ def internet(host="8.8.8.8", port=53, timeout=3):
         socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
         return True
     except socket.error as ex:
-        logging.info("No internet")
+        logging.info("No internet:", ex)
         return False
 
 def human_format(num):
