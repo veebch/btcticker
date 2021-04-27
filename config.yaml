@@ -1,10 +1,10 @@
 display:
   cycle: true
-  inverted: false
+  inverted: true
   orientation: 90
 ticker:
-  currency: safemoon,bitcoin,ethereum
+  currency: theta-token,ethereum
   exchange: default
   fiatcurrency: usd,eur,gbp
   sparklinedays: 28
-  updatefrequency: 60
+  updatefrequency: 180
