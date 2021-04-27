@@ -40,6 +40,7 @@ def internet(hostname="google.com"):
         s.close()
         return True
     except:
+        logging.info("Google says No")
         pass
     return False
 
