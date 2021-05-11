@@ -113,6 +113,7 @@ def getData(config,other):
     logging.info("Got Live Data From CoinGecko")
     geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
     logging.info(geckourlhistorical)
+    time.sleep(5)
     rawtimeseries = requests.get(geckourlhistorical).json()
     logging.info("Got price for the last "+str(days_ago)+" days from CoinGecko")
     timeseriesarray = rawtimeseries['prices']
@@ -237,6 +238,8 @@ def updateDisplay(epd,config,pricestack,other):
     if config['display']['inverted'] == True:
         image = ImageOps.invert(image)
 #   Return the ticker image
+#   sparkbitmap.close()
+    tokenimage.close()
     return image
 
 def currencystringtolist(currstring):
