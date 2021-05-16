@@ -78,7 +78,7 @@ To contribute, please fork the repository and use a feature branch. Pull request
 # Links
 [![Watch the video](https://img.youtube.com/vi/DNLUmJb7Mj8/maxresdefault.jpg)](https://youtu.be/DNLUmJb7Mj8) 
 - Video of the unit working [here](https://youtu.be/DNLUmJb7Mj8)
-- A low(er)-effort kit and frames can be obtained at [http://veeb.ch/store](http://veeb.ch/store)
+- A low(er)-effort kit and frames can be obtained at [veeb.ch](http://www.veeb.ch/store/p/cryptocurrency-ticker)
 
 # Troubleshooting
 
