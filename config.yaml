@@ -2,9 +2,11 @@ display:
   cycle: true
   inverted: false
   orientation: 90
+  trendingmode: true
 ticker:
-  currency: bitcoin,ethereum
+  currency: bitcoin,ethereum,cardano
   exchange: default
   fiatcurrency: usd,eur,gbp
-  sparklinedays: 28
-  updatefrequency: 180
+  sparklinedays: 1 
+  updatefrequency: 300
+
