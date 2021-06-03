@@ -71,6 +71,10 @@ Here's what the buttons do:
 
 Update frequency can be changed in the config.yaml file (default is 600 seconds).
 
+# Configuration
+
+The file config.yaml contains a number of options that may be tweaked
+
 # Contributing
 
 To contribute, please fork the repository and use a feature branch. Pull requests are welcome.
