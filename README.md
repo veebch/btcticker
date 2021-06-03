@@ -73,7 +73,22 @@ Update frequency can be changed in the config.yaml file (default is 600 seconds)
 
 # Configuration
 
-The file config.yaml contains a number of options that may be tweaked
+The file config.yaml contains a number of options that may be tweaked, including a boolean Trending Mode that will make the ticker display coins 
+that are currently flagged as trending on coingecko. Update frequency is the refresh time in seconds ~ 300 seems to be the sweet-spot for reliability.
+
+```
+display:
+  cycle: true
+  inverted: false
+  orientation: 90
+  trendingmode: true
+ticker:
+  currency: bitcoin,ethereum,cardano
+  exchange: default
+  fiatcurrency: usd,eur,gbp
+  sparklinedays: 1 
+  updatefrequency: 300
+```
 
 # Contributing
 
