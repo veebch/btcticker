@@ -91,7 +91,7 @@ def getData(config,other):
     starttimeseconds = starttime
     endtimeseconds = endtime     
     # Get the price 
-    if config['ticker']['exchange']=='default' or fiat!='usd':
+    if config['ticker']['exchange']=='default':
         geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
         logging.info(geckourl)
         rawlivecoin = requests.get(geckourl, headers=headers).json()
@@ -104,10 +104,18 @@ def getData(config,other):
         geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
         logging.info(geckourl)
         rawlivecoin = requests.get(geckourl, headers=headers).json()
-        liveprice= rawlivecoin['tickers'][0]
-        if  liveprice['target']!='USD':
-            logging.info("The exchange is not listing in USD, misconfigured - shutting down script")
+        theindex=-1
+        upperfiat=fiat.upper()
+        for i in range (len(rawlivecoin['tickers'])):
+            target=rawlivecoin['tickers'][i]['target']
+            if target==upperfiat:
+                theindex=i
+                logging.info("Found "+upperfiat+" at index " + str(i))
+#       if UPPERFIAT is not listed as a target theindex==-1 and it is time to go to sleep
+        if  theindex==-1:
+            logging.info("The exchange is not listing in "+upperfiat+". Misconfigured - shutting down script")
             sys.exit()
+        liveprice= rawlivecoin['tickers'][theindex]
         pricenow= float(liveprice['last'])
         other['volume'] = float(liveprice['converted_volume']['usd'])
         alltimehigh = 1000000.0   # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
