@@ -2,7 +2,7 @@ display:
   cycle: true
   inverted: false
   orientation: 90
-  trendingmode: true
+  trendingmode: false
 ticker:
   currency: bitcoin,ethereum,cardano
   exchange: default
