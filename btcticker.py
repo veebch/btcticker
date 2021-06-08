@@ -227,7 +227,7 @@ def updateDisplay(config,pricestack,other):
         draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
         writewrappedlines(image, symbolstring+pricenowstring,40,65,8,10,"Roboto-Medium" )
-        draw.text((10,10),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
+        draw.text((10,10),str(time.strftime("%-I:%M %p, s%d %b %Y")),font =font_date,fill = 0)
         image.paste(tokenimage, (10,25))
         image.paste(sparkbitmap,(10,125))
         if config['display']['orientation'] == 180 :
@@ -247,7 +247,7 @@ def updateDisplay(config,pricestack,other):
         if (config['display']['trendingmode']==True) and not (str(whichcoin) in originalcoin_list):
             writewrappedlines(image, whichcoin,11,24,8,25,"PixelSplitter-Bold" )
 #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-        draw.text((95,15),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
+        draw.text((90,15),str(time.strftime("%-I:%M %p, %d %b %Y")),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in older waveshare libraries Uncomment line below if needed
