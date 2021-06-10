@@ -253,7 +253,7 @@ def updateDisplay(config,pricestack,other):
                           
         # uncomment the lines below to show rank
         #if other['market_cap_rank'] > 0:
-        #    draw.text((10,105),"#" + str("%d" % other['market_cap_rank']),font =font_date,fill = 0)
+        #    draw.text((10,105),"Rank: " + str("%d" % other['market_cap_rank']),font =font_date,fill = 0)
         
         if (config['display']['trendingmode']==True) and not (str(whichcoin) in originalcoin_list):
             writewrappedlines(image, whichcoin,11,24,8,25,"PixelSplitter-Bold" )
