@@ -217,9 +217,9 @@ def updateDisplay(config,pricestack,other):
         tokenimage.save(tokenfilename)
     pricechangeraw = round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2)
     if pricechangeraw >= 100:
-        pricechange = str(%+d" % )+"%"
+        pricechange = str("%+d" % pricechangeraw)+"%"
     else:
-        pricechange = str("%+.2f" % )+"%"
+        pricechange = str("%+.2f" % pricechangeraw)+"%"
     if pricenow > 1000:
         pricenowstring =format(int(pricenow),",")
     else:
