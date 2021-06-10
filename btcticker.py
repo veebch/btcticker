@@ -215,7 +215,11 @@ def updateDisplay(config,pricestack,other):
         tokenimage=new_image
         tokenimage.thumbnail((100,100),Image.ANTIALIAS)
         tokenimage.save(tokenfilename)
-    pricechange = str("%+d" % round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2))+"%"
+        pricechangeraw = round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2)
+        if pricechangeraw >= 100:
+            pricechange = str(%+d" % )+"%"
+        else:
+            pricechange = str("%+.2f" % )+"%"
     if pricenow > 1000:
         pricenowstring =format(int(pricenow),",")
     else:
