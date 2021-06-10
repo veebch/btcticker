@@ -99,6 +99,7 @@ def getData(config,other):
         liveprice = rawlivecoin[0]
         pricenow= float(liveprice['current_price'])
         alltimehigh = float(liveprice['ath'])
+        other['market_cap_rank'] = int(liveprice['market_cap_rank'])
         other['volume'] = float(liveprice['total_volume'])
     else:
         geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
@@ -117,6 +118,7 @@ def getData(config,other):
             sys.exit()
         liveprice= rawlivecoin['tickers'][theindex]
         pricenow= float(liveprice['last'])
+        other['market_cap_rank'] = 0 # For non-default the Rank does not show in the API, so leave blank
         other['volume'] = float(liveprice['converted_volume']['usd'])
         alltimehigh = 1000000.0   # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
     logging.info("Got Live Data From CoinGecko")
@@ -217,9 +219,9 @@ def updateDisplay(config,pricestack,other):
         tokenimage.save(tokenfilename)
     pricechangeraw = round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2)
     if pricechangeraw >= 100:
-        pricechange = str(%+d" % )+"%"
+        pricechange = str("%+d" % pricechangeraw)+"%"
     else:
-        pricechange = str("%+.2f" % )+"%"
+        pricechange = str("%+.2f" % pricechangeraw)+"%"
     if pricenow > 1000:
         pricenowstring =format(int(pricenow),",")
     else:
@@ -242,12 +244,17 @@ def updateDisplay(config,pricestack,other):
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))  
         draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
-#       uncomment the line below to show volume
-#       draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
+        # uncomment the line below to show volume
+        #draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
 
         writewrappedlines(image, symbolstring+pricenowstring,50,55,8,10,"Roboto-Medium" )
         image.paste(sparkbitmap,(80,40))
         image.paste(tokenimage, (0,10))
+                          
+        # uncomment the lines below to show rank
+        #if other['market_cap_rank'] > 0:
+        #    draw.text((10,105),"Rank: " + str("%d" % other['market_cap_rank']),font =font_date,fill = 0)
+        
         if (config['display']['trendingmode']==True) and not (str(whichcoin) in originalcoin_list):
             writewrappedlines(image, whichcoin,11,24,8,25,"PixelSplitter-Bold" )
 #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
