@@ -23,6 +23,9 @@ picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
+loglevel = logging.WARNING
+# To debug, uncomment this line
+#loglevel = logging.DEBUG
 
 def internet(hostname="google.com"):
     """
@@ -332,7 +335,7 @@ def fullupdate(config,lastcoinfetch):
         time.sleep(0.2)
     except Exception as e:
         message="Data pull/print problem"
-        image=beanaproblem(str(e))
+        image=beanaproblem(str(e)+" Line: "+e.__traceback__.tb_lineno))
         display_image(image)
         time.sleep(20)
         lastgrab=lastcoinfetch
@@ -359,8 +362,13 @@ def gettrending(config):
     config['ticker']['currency']=coinlist
     return config
 
-def main():    
-    logging.basicConfig(level=logging.DEBUG)
+def main(loglevel):    
+    loglevel = logging.WARNING
+    # To debug, uncomment this line
+    #loglevel = logging.DEBUG
+    
+    logging.basicConfig(level=loglevel)
+    
     try:
         logging.info("epd2in7 BTC Frame")
 #       Get the configuration from config.yaml
@@ -419,7 +427,11 @@ def main():
                     datapulled = True
     except IOError as e:
         logging.info(e)
-        image=beanaproblem(str(e))
+        image=beanaproblem(str(e)+" Line: "+e.__traceback__.tb_lineno)
+        display_image(image)
+    except Exception as e:
+        logging.info(e)
+        image=beanaproblem(str(e)+" Line: "+e.__traceback__.tb_lineno)
         display_image(image)  
     except KeyboardInterrupt:    
         logging.info("ctrl + c:")
@@ -430,4 +442,4 @@ def main():
         exit()
 
 if __name__ == '__main__':
-    main()
+    main(loglevel)
