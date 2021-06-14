@@ -244,16 +244,15 @@ def updateDisplay(config,pricestack,other):
         if other['ATH']==True:
             image.paste(ATHbitmap,(190,85))  
         draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
-        # uncomment the line below to show volume
-        #draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
+        if 'showvolume' in config['display'] and config['display']['showvolume']:
+            draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
 
         writewrappedlines(image, symbolstring+pricenowstring,50,55,8,10,"Roboto-Medium" )
         image.paste(sparkbitmap,(80,40))
         image.paste(tokenimage, (0,10))
                           
-        # uncomment the lines below to show rank
-        #if other['market_cap_rank'] > 0:
-        #    draw.text((10,105),"Rank: " + str("%d" % other['market_cap_rank']),font =font_date,fill = 0)
+        if 'showrank' in config['display'] and config['display']['showrank'] and other['market_cap_rank'] > 0:
+            draw.text((10,105),"Rank: " + str("%d" % other['market_cap_rank']),font =font_date,fill = 0)
         
         if (config['display']['trendingmode']==True) and not (str(whichcoin) in originalcoin_list):
             writewrappedlines(image, whichcoin,11,24,8,25,"PixelSplitter-Bold" )
