@@ -3,6 +3,8 @@ display:
   inverted: false
   orientation: 90
   trendingmode: false
+  showvolume: false
+  showrank: false
 ticker:
   currency: bitcoin,ethereum,cardano
   exchange: default
