@@ -23,9 +23,6 @@ picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
-loglevel = logging.WARNING
-# To debug, uncomment this line
-#loglevel = logging.DEBUG
 
 def internet(hostname="google.com"):
     """
