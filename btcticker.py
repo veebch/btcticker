@@ -332,7 +332,7 @@ def fullupdate(config,lastcoinfetch):
         time.sleep(0.2)
     except Exception as e:
         message="Data pull/print problem"
-        image=beanaproblem(str(e)+" Line: "+e.__traceback__.tb_lineno))
+        image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno)))
         display_image(image)
         time.sleep(20)
         lastgrab=lastcoinfetch
@@ -424,11 +424,11 @@ def main(loglevel):
                     datapulled = True
     except IOError as e:
         logging.info(e)
-        image=beanaproblem(str(e)+" Line: "+e.__traceback__.tb_lineno)
+        image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
         display_image(image)
     except Exception as e:
         logging.info(e)
-        image=beanaproblem(str(e)+" Line: "+e.__traceback__.tb_lineno)
+        image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
         display_image(image)  
     except KeyboardInterrupt:    
         logging.info("ctrl + c:")
