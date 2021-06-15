@@ -73,8 +73,7 @@ Update frequency can be changed in the config.yaml file (default is 600 seconds)
 
 # Configuration
 
-The file config.yaml contains a number of options that may be tweaked, including a boolean Trending Mode that will make the ticker display coins 
-that are currently flagged as trending (on coingecko) when set to **true**. Update frequency is the refresh time in seconds ~ 300 seems to be the sweet-spot for reliability.
+The file config.yaml contains a number of options that may be tweaked:
 
 ```
 display:
@@ -101,7 +100,7 @@ ticker:
 - **exchange**: default means use coingecko price, it can also be set to a specific exchange name such as **gdax** (coinbase), **binance** or **kraken** (full list on coingecko api [page](https://www.coingecko.com/api/documentations/v3)) 
 - **fiatcurrency**: currently only uses first one (unless you are cycling with buttons)
 - **sparklinedays**: Number of days of historical data appearing on chart
-- **updatefrequency**: (in seconds), how often to refresh the display 
+- **updatefrequency**: (in seconds), how often to refresh the display
 
 # Contributing
 
