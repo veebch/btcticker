@@ -73,7 +73,7 @@ Update frequency can be changed in the config.yaml file (default is 600 seconds)
 
 # Configuration
 
-The file config.yaml contains a number of options that may be tweaked:
+The file `config.yaml` contains a number of options that may be tweaked:
 
 ```
 display:
@@ -90,6 +90,8 @@ ticker:
   sparklinedays: 1 
   updatefrequency: 300
 ```
+
+## Values
 
 - **cycle**: switch the display between the listed currencies if set to **true**, display only the first on the list if set to **false**
 - **inverted**: Black text on grey background if **false**. Grey text on black background if **true**
