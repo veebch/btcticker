@@ -26,9 +26,7 @@ font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11
 
 def internet(hostname="google.com"):
     """
-    Host: 8.8.8.8 (google-public-dns-a.google.com)
-    OpenPort: 53/tcp
-    Service: domain (DNS/TCP)
+    Host: google.com
     """
     try:
         # see if we can resolve the host name -- tells us if there is
@@ -144,7 +142,6 @@ def getData(config,other):
 
 def beanaproblem(message):
 #   A visual cue that the wheels have fallen off
-#   Also, for client side errors, force a reboot
     thebean = Image.open(os.path.join(picdir,'thebean.bmp'))
     image = Image.new('L', (264, 176), 255)    # 255: clear the image with white
     draw = ImageDraw.Draw(image)
