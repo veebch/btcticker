@@ -88,6 +88,21 @@ def getData(config,other):
     starttime = endtime - 60*60*24*days_ago
     starttimeseconds = starttime
     endtimeseconds = endtime     
+    
+    geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
+    logging.info(geckourlhistorical)
+    rawtimeseries = requests.get(geckourlhistorical, headers=headers).json()
+    logging.info("Got price for the last "+str(days_ago)+" days from CoinGecko")
+    timeseriesarray = rawtimeseries['prices']
+    timeseriesstack = []
+    length=len (timeseriesarray)
+    i=0
+    while i < length:
+        timeseriesstack.append(float (timeseriesarray[i][1]))
+        i+=1
+    # A little pause before hiting the api again
+    time.sleep(1)
+        
     # Get the price 
     if config['ticker']['exchange']=='default':
         geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
@@ -120,19 +135,7 @@ def getData(config,other):
         other['volume'] = float(liveprice['converted_volume']['usd'])
         alltimehigh = 1000000.0   # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
     logging.info("Got Live Data From CoinGecko")
-    geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
-    logging.info(geckourlhistorical)
-    # A little pause before hiting the api again
-    time.sleep(5)
-    rawtimeseries = requests.get(geckourlhistorical, headers=headers).json()
-    logging.info("Got price for the last "+str(days_ago)+" days from CoinGecko")
-    timeseriesarray = rawtimeseries['prices']
-    timeseriesstack = []
-    length=len (timeseriesarray)
-    i=0
-    while i < length:
-        timeseriesstack.append(float (timeseriesarray[i][1]))
-        i+=1
+
     timeseriesstack.append(pricenow)
     if pricenow>alltimehigh:
         other['ATH']=True
