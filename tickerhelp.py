@@ -17,7 +17,7 @@ def symboltoid(code,melist):
 	lowercode=code.lower()
 	for i in range (len(melist)):
 		target=melist[i]['symbol']
-		idstring="I CANT FIND IT"
+		idstring="I cannot find it, please don't hate me"
 		if target==lowercode:
 			theindex=i
 			idstring=melist[i]['id']
