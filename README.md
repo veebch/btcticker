@@ -92,24 +92,17 @@ ticker:
   updatefrequency: 300
 ```
 
-**cycle**: switch the display between the listed currencies if set to **true**, display only the first on the list if set to **false**
-
-**inverted**: Black text on grey background if **false**. Grey text on black background if **true**
-**orientation**: Screen rotation in degrees , can take values **0,90,180,270**
-
-**trendingmode**: If **true**, it checks the 7 coins that coingecko lists as trending and also displays them (names are included in display)
-
-**showvolume, showrank**: **true** to include in display, **false** to omit
-
-**currency**: the coin(s) you would like to display (must be the coingecko id)
-
-**exchange**: default means use coingecko price, it can also be set to a specific exchange name (again, coingecko ID, listed on coingecko api [page]
+- **cycle**: switch the display between the listed currencies if set to **true**, display only the first on the list if set to **false**
+- **inverted**: Black text on grey background if **false**. Grey text on black background if **true**
+- **orientation**: Screen rotation in degrees , can take values **0,90,180,270**
+- **trendingmode**: If **true**, it checks the 7 coins that coingecko lists as trending and also displays them (names are included in display)
+- **showvolume, showrank**: **true** to include in display, **false** to omit
+- **currency**: the coin(s) you would like to display (must be the coingecko id)
+- **exchange**: default means use coingecko price, it can also be set to a specific exchange name (again, coingecko ID, listed on coingecko api [page]
 (https://www.coingecko.com/api/documentations/v3))
-**fiatcurrency**: currently only uses first one (unless you are cycling with buttons)
-
-**sparklinedays**: Number of days of historical data appearing on chart
-
-**updatefrequency**: (in seconds), how often to refresh the display 
+- **fiatcurrency**: currently only uses first one (unless you are cycling with buttons)
+- **sparklinedays**: Number of days of historical data appearing on chart
+- **updatefrequency**: (in seconds), how often to refresh the display 
 
 # Contributing
 
