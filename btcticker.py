@@ -23,6 +23,7 @@ picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
+headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
 
 def internet(hostname="google.com"):
     """
@@ -77,7 +78,6 @@ def writewrappedlines(img,text,fontsize=16,y_text=20,height=15, width=25,fontstr
     return img
 
 def getgecko(url):
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     try:
         geckojson=requests.get(url, headers=headers).json()
         connectfail=False
@@ -89,11 +89,10 @@ def getgecko(url):
 
 def getData(config,other):
     """
-    The function to grab the data - 
+    The function to grab the data (TO DO: need to test properly)
     """
     sleep_time = 10
     num_retries = 5
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     whichcoin,fiat=configtocoinandfiat(config)
     logging.info("Getting Data")
     days_ago=int(config['ticker']['sparklinedays'])   
@@ -217,7 +216,6 @@ def updateDisplay(config,pricestack,other):
     if config is re-written following adustment we could avoid passing the last two arguments as
     they will just be the first two items of their string in config
     """
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     with open(configfile) as f:
         originalconfig = yaml.load(f, Loader=yaml.FullLoader)
     originalcoin=originalconfig['ticker']['currency']
@@ -378,7 +376,6 @@ def configtocoinandfiat(config):
 
 def gettrending(config):
     print("ADD TRENDING")
-    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     coinlist=config['ticker']['currency']
     url="https://api.coingecko.com/api/v3/search/trending"
 #   Cycle must be true if trending mode is on
@@ -391,7 +388,7 @@ def gettrending(config):
     return config
 
 def main(loglevel=logging.WARNING):    
-    # To debug, uncomment this line
+    # To debug, uncomment this line (default is warning)
     # loglevel = logging.DEBUG
     
     logging.basicConfig(level=loglevel)
@@ -441,9 +438,9 @@ def main(loglevel=logging.WARNING):
                     config['ticker']['fiatcurrency']=",".join(fiat_list)
                     lastcoinfetch=fullupdate(config,lastcoinfetch)
                     configwrite(config)
-                if (time.time() - lastcoinfetch > (7+howmanycoins)*float(config['ticker']['updatefrequency'])) or (datapulled==False):
-                        if config['display']['trendingmode']==True:
-                            config=gettrending(config)
+                if config['display']['trendingmode']==True:
+                    if (time.time() - lastcoinfetch > (7+howmanycoins)*float(config['ticker']['updatefrequency'])) or (datapulled==False): 
+                        config=gettrending(config)
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
                     if config['display']['cycle']==True:
                         crypto_list = currencycycle(config['ticker']['currency'])
