@@ -160,11 +160,11 @@ def getData(config,other):
                 other['volume'] = float(liveprice['converted_volume']['usd'])
                 alltimehigh = 1000000.0   # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
                 logging.info("Got Live Data From CoinGecko")
-            timeseriesstack.append(pricenow)
-            if pricenow>alltimehigh:
-                other['ATH']=True
-            else:
-                other['ATH']=False
+                timeseriesstack.append(pricenow)
+                if pricenow>alltimehigh:
+                    other['ATH']=True
+                else:
+                    other['ATH']=False
         if connectfail==True:
             message="Trying again in ", sleep_time, " seconds"
             logging.info(message)
