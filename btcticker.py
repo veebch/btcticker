@@ -39,7 +39,7 @@ def internet(hostname="google.com"):
         return True
     except:
         logging.info("Google says No")
-        pass
+        time.sleep(1)
     return False
 
 def human_format(num):
@@ -76,10 +76,23 @@ def writewrappedlines(img,text,fontsize=16,y_text=20,height=15, width=25,fontstr
         numoflines+=1
     return img
 
+def getgecko(url):
+    headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+    try:
+        geckojson=requests.get(url, headers=headers).json()
+        connectfail=False
+    except requests.exceptions.RequestException as e:
+        logging.info("Issue with CoinGecko")
+        connectfail=True
+        geckojson={}
+    return geckojson, connectfail
+
 def getData(config,other):
     """
-    The function to update the ePaper display. There are two versions of the layout. One for portrait aspect ratio, one for landscape.
+    The function to grab the data
     """
+    sleep_time = 10
+    num_retries = 5
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
     whichcoin,fiat=configtocoinandfiat(config)
     logging.info("Getting Data")
@@ -87,60 +100,79 @@ def getData(config,other):
     endtime = int(time.time())
     starttime = endtime - 60*60*24*days_ago
     starttimeseconds = starttime
-    endtimeseconds = endtime     
-    
+    endtimeseconds = endtime 
     geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
     logging.info(geckourlhistorical)
-    rawtimeseries = requests.get(geckourlhistorical, headers=headers).json()
-    logging.info("Got price for the last "+str(days_ago)+" days from CoinGecko")
-    timeseriesarray = rawtimeseries['prices']
-    timeseriesstack = []
-    length=len (timeseriesarray)
-    i=0
-    while i < length:
-        timeseriesstack.append(float (timeseriesarray[i][1]))
-        i+=1
-    # A little pause before hiting the api again
-    time.sleep(1)
-        
-    # Get the price 
-    if config['ticker']['exchange']=='default':
-        geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
-        logging.info(geckourl)
-        rawlivecoin = requests.get(geckourl, headers=headers).json()
-        logging.info(rawlivecoin[0])   
-        liveprice = rawlivecoin[0]
-        pricenow= float(liveprice['current_price'])
-        alltimehigh = float(liveprice['ath'])
-        other['market_cap_rank'] = int(liveprice['market_cap_rank'])
-        other['volume'] = float(liveprice['total_volume'])
-    else:
-        geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
-        logging.info(geckourl)
-        rawlivecoin = requests.get(geckourl, headers=headers).json()
-        theindex=-1
-        upperfiat=fiat.upper()
-        for i in range (len(rawlivecoin['tickers'])):
-            target=rawlivecoin['tickers'][i]['target']
-            if target==upperfiat:
-                theindex=i
-                logging.info("Found "+upperfiat+" at index " + str(i))
-#       if UPPERFIAT is not listed as a target theindex==-1 and it is time to go to sleep
-        if  theindex==-1:
-            logging.info("The exchange is not listing in "+upperfiat+". Misconfigured - shutting down script")
-            sys.exit()
-        liveprice= rawlivecoin['tickers'][theindex]
-        pricenow= float(liveprice['last'])
-        other['market_cap_rank'] = 0 # For non-default the Rank does not show in the API, so leave blank
-        other['volume'] = float(liveprice['converted_volume']['usd'])
-        alltimehigh = 1000000.0   # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
-    logging.info("Got Live Data From CoinGecko")
-
-    timeseriesstack.append(pricenow)
-    if pricenow>alltimehigh:
-        other['ATH']=True
-    else:
-        other['ATH']=False
+    for x in range(0, num_retries):   
+        rawtimeseries, connectfail=  getgecko(geckourlhistorical)
+        if connectfail== True:
+            pass
+        else:
+            logging.info("Got price for the last "+str(days_ago)+" days from CoinGecko")
+            timeseriesarray = rawtimeseries['prices']
+            timeseriesstack = []
+            length=len (timeseriesarray)
+            i=0
+            while i < length:
+                timeseriesstack.append(float (timeseriesarray[i][1]))
+                i+=1
+            # A little pause before hiting the api again
+            time.sleep(1)          
+            # Get the price 
+        if config['ticker']['exchange']=='default':
+            geckourl = "https://api.coingecko.com/api/v3/coins/markets?vs_currency="+fiat+"&ids="+whichcoin
+            logging.info(geckourl)
+            rawlivecoin , connectfail = getgecko(geckourl)
+            if connectfail==True:
+                pass
+            else:
+                logging.info(rawlivecoin[0])   
+                liveprice = rawlivecoin[0]
+                pricenow= float(liveprice['current_price'])
+                alltimehigh = float(liveprice['ath'])
+                other['market_cap_rank'] = int(liveprice['market_cap_rank'])
+                other['volume'] = float(liveprice['total_volume'])
+                timeseriesstack.append(pricenow)
+                if pricenow>alltimehigh:
+                    other['ATH']=True
+                else:
+                    other['ATH']=False
+        else:
+            geckourl= "https://api.coingecko.com/api/v3/exchanges/"+config['ticker']['exchange']+"/tickers?coin_ids="+whichcoin+"&include_exchange_logo=false"
+            logging.info(geckourl)
+            rawlivecoin, connectfail = getgecko(geckourl)
+            if connectfail==True:
+                pass
+            else:
+                theindex=-1
+                upperfiat=fiat.upper()
+                for i in range (len(rawlivecoin['tickers'])):
+                    target=rawlivecoin['tickers'][i]['target']
+                    if target==upperfiat:
+                        theindex=i
+                        logging.info("Found "+upperfiat+" at index " + str(i))
+        #       if UPPERFIAT is not listed as a target theindex==-1 and it is time to go to sleep
+                if  theindex==-1:
+                    logging.info("The exchange is not listing in "+upperfiat+". Misconfigured - shutting down script")
+                    sys.exit()
+                liveprice= rawlivecoin['tickers'][theindex]
+                pricenow= float(liveprice['last'])
+                other['market_cap_rank'] = 0 # For non-default the Rank does not show in the API, so leave blank
+                other['volume'] = float(liveprice['converted_volume']['usd'])
+                alltimehigh = 1000000.0   # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
+                logging.info("Got Live Data From CoinGecko")
+            timeseriesstack.append(pricenow)
+            if pricenow>alltimehigh:
+                other['ATH']=True
+            else:
+                other['ATH']=False
+        if connectfail==True:
+            message="Trying again in ", sleep_time, " seconds"
+            logging.info(message)
+            sleep(sleep_time)  # wait before trying to fetch the data again
+            sleep_time *= 2  # exponential backoff
+        else:
+            break
     return timeseriesstack, other
 
 def beanaproblem(message):
@@ -149,7 +181,7 @@ def beanaproblem(message):
     image = Image.new('L', (264, 176), 255)    # 255: clear the image with white
     draw = ImageDraw.Draw(image)
     image.paste(thebean, (60,45))
-    draw.text((95,15),str(time.strftime("%H:%M %a %d %b %Y")),font =font_date,fill = 0)
+    draw.text((95,15),str(time.strftime("%-H:%M %p, %-d %b %Y")),font =font_date,fill = 0)
     writewrappedlines(image, "Issue:"+message)
 #    draw.text((15,150),message, font=font_date,fill = 0)
     thebean.close()
@@ -331,7 +363,7 @@ def fullupdate(config,lastcoinfetch):
         time.sleep(0.2)
     except Exception as e:
         message="Data pull/print problem"
-        image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno)))
+        image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
         display_image(image)
         time.sleep(20)
         lastgrab=lastcoinfetch
@@ -358,10 +390,9 @@ def gettrending(config):
     config['ticker']['currency']=coinlist
     return config
 
-def main(loglevel):    
-    loglevel = logging.WARNING
+def main(loglevel=logging.WARNING):    
     # To debug, uncomment this line
-    #loglevel = logging.DEBUG
+    loglevel = logging.DEBUG
     
     logging.basicConfig(level=loglevel)
     
@@ -376,7 +407,6 @@ def main(loglevel):
         thekeys=initkeys()
 #       Note how many coins in original config file
         howmanycoins=len(config['ticker']['currency'].split(","))
-        print("HOWMANY="+str(howmanycoins))
 #       Note that there has been no data pull yet
         datapulled=False 
 #       Time of start
