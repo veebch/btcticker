@@ -89,7 +89,7 @@ def getgecko(url):
 
 def getData(config,other):
     """
-    The function to grab the data
+    The function to grab the data - 
     """
     sleep_time = 10
     num_retries = 5
@@ -392,7 +392,7 @@ def gettrending(config):
 
 def main(loglevel=logging.WARNING):    
     # To debug, uncomment this line
-    loglevel = logging.DEBUG
+    # loglevel = logging.DEBUG
     
     logging.basicConfig(level=loglevel)
     
