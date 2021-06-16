@@ -129,7 +129,12 @@ def getData(config,other):
                 liveprice = rawlivecoin[0]
                 pricenow= float(liveprice['current_price'])
                 alltimehigh = float(liveprice['ath'])
-                other['market_cap_rank'] = int(liveprice['market_cap_rank'])
+                # Quick workaround for error being thrown for obscure coins. TO DO: Examine further
+                try:
+                    other['market_cap_rank'] = int(liveprice['market_cap_rank'])
+                except:
+                    config['display']['showrank']=False
+                    other['market_cap_rank'] = 0
                 other['volume'] = float(liveprice['total_volume'])
                 timeseriesstack.append(pricenow)
                 if pricenow>alltimehigh:
@@ -349,7 +354,6 @@ def fullupdate(config,lastcoinfetch):
         makeSpark(pricestack)
         # update display
         image=updateDisplay(config, pricestack, other)
-#          image=beanaproblem("Uncomment me to check how well the word wrapping works on error messages")
         display_image(image)
         lastgrab=time.time()
         time.sleep(0.2)
