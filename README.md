@@ -106,7 +106,7 @@ ticker:
 
 ## Trending mode
 
-When you activate trending mode (by setting to true in the config file, in addition to your coins, the ticker will cycle through 7 coins that are currently listing as trending on coingecko (see photo below).
+When you activate trending mode (by setting to true in the config file, in addition to your coins, the ticker will cycle through 7 coins that are currently listing as trending on CoinGecko (see photo below).
 
 ![Action Shot](/images/actionshot/Trending.jpg)
 
