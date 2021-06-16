@@ -104,6 +104,12 @@ ticker:
 - **sparklinedays**: Number of days of historical data appearing on chart
 - **updatefrequency**: (in seconds), how often to refresh the display
 
+## Trending mode
+
+When you activate trending mode (by setting to true in the config file, in addition to your coins, the ticker will cycle through 7 coins that are currently listing as trending on coingecko.
+
+![Action Shot](/images/Trending.jpg)
+
 # Contributing
 
 To contribute, please fork the repository and use a feature branch. Pull requests are welcome.
