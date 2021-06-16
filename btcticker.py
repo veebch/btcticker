@@ -181,12 +181,7 @@ def beanaproblem(message):
     draw = ImageDraw.Draw(image)
     image.paste(thebean, (60,45))
     draw.text((95,15),str(time.strftime("%-H:%M %p, %-d %b %Y")),font =font_date,fill = 0)
-    writewrappedlines(image, "Issue:"+message)
-#    draw.text((15,150),message, font=font_date,fill = 0)
-    thebean.close()
-#   Reload last good config.yaml
-    with open(configfile) as f:
-        config = yaml.load(f, Loader=yaml.FullLoader)
+    writewrappedlines(image, "Issue: "+message)
     return image
 
 def makeSpark(pricestack):
@@ -280,14 +275,13 @@ def updateDisplay(config,pricestack,other):
         writewrappedlines(image, symbolstring+pricenowstring,50,55,8,10,"Roboto-Medium" )
         image.paste(sparkbitmap,(80,40))
         image.paste(tokenimage, (0,10))
-                          
-        if 'showrank' in config['display'] and config['display']['showrank'] and other['market_cap_rank'] > 0:
+        # Don't show rank for #1 coin, #1 doesn't need to show off                  
+        if 'showrank' in config['display'] and config['display']['showrank'] and other['market_cap_rank'] > 1:
             draw.text((10,105),"Rank: " + str("%d" % other['market_cap_rank']),font =font_date,fill = 0)
-        
         if (config['display']['trendingmode']==True) and not (str(whichcoin) in originalcoin_list):
-            writewrappedlines(image, whichcoin,11,24,8,25,"PixelSplitter-Bold" )
+            draw.text((95,28),whichcoin,font =font_date,fill = 0)
 #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-        draw.text((90,15),str(time.strftime("%-I:%M %p, %d %b %Y")),font =font_date,fill = 0)
+        draw.text((95,15),str(time.strftime("%-I:%M %p, %d %b %Y")),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in older waveshare libraries Uncomment line below if needed
@@ -389,7 +383,7 @@ def gettrending(config):
 
 def main(loglevel=logging.WARNING):    
     # To debug, uncomment this line (default is warning)
-    # loglevel = logging.DEBUG
+    loglevel = logging.DEBUG
     
     logging.basicConfig(level=loglevel)
     
@@ -400,6 +394,7 @@ def main(loglevel=logging.WARNING):
             config = yaml.load(f, Loader=yaml.FullLoader)
         logging.info(config)
         config['display']['orientation']=int(config['display']['orientation'])
+        staticcoins=config['ticker']['currency']
 #       Get the buttons for 2.7in EPD set up
         thekeys=initkeys()
 #       Note how many coins in original config file
@@ -439,10 +434,13 @@ def main(loglevel=logging.WARNING):
                     lastcoinfetch=fullupdate(config,lastcoinfetch)
                     configwrite(config)
                 if config['display']['trendingmode']==True:
-                    if (time.time() - lastcoinfetch > (7+howmanycoins)*float(config['ticker']['updatefrequency'])) or (datapulled==False): 
+                    # The hard-coded 7 is for the number of trending coins to show. Consider revising
+                    if (time.time() - lastcoinfetch > (7+howmanycoins)*float(config['ticker']['updatefrequency'])) or (datapulled==False):
+                        # Reset coin list to static (non trending coins from config file)
+                        config['ticker']['currency']=staticcoins
                         config=gettrending(config)
                 if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
-                    if config['display']['cycle']==True:
+                    if config['display']['cycle']==True and (datapulled==True):
                         crypto_list = currencycycle(config['ticker']['currency'])
                         config['ticker']['currency']=",".join(crypto_list)
                         # configwrite(config)
