@@ -173,7 +173,7 @@ def getData(config,other):
         if connectfail==True:
             message="Trying again in ", sleep_time, " seconds"
             logging.info(message)
-            sleep(sleep_time)  # wait before trying to fetch the data again
+            time.sleep(sleep_time)  # wait before trying to fetch the data again
             sleep_time *= 2  # exponential backoff
         else:
             break
