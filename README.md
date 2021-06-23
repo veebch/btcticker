@@ -12,13 +12,13 @@ A few minutes work gives you a desk ornament that will tastefully and unobtrusiv
 
 ## Prerequisites
 
-(These instructions assume that your Raspberry Pi is already connected to the Internet, happily running pip and has Python3 installed)
+(These instructions assume that your Raspberry Pi is already connected to the Internet, happily running `pip` and has `python3` installed)
 
-If you are running the Pi headless, connect to your Raspberry Pi using ssh.
+If you are running the Pi headless, connect to your Raspberry Pi using `ssh`.
 
 Install the Waveshare Python module following the instructions on their [Wiki](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT) under the tab Hardware/Software setup.
 
-(To install the waveshare_epd python module, you need to run the setup file in their repository - also, be sure not to install Jetson libraries on a Pi)
+(To install the waveshare_epd python module, you need to run the setup file in their repository - also, be sure **not** to install Jetson libraries on a Pi)
 
 ```
 cd e-Paper/RaspberryPi_JetsonNano/python
@@ -103,6 +103,12 @@ ticker:
 - **fiatcurrency**: currently only uses first one (unless you are cycling with buttons)
 - **sparklinedays**: Number of days of historical data appearing on chart
 - **updatefrequency**: (in seconds), how often to refresh the display
+
+## Trending mode
+
+When you activate trending mode (by setting to true in the config file, in addition to your coins, the ticker will cycle through 7 coins that are currently listing as trending on CoinGecko (see photo below).
+
+![Action Shot](/images/actionshot/Trending.jpg)
 
 # Contributing
 
