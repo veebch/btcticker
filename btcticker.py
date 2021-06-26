@@ -407,49 +407,51 @@ def main(loglevel=logging.WARNING):
         datapulled=False 
 #       Time of start
         lastcoinfetch = time.time()
+        while internet() ==False:
+            logging.info("Waiting for internet")
+            time.sleep(1)
         while True:
 #           Poll Keystates
             key1state = GPIO.input(thekeys[0])
             key2state = GPIO.input(thekeys[1])
             key3state = GPIO.input(thekeys[2])
             key4state = GPIO.input(thekeys[3])
-#           If there is an internet connection, respond to the keypresses
-            if internet():                
-                if key1state == False:
-                    logging.info('Cycle currencies')
+                
+            if key1state == False:
+                logging.info('Cycle currencies')
+                crypto_list = currencycycle(config['ticker']['currency'])
+                config['ticker']['currency']=",".join(crypto_list)
+                lastcoinfetch=fullupdate(config, lastcoinfetch)
+                configwrite(config) 
+            if key2state == False:
+                logging.info('Rotate - 90')
+                config['display']['orientation'] = (config['display']['orientation']+90) % 360
+                lastcoinfetch=fullupdate(config,lastcoinfetch)
+                configwrite(config)
+            if key3state == False:
+                logging.info('Invert Display')
+                config['display']['inverted'] = not config['display']['inverted']
+                lastcoinfetch=fullupdate(config,lastcoinfetch)
+                configwrite(config)
+            if key4state == False:
+                logging.info('Cycle fiat')
+                fiat_list = currencycycle(config['ticker']['fiatcurrency'])
+                config['ticker']['fiatcurrency']=",".join(fiat_list)
+                lastcoinfetch=fullupdate(config,lastcoinfetch)
+                configwrite(config)
+            if config['display']['trendingmode']==True:
+                # The hard-coded 7 is for the number of trending coins to show. Consider revising
+                if (time.time() - lastcoinfetch > (7+howmanycoins)*float(config['ticker']['updatefrequency'])) or (datapulled==False):
+                    # Reset coin list to static (non trending coins from config file)
+                    config['ticker']['currency']=staticcoins
+                    config=gettrending(config)
+            if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
+                if config['display']['cycle']==True and (datapulled==True):
                     crypto_list = currencycycle(config['ticker']['currency'])
                     config['ticker']['currency']=",".join(crypto_list)
-                    lastcoinfetch=fullupdate(config, lastcoinfetch)
-                    configwrite(config) 
-                if key2state == False:
-                    logging.info('Rotate - 90')
-                    config['display']['orientation'] = (config['display']['orientation']+90) % 360
-                    lastcoinfetch=fullupdate(config,lastcoinfetch)
-                    configwrite(config)
-                if key3state == False:
-                    logging.info('Invert Display')
-                    config['display']['inverted'] = not config['display']['inverted']
-                    lastcoinfetch=fullupdate(config,lastcoinfetch)
-                    configwrite(config)
-                if key4state == False:
-                    logging.info('Cycle fiat')
-                    fiat_list = currencycycle(config['ticker']['fiatcurrency'])
-                    config['ticker']['fiatcurrency']=",".join(fiat_list)
-                    lastcoinfetch=fullupdate(config,lastcoinfetch)
-                    configwrite(config)
-                if config['display']['trendingmode']==True:
-                    # The hard-coded 7 is for the number of trending coins to show. Consider revising
-                    if (time.time() - lastcoinfetch > (7+howmanycoins)*float(config['ticker']['updatefrequency'])) or (datapulled==False):
-                        # Reset coin list to static (non trending coins from config file)
-                        config['ticker']['currency']=staticcoins
-                        config=gettrending(config)
-                if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
-                    if config['display']['cycle']==True and (datapulled==True):
-                        crypto_list = currencycycle(config['ticker']['currency'])
-                        config['ticker']['currency']=",".join(crypto_list)
-                        # configwrite(config)
-                    lastcoinfetch=fullupdate(config,lastcoinfetch)
-                    datapulled = True
+                    # configwrite(config)
+                lastcoinfetch=fullupdate(config,lastcoinfetch)
+                datapulled = True
     except IOError as e:
         logging.info(e)
         image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
