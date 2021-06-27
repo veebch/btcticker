@@ -209,6 +209,7 @@ def makeSpark(pricestack):
     imgspk.save(file_out) 
     plt.clf() # Close plot to prevent memory error
     ax.cla() # Close axis to prevent memory error
+    imgspk.close()
     return
 
 def updateDisplay(config,pricestack,other):
