@@ -14,7 +14,6 @@ import urllib, json
 import matplotlib as mpl
 mpl.use('Agg')
 import matplotlib.pyplot as plt
-import numpy as np
 import yaml 
 import socket
 import textwrap
@@ -191,8 +190,9 @@ def beanaproblem(message):
 
 def makeSpark(pricestack):
     # Draw and save the sparkline that represents historical data
-    # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)    
-    x = pricestack-np.mean(pricestack)
+    # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)
+    themean= sum(pricestack)/float(len(pricestack))
+    x = [xx - themean for xx in pricestack] 
     fig, ax = plt.subplots(1,1,figsize=(10,3))
     plt.plot(x, color='k', linewidth=6)
     plt.plot(len(x)-1, x[-1], color='r', marker='o')
@@ -209,6 +209,7 @@ def makeSpark(pricestack):
     imgspk.save(file_out) 
     plt.clf() # Close plot to prevent memory error
     ax.cla() # Close axis to prevent memory error
+    return
 
 def updateDisplay(config,pricestack,other):
     """   
@@ -409,7 +410,6 @@ def main(loglevel=logging.WARNING):
         lastcoinfetch = time.time()
         while internet() ==False:
             logging.info("Waiting for internet")
-            time.sleep(1)
         while True:
 #           Poll Keystates
             key1state = GPIO.input(thekeys[0])
