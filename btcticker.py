@@ -409,6 +409,12 @@ def main(loglevel=logging.WARNING):
         datapulled=False 
 #       Time of start
         lastcoinfetch = time.time()
+#       Quick Sanity check on update frequency, waveshare says no faster than 180 seconds
+        if float(config['ticker']['updatefrequency'])<180:
+            logging.info("Throttling update frequency to 180 seconds")  
+            updatefrequency=180.0
+        else:
+            updatefrequency=float(config['ticker']['updatefrequency'])
         while internet() ==False:
             logging.info("Waiting for internet")
         while True:
@@ -442,11 +448,11 @@ def main(loglevel=logging.WARNING):
                 configwrite(config)
             if config['display']['trendingmode']==True:
                 # The hard-coded 7 is for the number of trending coins to show. Consider revising
-                if (time.time() - lastcoinfetch > (7+howmanycoins)*float(config['ticker']['updatefrequency'])) or (datapulled==False):
+                if (time.time() - lastcoinfetch > (7+howmanycoins)*updatefrequency) or (datapulled==False):
                     # Reset coin list to static (non trending coins from config file)
                     config['ticker']['currency']=staticcoins
                     config=gettrending(config)
-            if (time.time() - lastcoinfetch > float(config['ticker']['updatefrequency'])) or (datapulled==False):
+            if (time.time() - lastcoinfetch > updatefrequency) or (datapulled==False):
                 if config['display']['cycle']==True and (datapulled==True):
                     crypto_list = currencycycle(config['ticker']['currency'])
                     config['ticker']['currency']=",".join(crypto_list)
