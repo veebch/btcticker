@@ -236,7 +236,13 @@ def updateDisplay(config,pricestack,other):
 #   Check for token image, if there isn't one, get on off coingecko, resize it and pop it on a white background
     if os.path.isfile(tokenfilename):
         logging.info("Getting token Image from Image directory")
-        tokenimage = Image.open(tokenfilename).convert("RGBA")
+    #   if there is a file already there, there *might* be an inverted version to make for a nicer display of the symbol on a black BG
+        currencyinvertedthumbnail= 'currency/'+whichcoin+'INV.bmp'
+        invertedtokenfilename = os.path.join(picdir,currencyinvertedthumbnail)
+        if os.path.isfile(invertedtokenfilename) and config['display']['inverted'] == True:
+            tokenimage = Image.open(invertedtokenfilename).convert("RGBA") 
+        else:
+            tokenimage = Image.open(tokenfilename).convert("RGBA")
     else:
         logging.info("Getting token Image from Coingecko")
         tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
