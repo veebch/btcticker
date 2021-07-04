@@ -229,20 +229,17 @@ def updateDisplay(config,pricestack,other):
     if fiat=="jpy" or fiat=="cny":
         symbolstring="¥"
     pricenow = pricestack[-1]
-    currencythumbnail= 'currency/'+whichcoin+'.bmp'
+    if config['display']['inverted'] == True:
+        currencythumbnail= 'currency/'+whichcoin+'INV.bmp'
+    else:
+        currencythumbnail= 'currency/'+whichcoin+'.bmp'
     tokenfilename = os.path.join(picdir,currencythumbnail)
     sparkbitmap = Image.open(os.path.join(picdir,'spark.bmp'))
     ATHbitmap= Image.open(os.path.join(picdir,'ATH.bmp'))
 #   Check for token image, if there isn't one, get on off coingecko, resize it and pop it on a white background
     if os.path.isfile(tokenfilename):
         logging.info("Getting token Image from Image directory")
-    #   if there is a file already there, there *might* be an inverted version to make for a nicer display of the symbol on a black BG
-        currencyinvertedthumbnail= 'currency/'+whichcoin+'INV.bmp'
-        invertedtokenfilename = os.path.join(picdir,currencyinvertedthumbnail)
-        if os.path.isfile(invertedtokenfilename) and config['display']['inverted'] == True:
-            tokenimage = Image.open(invertedtokenfilename).convert("RGBA") 
-        else:
-            tokenimage = Image.open(tokenfilename).convert("RGBA")
+        tokenimage = Image.open(tokenfilename).convert("RGBA")
     else:
         logging.info("Getting token Image from Coingecko")
         tokenimageurl = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
@@ -250,6 +247,12 @@ def updateDisplay(config,pricestack,other):
         tokenimage = Image.open(requests.get(rawimage['image']['large'], headers = headers, stream=True).raw).convert("RGBA")
         resize = 100,100
         tokenimage.thumbnail(resize, Image.ANTIALIAS)
+        # If inverted is true, invert the token symbol before placing if on the white BG so that it is uninverted at the end - this will make things more 
+        # legible on a black display
+        if config['display']['inverted'] == True:
+            #PIL doesnt like to invert binary images, so convert to RGB, invert and then convert back to RGBA
+            tokenimage = ImageOps.invert( tokenimage.convert('RGB') )
+            tokenimage = tokenimage.convert('RGBA')
         new_image = Image.new("RGBA", (120,120), "WHITE") # Create a white rgba background with a 10 pixel border
         new_image.paste(tokenimage, (10, 10), tokenimage)   
         tokenimage=new_image
