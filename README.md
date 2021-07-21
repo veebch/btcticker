@@ -44,7 +44,7 @@ Install the required Python modules
 python3 -m pip install -r requirements.txt
 ```
 
-# Add Autostart
+## Add Autostart
 
 ```
 sudo cat <<EOF > /etc/systemd/system/btcticker.service
