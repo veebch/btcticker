@@ -16,49 +16,60 @@ A few minutes work gives you a desk ornament that will tastefully and unobtrusiv
 
 If you are running the Pi headless, connect to your Raspberry Pi using `ssh`.
 
-Install the Waveshare Python module following the instructions on their [Wiki](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT) under the tab Hardware/Software setup.
+Update and install necessary packages 
+```
+sudo apt-get update
+sudo apt-get install -y python3-pip mc git libopenjp2-7
+sudo apt-get install -y libatlas-base-dev python3-pil
+```
 
-(To install the waveshare_epd python module, you need to run the setup file in their repository - also, be sure **not** to install Jetson libraries on a Pi)
+Enable spi (0=on 1=off)
 
 ```
-cd e-Paper/RaspberryPi_JetsonNano/python
-sudo python3 setup.py install
+sudo raspi-config nonint do_i2c 0
 ```
-## Install & Run
 
-Copy the files from this repository onto the Pi, or clone using:
+Now clone the required software (Waveshare libraries and this script)
 
 ```
 cd ~
+git clone https://github.com/waveshare/e-Paper
 git clone https://github.com/llvllch/btcticker.git
 cd btcticker
+cp -r /home/pi/e-Paper/RaspberryPi_JetsonNano/python/lib/waveshare_epd .
+rm -rf /home/pi/e-Paper
 ```
-
-
-Install the required modules using pip:
-
+Install the required Python modules
 ```
 python3 -m pip install -r requirements.txt
-```
 
-If you'd like the script to persist once you close the session, use [screen](https://linuxize.com/post/how-to-use-linux-screen/).
-
-Start a screen session:
+# Add Autostart
 
 ```
-screen bash
+sudo cat <<EOF > /etc/systemd/system/btcticker.service
+[Unit]
+Description=btcticker
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -u /home/pi/btcticker/btcticker.py
+WorkingDirectory=/home/pi/btcticker/
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+User=pi
+
+[Install]
+WantedBy=multi-user.target
+EOF
 ```
+Now, simply enable the service you just made and reboot
+```  
+sudo systemctl enable btcticker.service
+sudo systemctl start btcticker.service
 
-Run the script using:
-
+reboot
 ```
-python3 btcticker.py
-```
-
-Detatch from the screen session using CTRL-A followed by CTRL-D
-
-The ticker will now pull data every 10 minutes and update the display. 
-
 # Interface
 
 The ePaper is slow. There is a lag of a few seconds between button press and a change to the display. 
