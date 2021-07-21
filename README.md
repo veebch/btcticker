@@ -121,18 +121,7 @@ To contribute, please fork the repository and use a feature branch. Pull request
 
 # Troubleshooting
 
-Some people have had errors on a clean install of Rasbian Lite on Pi. If you do, run:
-
-```
-sudo apt-get install libopenjp2-7
-sudo apt-get install libqt5gui5
-sudo apt-get install python-scipy
-sudo apt install libatlas-base-dev
-```
-
-and re-run the script.
-
-If the unit is freezing, try switching to another power supply. 
+Some people have had errors on a clean install of Rasbian Lite on Pi. [This post](https://github.com/llvllch/btcticker/issues/67#issuecomment-878056138) seems to fix the problem (TO DO: Incorporate this into Readme).
 
 # Licencing
 
