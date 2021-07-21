@@ -16,6 +16,8 @@ A few minutes work gives you a desk ornament that will tastefully and unobtrusiv
 
 If you are running the Pi headless, connect to your Raspberry Pi using `ssh`.
 
+Connect to your ticker over ssh
+
 Update and install necessary packages 
 ```
 sudo apt-get update
