@@ -42,6 +42,7 @@ rm -rf /home/pi/e-Paper
 Install the required Python modules
 ```
 python3 -m pip install -r requirements.txt
+```
 
 # Add Autostart
 
