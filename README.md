@@ -131,9 +131,6 @@ To contribute, please fork the repository and use a feature branch. Pull request
 - Video of the unit working [here](https://youtu.be/DNLUmJb7Mj8)
 - A fully assembled ticker or frames can be obtained at [veeb.ch](http://www.veeb.ch/)
 
-# Troubleshooting
-
-Some people have had errors on a clean install of Rasbian Lite on Pi. [This post](https://github.com/llvllch/btcticker/issues/67#issuecomment-878056138) seems to fix the problem (TO DO: Incorporate this into Readme).
 
 # Licencing
 
