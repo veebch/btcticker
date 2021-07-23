@@ -26,7 +26,7 @@ sudo apt-get install -y libatlas-base-dev python3-pil
 Enable spi (0=on 1=off)
 
 ```
-sudo raspi-config nonint do_i2c 0
+sudo raspi-config nonint do_spi 0
 ```
 
 Now clone the required software (Waveshare libraries and this script)
