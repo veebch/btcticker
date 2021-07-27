@@ -418,10 +418,10 @@ def main(loglevel=logging.WARNING):
         datapulled=False 
 #       Time of start
         lastcoinfetch = time.time()
-#       Quick Sanity check on update frequency, waveshare says no faster than 180 seconds
-        if float(config['ticker']['updatefrequency'])<180:
-            logging.info("Throttling update frequency to 180 seconds")  
-            updatefrequency=180.0
+#       Quick Sanity check on update frequency, waveshare says no faster than 180 seconds, but we'll make 60 the lower limit
+        if float(config['ticker']['updatefrequency'])<60:
+            logging.info("Throttling update frequency to 60 seconds")  
+            updatefrequency=60.0
         else:
             updatefrequency=float(config['ticker']['updatefrequency'])
         while internet() ==False:
