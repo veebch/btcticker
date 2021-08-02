@@ -83,7 +83,7 @@ This only applies if you are going to control configuration via the buttons on t
 
 The ePaper is slow. There is a lag of a few seconds between button press and a change to the display. 
 
-Here's what the buttons do:
+Here's what each of the buttons do:
 - Button 1: Cycle through the cryptocurrencies listed in config.yaml
 - Button 2: Rotate Display -90 degrees
 - Button 3: Invert Display
