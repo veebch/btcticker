@@ -37,6 +37,9 @@ Now clone the required software (Waveshare libraries and this script)
 cd ~
 git clone https://github.com/waveshare/e-Paper
 git clone https://github.com/llvllch/btcticker.git
+```
+Move to the `btcticker` directory, copy the example config to `config.yaml` and move the required part of the waveshare directory to the `btcticker` directory
+```
 cd btcticker
 cp config_example.yaml config.yaml
 cp -r /home/pi/e-Paper/RaspberryPi_JetsonNano/python/lib/waveshare_epd .
