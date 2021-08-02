@@ -93,7 +93,7 @@ Update frequency can be changed in the configuration file (default is 300 second
 
 # Configuration vi config file
 
-The file `config.yaml` (the copy of `config_example.yaml`) contains a number of options that may be tweaked:
+The file `config.yaml` (the copy of `config_example.yaml` you made earlier) contains a number of options that may be tweaked:
 
 ```
 display:
