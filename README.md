@@ -38,6 +38,7 @@ cd ~
 git clone https://github.com/waveshare/e-Paper
 git clone https://github.com/llvllch/btcticker.git
 cd btcticker
+cp config_example.yaml config.yaml
 cp -r /home/pi/e-Paper/RaspberryPi_JetsonNano/python/lib/waveshare_epd .
 rm -rf /home/pi/e-Paper
 ```
