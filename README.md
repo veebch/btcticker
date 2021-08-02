@@ -53,7 +53,7 @@ python3 -m pip install -r requirements.txt
 ## Add Autostart
 
 ```
-sudo cat <<EOF > /etc/systemd/system/btcticker.service
+cat <<EOF | sudo tee /etc/systemd/system/btcticker.service
 [Unit]
 Description=btcticker
 After=network.target
