@@ -80,6 +80,7 @@ reboot
 # Control via buttons
 
 This only applies if you are going to control configuration via the buttons on the board.
+
 The ePaper is slow. There is a lag of a few seconds between button press and a change to the display. 
 
 Here's what the buttons do:
