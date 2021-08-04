@@ -75,7 +75,7 @@ Now, simply enable the service you just made and reboot
 sudo systemctl enable btcticker.service
 sudo systemctl start btcticker.service
 
-reboot
+sudo reboot
 ```
 # Control via buttons
 
