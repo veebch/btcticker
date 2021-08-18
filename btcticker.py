@@ -24,6 +24,7 @@ fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googl
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)),'config.yaml')
 font_date = ImageFont.truetype(os.path.join(fontdir,'PixelSplitter-Bold.ttf'),11)
 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
+button_pressed = 0
 
 def internet(hostname="google.com"):
     """
@@ -327,15 +328,14 @@ def display_image(img):
     epd.Init_4Gray()
     epd.display_4Gray(epd.getbuffer_4Gray(img))
     epd.sleep()
-    initkeys()
     return
-
 
 def initkeys():
     key1 = 5
     key2 = 6
     key3 = 13
     key4 = 19
+    logging.debug('Setup GPIO keys')
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(key1, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     GPIO.setup(key2, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -343,6 +343,53 @@ def initkeys():
     GPIO.setup(key4, GPIO.IN, pull_up_down=GPIO.PUD_UP)
     thekeys=[key1,key2,key3,key4]
     return thekeys
+
+def addkeyevent(thekeys):
+#   Add keypress events
+    logging.debug('Add key events')
+    btime = 300
+    GPIO.add_event_detect(thekeys[0], GPIO.FALLING, callback=keypress, bouncetime=btime)
+    GPIO.add_event_detect(thekeys[1], GPIO.FALLING, callback=keypress, bouncetime=btime)
+    GPIO.add_event_detect(thekeys[2], GPIO.FALLING, callback=keypress, bouncetime=btime)
+    GPIO.add_event_detect(thekeys[3], GPIO.FALLING, callback=keypress, bouncetime=btime)
+    return
+
+def keypress(channel):
+    global button_pressed
+    with open(configfile) as f:
+        config = yaml.load(f, Loader=yaml.FullLoader)
+    lastcoinfetch = time.time()
+    if channel == 5 and button_pressed == 0:
+        logging.info('Cycle currencies')
+        button_pressed = 1
+        crypto_list = currencycycle(config['ticker']['currency'])
+        config['ticker']['currency']=",".join(crypto_list)
+        lastcoinfetch=fullupdate(config, lastcoinfetch)
+        configwrite(config)
+        return
+    elif channel == 6 and button_pressed == 0:
+        logging.info('Rotate - 90')
+        button_pressed = 1
+        config['display']['orientation'] = (config['display']['orientation']+90) % 360
+        lastcoinfetch=fullupdate(config,lastcoinfetch)
+        configwrite(config)
+        return
+    elif channel == 13 and button_pressed == 0:
+        logging.info('Invert Display')
+        button_pressed = 1
+        config['display']['inverted'] = not config['display']['inverted']
+        lastcoinfetch=fullupdate(config,lastcoinfetch)
+        configwrite(config)
+        return
+    elif channel == 19 and button_pressed == 0:
+        logging.info('Cycle fiat')
+        button_pressed = 1
+        fiat_list = currencycycle(config['ticker']['fiatcurrency'])
+        config['ticker']['fiatcurrency']=",".join(fiat_list)
+        lastcoinfetch=fullupdate(config,lastcoinfetch)
+        configwrite(config)
+        return
+    return
 
 def configwrite(config):
     """
@@ -352,6 +399,9 @@ def configwrite(config):
     """
     with open(configfile, 'w') as f:
         data = yaml.dump(config, f)
+#   Reset button pressed state after config is written
+    global button_pressed
+    button_pressed = 0
 
 def fullupdate(config,lastcoinfetch):
     """
@@ -415,6 +465,8 @@ def main():
         staticcoins=config['ticker']['currency']
 #       Get the buttons for 2.7in EPD set up
         thekeys=initkeys()
+#       Add key events
+        addkeyevent(thekeys)
 #       Note how many coins in original config file
         howmanycoins=len(config['ticker']['currency'].split(","))
 #       Note that there has been no data pull yet
@@ -430,34 +482,6 @@ def main():
         while internet() ==False:
             logging.info("Waiting for internet")
         while True:
-#           Poll Keystates
-            key1state = GPIO.input(thekeys[0])
-            key2state = GPIO.input(thekeys[1])
-            key3state = GPIO.input(thekeys[2])
-            key4state = GPIO.input(thekeys[3])
-
-            if key1state == False:
-                logging.info('Cycle currencies')
-                crypto_list = currencycycle(config['ticker']['currency'])
-                config['ticker']['currency']=",".join(crypto_list)
-                lastcoinfetch=fullupdate(config, lastcoinfetch)
-                configwrite(config)
-            if key2state == False:
-                logging.info('Rotate - 90')
-                config['display']['orientation'] = (config['display']['orientation']+90) % 360
-                lastcoinfetch=fullupdate(config,lastcoinfetch)
-                configwrite(config)
-            if key3state == False:
-                logging.info('Invert Display')
-                config['display']['inverted'] = not config['display']['inverted']
-                lastcoinfetch=fullupdate(config,lastcoinfetch)
-                configwrite(config)
-            if key4state == False:
-                logging.info('Cycle fiat')
-                fiat_list = currencycycle(config['ticker']['fiatcurrency'])
-                config['ticker']['fiatcurrency']=",".join(fiat_list)
-                lastcoinfetch=fullupdate(config,lastcoinfetch)
-                configwrite(config)
             if config['display']['trendingmode']==True:
                 # The hard-coded 7 is for the number of trending coins to show. Consider revising
                 if (time.time() - lastcoinfetch > (7+howmanycoins)*updatefrequency) or (datapulled==False):
@@ -471,6 +495,8 @@ def main():
                     # configwrite(config)
                 lastcoinfetch=fullupdate(config,lastcoinfetch)
                 datapulled = True
+#           Reduces CPU load during that while loop
+            time.sleep(0.01)
     except IOError as e:
         logging.error(e)
         image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
