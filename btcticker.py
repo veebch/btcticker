@@ -209,6 +209,7 @@ def makeSpark(pricestack):
     imgspk = Image.open(os.path.join(picdir,'spark.png'))
     file_out = os.path.join(picdir,'spark.bmp')
     imgspk.save(file_out)
+    plt.close(fig)
     plt.cla() # Close plot to prevent memory error
     ax.cla() # Close axis to prevent memory error
     imgspk.close()
