@@ -92,6 +92,7 @@ def getData(config,other):
     """
     The function to grab the data (TO DO: need to test properly)
     """
+
     sleep_time = 10
     num_retries = 5
     whichcoin,fiat=configtocoinandfiat(config)
@@ -103,6 +104,7 @@ def getData(config,other):
     endtimeseconds = endtime
     geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin+"/market_chart/range?vs_currency="+fiat+"&from="+str(starttimeseconds)+"&to="+str(endtimeseconds)
     logging.debug(geckourlhistorical)
+    timeseriesstack = []
     for x in range(0, num_retries):
         rawtimeseries, connectfail=  getgecko(geckourlhistorical)
         if connectfail== True:
@@ -110,7 +112,6 @@ def getData(config,other):
         else:
             logging.debug("Got price for the last "+str(days_ago)+" days from CoinGecko")
             timeseriesarray = rawtimeseries['prices']
-            timeseriesstack = []
             length=len (timeseriesarray)
             i=0
             while i < length:
