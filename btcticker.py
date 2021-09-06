@@ -18,6 +18,7 @@ import yaml
 import socket
 import textwrap
 import argparse
+import decimal
 dirname = os.path.dirname(__file__)
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
@@ -263,15 +264,17 @@ def updateDisplay(config,pricestack,other):
         tokenimage.thumbnail((100,100),Image.ANTIALIAS)
         tokenimage.save(tokenfilename)
     pricechangeraw = round((pricestack[-1]-pricestack[0])/pricestack[-1]*100,2)
-    if pricechangeraw >= 100:
+    if pricechangeraw >= 10:
         pricechange = str("%+d" % pricechangeraw)+"%"
     else:
         pricechange = str("%+.2f" % pricechangeraw)+"%"
+    d = decimal.Decimal(str(pricenow)).as_tuple().exponent
     if pricenow > 1000:
-        pricenowstring =format(int(pricenow),",")
+        pricenowstring =str(format(int(pricenow),","))
+    elif pricenow < 1000 and d == -1:
+        pricenowstring ="{:.2f}".format(pricenow)
     else:
-        # Print price to 5 significant figures
-        pricenowstring =str(float('%.5g' % pricenow))
+        pricenowstring ="{:.5g}".format(pricenow)
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
         image = Image.new('L', (176,264), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)
