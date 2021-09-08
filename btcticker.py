@@ -461,7 +461,7 @@ def main():
     logging.basicConfig(level=loglevel)
     # Set timezone based on ip address
     try:
-        os.system("/home/pi/.local/bin/tzupdate -p")
+        os.system("sudo /home/pi/.local/bin/tzupdate")
     except:
         logging.info("Timezone Not Set")
     try:
