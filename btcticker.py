@@ -459,7 +459,11 @@ def main():
 
     loglevel = getattr(logging, args.log.upper(), logging.WARN)
     logging.basicConfig(level=loglevel)
-
+    # Set timezone based on ip address
+    try:
+        os.system("/home/pi/.local/bin/tzupdate -p")
+    except:
+        logging.info("Timezone Not Set")
     try:
         logging.info("epd2in7 BTC Frame")
 #       Get the configuration from config.yaml
