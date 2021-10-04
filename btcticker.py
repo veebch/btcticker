@@ -328,11 +328,14 @@ def currencycycle(curr_string):
     return curr_list
 
 def display_image(img):
-
     epd = epd2in7.EPD()
     epd.Init_4Gray()
     epd.display_4Gray(epd.getbuffer_4Gray(img))
     epd.sleep()
+    thekeys=initkeys()
+#   Have to remove and add key events to make them work again
+    removekeyevent(thekeys)
+    addkeyevent(thekeys)
     return
 
 def initkeys():
@@ -357,6 +360,15 @@ def addkeyevent(thekeys):
     GPIO.add_event_detect(thekeys[1], GPIO.FALLING, callback=keypress, bouncetime=btime)
     GPIO.add_event_detect(thekeys[2], GPIO.FALLING, callback=keypress, bouncetime=btime)
     GPIO.add_event_detect(thekeys[3], GPIO.FALLING, callback=keypress, bouncetime=btime)
+    return
+
+def removekeyevent(thekeys):
+#   Remove keypress events
+    logging.debug('Remove key events')
+    GPIO.remove_event_detect(thekeys[0])
+    GPIO.remove_event_detect(thekeys[1])
+    GPIO.remove_event_detect(thekeys[2])
+    GPIO.remove_event_detect(thekeys[3])
     return
 
 def keypress(channel):
