@@ -91,7 +91,7 @@ Here's what each of the buttons do:
 
 Update frequency can be changed in the configuration file (default is 300 seconds).
 
-# Configuration vi config file
+# Configuration via config file
 
 The file `config.yaml` (the copy of `config_example.yaml` you made earlier) contains a number of options that may be tweaked:
 
