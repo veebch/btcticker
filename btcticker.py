@@ -276,9 +276,9 @@ def updateDisplay(config,pricestack,other):
     else:
         pricenowstring ="{:.5g}".format(pricenow)
     if '24h' in config['display'] and config['display']['24h']:
-        timestamp= str(time.strftime("%-H:%M, s%d %b %Y"))
+        timestamp= str(time.strftime("%-H:%M, %d %b %Y"))
     else:
-        timestamp= str(time.strftime("%-I:%M %p, s%d %b %Y"))
+        timestamp= str(time.strftime("%-I:%M %p, %d %b %Y"))
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
         image = Image.new('L', (176,264), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)
