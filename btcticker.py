@@ -275,13 +275,17 @@ def updateDisplay(config,pricestack,other):
         pricenowstring ="{:.2f}".format(pricenow)
     else:
         pricenowstring ="{:.5g}".format(pricenow)
+    if '24h' in config['display'] and config['display']['24h']:
+        timestamp= str(time.strftime("%-H:%M, s%d %b %Y"))
+    else:
+        timestamp= str(time.strftime("%-I:%M %p, s%d %b %Y"))
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
         image = Image.new('L', (176,264), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)
         draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
         writewrappedlines(image, symbolstring+pricenowstring,40,65,8,10,"Roboto-Medium" )
-        draw.text((10,10),str(time.strftime("%-I:%M %p, s%d %b %Y")),font =font_date,fill = 0)
+        draw.text((10,10),timestamp,font =font_date,fill = 0)
         image.paste(tokenimage, (10,25))
         image.paste(sparkbitmap,(10,125))
         if config['display']['orientation'] == 180 :
@@ -304,7 +308,7 @@ def updateDisplay(config,pricestack,other):
         if (config['display']['trendingmode']==True) and not (str(whichcoin) in originalcoin_list):
             draw.text((95,28),whichcoin,font =font_date,fill = 0)
 #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-        draw.text((95,15),str(time.strftime("%-I:%M %p, %d %b %Y")),font =font_date,fill = 0)
+        draw.text((95,15),timestamp),font =font_date,fill = 0)
         if config['display']['orientation'] == 270 :
             image=image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in older waveshare libraries Uncomment line below if needed
