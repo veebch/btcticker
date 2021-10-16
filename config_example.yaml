@@ -5,6 +5,7 @@ display:
   trendingmode: false
   showvolume: false
   showrank: false
+  24h: true
 ticker:
   currency: bitcoin,ethereum,cardano
   exchange: default
