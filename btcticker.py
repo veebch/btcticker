@@ -294,7 +294,7 @@ def updateDisplay(config,pricestack,other):
         image = Image.new('L', (264,176), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)
         if other['ATH']==True:
-            image.paste(ATHbitmap,(195,85))
+            image.paste(ATHbitmap,(205,85))
         draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
         if 'showvolume' in config['display'] and config['display']['showvolume']:
             draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
