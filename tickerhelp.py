@@ -6,7 +6,7 @@
 #   will give
 #   Symbol=  xmr ID=  monero
 #   Symbol=  dot ID=  polkadot
-#   Symbol=  dot ID=  avalanche-2
+#   Symbol=  AVAX ID=  avalanche-2
 
 
 
