@@ -2,10 +2,11 @@
 #	tickerhelper: Give it a string of symbols and it returns the coingeck IDs
 #   This is to address the issue that some of the coingecko IDs are not intuitive
 #   
-#   tickerhelp.py -s "xmr, dot"
+#   tickerhelp.py -s "xmr, dot, AVAX"
 #   will give
 #   Symbol=  xmr ID=  monero
-#.  Symbol=  dot ID=  polkadot
+#   Symbol=  dot ID=  polkadot
+#   Symbol=  dot ID=  avalanche-2
 
 
 
