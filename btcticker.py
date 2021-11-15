@@ -359,7 +359,7 @@ def initkeys():
 def addkeyevent(thekeys):
 #   Add keypress events
     logging.debug('Add key events')
-    btime = 300
+    btime = 500
     GPIO.add_event_detect(thekeys[0], GPIO.FALLING, callback=keypress, bouncetime=btime)
     GPIO.add_event_detect(thekeys[1], GPIO.FALLING, callback=keypress, bouncetime=btime)
     GPIO.add_event_detect(thekeys[2], GPIO.FALLING, callback=keypress, bouncetime=btime)
