@@ -5,3 +5,4 @@ pillow>=8.3.2
 PyYAML==5.4.1
 rpi.gpio==0.7.0
 nh-currency==1.0.1
+spidev==3.5
