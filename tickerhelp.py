@@ -2,7 +2,7 @@
 #	tickerhelper: Give it a string of symbols and it returns the coingeck IDs
 #   This is to address the issue that some of the coingecko IDs are not intuitive
 #   
-#   tickerhelp.py -s "xmr, dot, AVAX"
+#   tickerhelp.py -s "xmr, dot, avax"
 #   will give
 #   Symbol=  xmr ID=  monero
 #   Symbol=  dot ID=  polkadot
@@ -15,10 +15,11 @@ import sys, getopt
 
 def symboltoid(code,melist):
 	lowercode=code.lower()
+	uppercode=code.upper()
 	for i in range (len(melist)):
 		target=melist[i]['symbol']
 		idstring="I cannot find it, please don't hate me"
-		if target==lowercode or target==code:
+		if target==lowercode or target==uppercode:
 			theindex=i
 			idstring=melist[i]['id']
 			if "peg" not in idstring:
