@@ -18,7 +18,9 @@ import yaml
 import socket
 import textwrap
 import argparse
-import decimal
+from babel import Locale
+from babel.numbers import decimal, format_currency, format_scientific
+
 dirname = os.path.dirname(__file__)
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'images')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fonts/googlefonts')
@@ -217,6 +219,14 @@ def makeSpark(pricestack):
     imgspk.close()
     return
 
+def custom_format_currency(value, currency, locale):
+    value = decimal.Decimal(value)
+    locale = Locale.parse(locale)
+    pattern = locale.currency_formats['standard']
+    force_frac = ((0, 0) if value == int(value) else None)
+    return pattern.apply(value, locale, currency=currency, force_frac=force_frac)
+
+
 def updateDisplay(config,pricestack,other):
     """
     Takes the price data, the desired coin/fiat combo along with the config info for formatting
@@ -230,9 +240,6 @@ def updateDisplay(config,pricestack,other):
     originalcoin_list = [x.strip(' ') for x in originalcoin_list]
     whichcoin,fiat=configtocoinandfiat(config)
     days_ago=int(config['ticker']['sparklinedays'])
-    symbolstring=currency.symbol(fiat.upper())
-    if fiat=="jpy" or fiat=="cny":
-        symbolstring="¥"
     pricenow = pricestack[-1]
     if config['display']['inverted'] == True:
         currencythumbnail= 'currency/'+whichcoin+'INV.bmp'
@@ -268,23 +275,30 @@ def updateDisplay(config,pricestack,other):
         pricechange = str("%+d" % pricechangeraw)+"%"
     else:
         pricechange = str("%+.2f" % pricechangeraw)+"%"
-    d = decimal.Decimal(str(pricenow)).as_tuple().exponent
-    if pricenow > 1000:
-        pricenowstring =str(format(int(pricenow),","))
-    elif pricenow < 1000 and d == -1:
-        pricenowstring ="{:.2f}".format(pricenow)
-    else:
-        pricenowstring ="{:.5g}".format(pricenow)
     if '24h' in config['display'] and config['display']['24h']:
         timestamp= str(time.strftime("%-H:%M, %d %b %Y"))
     else:
         timestamp= str(time.strftime("%-I:%M %p, %d %b %Y"))
+    # This is where a locale change can be made
+    localetag = 'en_US' # This is a way of forcing the locale currency info eg 'de_DE' for German formatting
+    fontreduce=0 # This is an adjustment that needs to be applied to coins with very low fiat value per coin
+    if pricenow > 10000:
+        # round to nearest whole unit of currency, this is an ugly hack for now
+        pricestring=custom_format_currency(int(pricenow), fiat.upper(), localetag)
+    elif pricenow >.01:
+        pricestring = format_currency(pricenow, fiat.upper(),locale=localetag, decimal_quantization=False)
+    else:
+        # looks like you have a coin with a tiny value per coin, drop the font size, not ideal but better than just printing SHITCOIN
+        pricestring = format_currency(pricenow, fiat.upper(),locale=localetag, decimal_quantization=False)
+        fontreduce=15
+
+
     if config['display']['orientation'] == 0 or config['display']['orientation'] == 180 :
         image = Image.new('L', (176,264), 255)    # 255: clear the image with white
         draw = ImageDraw.Draw(image)
         draw.text((110,80),str(days_ago)+"day :",font =font_date,fill = 0)
         draw.text((110,95),pricechange,font =font_date,fill = 0)
-        writewrappedlines(image, symbolstring+pricenowstring,40,65,8,10,"Roboto-Medium" )
+        writewrappedlines(image, pricestring ,40 - fontreduce,65,8,15,"Roboto-Medium" )
         draw.text((10,10),timestamp,font =font_date,fill = 0)
         image.paste(tokenimage, (10,25))
         image.paste(sparkbitmap,(10,125))
@@ -298,8 +312,7 @@ def updateDisplay(config,pricestack,other):
         draw.text((110,90),str(days_ago)+" day : "+pricechange,font =font_date,fill = 0)
         if 'showvolume' in config['display'] and config['display']['showvolume']:
             draw.text((110,105),"24h vol : " + human_format(other['volume']),font =font_date,fill = 0)
-
-        writewrappedlines(image, symbolstring+pricenowstring,50,55,8,10,"Roboto-Medium" )
+        writewrappedlines(image, pricestring,50-fontreduce,55,8,15,"Roboto-Medium" )
         image.paste(sparkbitmap,(80,40))
         image.paste(tokenimage, (0,10))
         # Don't show rank for #1 coin, #1 doesn't need to show off
