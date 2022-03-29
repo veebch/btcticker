@@ -280,7 +280,10 @@ def updateDisplay(config,pricestack,other):
     else:
         timestamp= str(time.strftime("%-I:%M %p, %d %b %Y"))
     # This is where a locale change can be made
-    localetag = 'en_US' # This is a way of forcing the locale currency info eg 'de_DE' for German formatting
+    if 'locale' in config['display']:
+        localetag = config['display']['locale']
+    else:
+        localetag = 'en_US' # This is a way of forcing the locale currency info eg 'de_DE' for German formatting
     fontreduce=0 # This is an adjustment that needs to be applied to coins with very low fiat value per coin
     if pricenow > 10000:
         # round to nearest whole unit of currency, this is an ugly hack for now
@@ -290,6 +293,7 @@ def updateDisplay(config,pricestack,other):
     else:
         # looks like you have a coin with a tiny value per coin, drop the font size, not ideal but better than just printing SHITCOIN
         pricestring = format_currency(pricenow, fiat.upper(),locale=localetag, decimal_quantization=False)
+    if len(pricestring)>9
         fontreduce=15
 
 
