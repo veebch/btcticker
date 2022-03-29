@@ -6,6 +6,7 @@ display:
   showvolume: false # Show volume (in fiat currency)
   showrank: false # Show ranking (by volume)
   24h: true # true for 24h clock, false for 12h
+  locale: en_US # For region specific changes to price formatting
 ticker:
   currency: bitcoin,ethereum,cardano # symbols used on coingecko
   exchange: default # specific exchanges can be specified
