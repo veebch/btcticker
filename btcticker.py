@@ -293,7 +293,7 @@ def updateDisplay(config,pricestack,other):
     else:
         # looks like you have a coin with a tiny value per coin, drop the font size, not ideal but better than just printing SHITCOIN
         pricestring = format_currency(pricenow, fiat.upper(),locale=localetag, decimal_quantization=False)
-    if len(pricestring)>9
+    if len(pricestring)>9:
         fontreduce=15
 
 
