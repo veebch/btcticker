@@ -459,7 +459,7 @@ def fullupdate(config,lastcoinfetch):
         time.sleep(0.2)
     except Exception as e:
         message="Data pull/print problem"
-        image=beanaproblem(str(e)+" Line: "+str(e.__traceback__.tb_lineno))
+        image=beanaproblem(str(e)+" Check your connection. Error at Line: "+str(e.__traceback__.tb_lineno))
         display_image(image)
         time.sleep(20)
         lastgrab=lastcoinfetch
