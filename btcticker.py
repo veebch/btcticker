@@ -375,6 +375,7 @@ def initkeys():
     GPIO.setup(8, GPIO.OUT)
     GPIO.setup(25, GPIO.OUT)
     GPIO.setup(67, GPIO.OUT)
+    GPIO.setup(68, GPIO.OUT)
     return thekeys
 
 def addkeyevent(thekeys):
