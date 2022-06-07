@@ -486,8 +486,7 @@ def gettrending(config):
     return config
 
 def main():
-    epd = epd2in7.EPD()
-    epd.Init_4Gray() # A quick initialise
+    GPIO.setmode(GPIO.BCM)
     parser = argparse.ArgumentParser()
     parser.add_argument("--log", default='info', help='Set the log level (default: info)')
     args = parser.parse_args()
