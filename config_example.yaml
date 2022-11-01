@@ -1,0 +1,15 @@
+display:
+  cycle: true # Setting to true makes the ticker cycle through a list of coins
+  inverted: false # true for black text on grey, false for grey text
+  orientation: 90 # 90 for horizontal display, buttons on left
+  trendingmode: false # Add trending coins to those being displayed
+  showvolume: false # Show volume (in fiat currency)
+  showrank: false # Show ranking (by volume)
+  24h: true # true for 24h clock, false for 12h
+  locale: en_US # For region specific changes to price formatting
+ticker:
+  currency: bitcoin,ethereum,cardano # symbols used on coingecko
+  exchange: default # specific exchanges can be specified
+  fiatcurrency: usd,eur,gbp # fiat currency, only 1 needed unless you use buttons 
+  sparklinedays: 1 # Time period shown on sparkline graph
+  updatefrequency: 300 # How often price is refreshed (seconds) (lower limit 60s)
