@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 #	tickerhelper: Give it a string of symbols and it returns the coingeck IDs
 #   This is to address the issue that some of the coingecko IDs are not intuitive
-#   
 #   tickerhelp.py -s "xmr, dot, avax"
 #   will give
 #   Symbol=  xmr ID=  monero
@@ -33,7 +32,7 @@ def main():
 	except getopt.GetoptError:
 		print ('tickerhelp.py -s <symbollist>')
 		sys.exit(2)
-    
+
 	for opt, arg in options:
 		if opt == '-h':
 			print ('tickerhelp.py -s <symbollist>')
