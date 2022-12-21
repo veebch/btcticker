@@ -403,6 +403,7 @@ def display_image(img):
 #   Have to remove and add key events to make them work again
     removekeyevent(thekeys)
     addkeyevent(thekeys)
+    logging.info("Sent image to screen")
     return
 
 
