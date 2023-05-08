@@ -15,6 +15,7 @@ import sys
 import logging
 import RPi.GPIO as GPIO
 from waveshare_epd import epd2in7
+# from waveshare_epd import epd2in7_V2 (comment out line above and uncomment this line if you're using v2)
 import time
 import requests
 import urllib
