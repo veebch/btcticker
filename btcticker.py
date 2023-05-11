@@ -15,7 +15,7 @@ import sys
 import logging
 import RPi.GPIO as GPIO
 from waveshare_epd import epd2in7
-# from waveshare_epd import epd2in7_V2 (comment out line above and uncomment this line if you're using v2)
+# from waveshare_epd import epd2in7_V2 as epd2in7 #(comment out line above and uncomment this line if you're using v2)
 import time
 import requests
 import urllib
@@ -397,6 +397,7 @@ def currencycycle(curr_string):
 
 def display_image(img):
     epd = epd2in7.EPD()
+    # Also change to V2 if using a V2 screen
     epd.Init_4Gray()
     epd.display_4Gray(epd.getbuffer_4Gray(img))
     epd.sleep()
