@@ -622,9 +622,11 @@ def main():
             if (time.time() - lastcoinfetch > updatefrequency) or (datapulled == False):
                 if config['display']['cycle'] == True and (datapulled == True):
                     crypto_list = currencycycle(config['ticker']['currency'])
+                    fiat_list = currencycycle(config['ticker']['fiatcurrency'])
                     config['ticker']['currency'] = ",".join(crypto_list)
+                    config['ticker']['fiatcurreny'] = ",".join(fiat_list)
                     # configwrite(config)
-                lastcoinfetch = fullupdate(config, lastcoinfetch)
+                lastcoinfetch = fullupdate(config, lastcoinfetch):
                 datapulled = True
 #           Reduces CPU load during that while loop
             time.sleep(0.01)
