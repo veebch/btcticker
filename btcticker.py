@@ -626,7 +626,7 @@ def main():
                     config['ticker']['currency'] = ",".join(crypto_list)
                     config['ticker']['fiatcurreny'] = ",".join(fiat_list)
                     # configwrite(config)
-                lastcoinfetch = fullupdate(config, lastcoinfetch):
+                lastcoinfetch = fullupdate(config, lastcoinfetch)
                 datapulled = True
 #           Reduces CPU load during that while loop
             time.sleep(0.01)
