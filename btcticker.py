@@ -554,7 +554,6 @@ def configtocoinandfiat(config):
     fiat_list = currencystringtolist(config['ticker']['fiatcurrency'])
     currency = crypto_list[0]
     fiat = fiat_list[0]
-    logging.debug(currency, fiat)
     return currency, fiat
 
 
