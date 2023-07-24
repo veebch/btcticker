@@ -100,6 +100,7 @@ The file `config.yaml` (the copy of `config_example.yaml` you made earlier) cont
 ```
 display:
   cycle: true # Setting to true makes the ticker cycle through a list of coins
+  cyclefiat: true # Setting to true makes fiat cycle too, so you can do multiple pairs
   inverted: false # true for black text on grey, false for grey text
   orientation: 90 # 90 for horizontal display, buttons on left
   trendingmode: false # Add trending coins to those being displayed
@@ -124,7 +125,7 @@ ticker:
 - **showvolume, showrank**: **true** to include in display, **false** to omit
 - **currency**: the coin(s) you would like to display (must be the coingecko id)
 - **exchange**: default means use coingecko price, it can also be set to a specific exchange name such as **gdax** (coinbase), **binance** or **kraken** (full list on coingecko api [page](https://www.coingecko.com/api/documentations/v3)) 
-- **fiatcurrency**: if this list is the same length as the currencies, it will also cycle, otherwise it will use only the first entry (and cycle with button presses)
+- **fiatcurrency**: if *cyclefiat* is set to **True**, it will also cycle, otherwise it will use only the first entry (and cycle with button presses)
 - **sparklinedays**: Number of days of historical data appearing on chart
 - **updatefrequency**: (in seconds), how often to refresh the display
 
