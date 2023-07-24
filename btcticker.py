@@ -624,7 +624,7 @@ def main():
                     crypto_list = currencycycle(config['ticker']['currency'])
                     fiat_list = currencycycle(config['ticker']['fiatcurrency'])
                     config['ticker']['currency'] = ",".join(crypto_list)
-                    if config['display']['cyclefiat'] is True:
+                    if 'cyclefiat' in config['display'] and (config['display']['cyclefiat'] is True):
                         config['ticker']['fiatcurrency'] = ",".join(fiat_list)
                     # configwrite(config)
                 lastcoinfetch = fullupdate(config, lastcoinfetch)
