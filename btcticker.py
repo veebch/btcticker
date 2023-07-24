@@ -554,6 +554,7 @@ def configtocoinandfiat(config):
     fiat_list = currencystringtolist(config['ticker']['fiatcurrency'])
     currency = crypto_list[0]
     fiat = fiat_list[0]
+    logging.debug(currency, fiat)
     return currency, fiat
 
 
@@ -625,7 +626,7 @@ def main():
                     fiat_list = currencycycle(config['ticker']['fiatcurrency'])
                     config['ticker']['currency'] = ",".join(crypto_list)
                     config['ticker']['fiatcurreny'] = ",".join(fiat_list)
-                    configwrite(config)
+                    # configwrite(config)
                 lastcoinfetch = fullupdate(config, lastcoinfetch)
                 datapulled = True
 #           Reduces CPU load during that while loop
