@@ -281,9 +281,9 @@ def custom_format_currency(value, currency, locale):
 
 def updateDisplay(config, pricestack, other):
     """
-    Takes the price data, the desired coin/fiat combo along with the config info for formatting
-    if config is re-written following adustment we could avoid passing the last two arguments as
-    they will just be the first two items of their string in config
+        Takes the price data, the desired coin/fiat combo along with the config info for formatting
+        if config is re-written following adustment we could avoid passing the last two arguments as
+        they will just be the first two items of their string in config
     """
     with open(configfile) as f:
         originalconfig = yaml.load(f, Loader=yaml.FullLoader)
@@ -525,9 +525,9 @@ def configwrite(config):
 
 def fullupdate(config, lastcoinfetch):
     """
-    The steps required for a full update of the display
-    Earlier versions of the code didn't grab new data for some operations
-    but the e-Paper is too slow to bother the coingecko API
+        The steps required for a full update of the display
+        Earlier versions of the code didn't grab new data for some operations
+        but the e-Paper is too slow to bother the coingecko API
     """
     other = {}
     try:
@@ -625,7 +625,7 @@ def main():
                     fiat_list = currencycycle(config['ticker']['fiatcurrency'])
                     config['ticker']['currency'] = ",".join(crypto_list)
                     config['ticker']['fiatcurreny'] = ",".join(fiat_list)
-                    # configwrite(config)
+                    configwrite(config)
                 lastcoinfetch = fullupdate(config, lastcoinfetch)
                 datapulled = True
 #           Reduces CPU load during that while loop
