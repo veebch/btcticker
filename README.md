@@ -124,7 +124,7 @@ ticker:
 - **showvolume, showrank**: **true** to include in display, **false** to omit
 - **currency**: the coin(s) you would like to display (must be the coingecko id)
 - **exchange**: default means use coingecko price, it can also be set to a specific exchange name such as **gdax** (coinbase), **binance** or **kraken** (full list on coingecko api [page](https://www.coingecko.com/api/documentations/v3)) 
-- **fiatcurrency**: currently only uses first one (unless you are cycling with buttons)
+- **fiatcurrency**: if this list is the same length as the currencies, it will also cycle, otherwise it will use only the first entry (and cycle with button presses)
 - **sparklinedays**: Number of days of historical data appearing on chart
 - **updatefrequency**: (in seconds), how often to refresh the display
 
