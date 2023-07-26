@@ -141,8 +141,11 @@ def getData(config, other):
     starttime = endtime - 60*60*24*days_ago
     starttimeseconds = starttime
     endtimeseconds = endtime
+    fiathistory = fiat
+    if fiat == 'usdt':
+        fiathistory = 'usd'
     geckourlhistorical = "https://api.coingecko.com/api/v3/coins/"+whichcoin + \
-        "/market_chart/range?vs_currency="+fiat+"&from=" + \
+        "/market_chart/range?vs_currency="+fiathistory+"&from=" + \
         str(starttimeseconds)+"&to="+str(endtimeseconds)
     logging.debug(geckourlhistorical)
     timeseriesstack = []
