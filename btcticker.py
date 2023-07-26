@@ -389,7 +389,7 @@ def updateDisplay(config, pricestack, other):
             draw.text((110, 105), "24h vol : " +
                       human_format(other['volume']), font=font_date, fill=0)
         writewrappedlines(image, pricestring, 50-fontreduce,
-                          55, 8, 15, "IBMPlexSans-Medium")
+                          50, 8, 15, "IBMPlexSans-Medium")
         image.paste(sparkbitmap, (80, 40))
         image.paste(tokenimage, (0, 10))
         # Don't show rank for #1 coin, #1 doesn't need to show off
