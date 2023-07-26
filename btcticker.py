@@ -345,10 +345,11 @@ def updateDisplay(config, pricestack, other):
         # This is a way of forcing the locale currency info eg 'de_DE' for German formatting
         localetag = 'en_US'
     fontreduce = 0  # This is an adjustment that needs to be applied to coins with very low fiat value per coin
+    fiatupper = fiat.upper()
     if fiat.upper()=='USDT':
         fiatupper = 'USD'
-    else:
-        fiatupper = fiat.upper() 
+    if fiat.upper() == "BTC":
+        fiatupper = '₿'
     if pricenow > 10000:
         # round to nearest whole unit of currency, this is an ugly hack for now
         pricestring = custom_format_currency(
