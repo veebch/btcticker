@@ -371,7 +371,7 @@ def updateDisplay(config, pricestack, other):
         draw.text((110, 80), str(days_ago)+"day :", font=font_date, fill=0)
         draw.text((110, 95), pricechange, font=font_date, fill=0)
         writewrappedlines(image, pricestring, 40 - fontreduce,
-                          65, 8, 15, "Roboto-Medium")
+                          65, 8, 15, "IBMPlexSans-Medium")
         draw.text((10, 10), timestamp, font=font_date, fill=0)
         image.paste(tokenimage, (10, 25))
         image.paste(sparkbitmap, (10, 125))
@@ -389,7 +389,7 @@ def updateDisplay(config, pricestack, other):
             draw.text((110, 105), "24h vol : " +
                       human_format(other['volume']), font=font_date, fill=0)
         writewrappedlines(image, pricestring, 50-fontreduce,
-                          55, 8, 15, "Roboto-Medium")
+                          55, 8, 15, "IBMPlexSans-Medium")
         image.paste(sparkbitmap, (80, 40))
         image.paste(tokenimage, (0, 10))
         # Don't show rank for #1 coin, #1 doesn't need to show off
