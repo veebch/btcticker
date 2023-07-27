@@ -111,7 +111,7 @@ display:
 ticker:
   currency: bitcoin,ethereum,cardano # symbols used on coingecko
   exchange: default # specific exchanges can be specified
-  fiatcurrency: usd,eur,gbp # fiat currency, only 1 needed unless you use buttons 
+  fiatcurrency: usd,btc,gbp # 'fiat' currency
   sparklinedays: 1 # Time period shown on sparkline graph
   updatefrequency: 300 # How often price is refreshed (seconds) (lower limit 60s)
 ```
