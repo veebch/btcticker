@@ -400,6 +400,8 @@ def updateDisplay(config, pricestack, other):
             draw.text((95, 28), whichcoin, font=font_date, fill=0)
 #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
         draw.text((95, 15), timestamp, font=font_date, fill=0)
+        if config['ticker']['exchange'] != 'default':
+            draw.text((95,30), config['ticker']['exchange'], font=font_date, fill=0)
         if config['display']['orientation'] == 270:
             image = image.rotate(180, expand=True)
 #       This is a hack to deal with the mirroring that goes on in older waveshare libraries Uncomment line below if needed
