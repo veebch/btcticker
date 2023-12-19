@@ -316,7 +316,7 @@ def updateDisplay(config, pricestack, other):
         tokenimage = Image.open(requests.get(
             rawimage['image']['large'], headers=headers, stream=True).raw).convert("RGBA")
         resize = 100, 100
-        tokenimage.thumbnail(resize, Image.ANTIALIAS)
+        tokenimage.thumbnail(resize, Image.BICUBIC)
         # If inverted is true, invert the token symbol before placing if on the white BG so that it is uninverted at the end - this will make things more
         # legible on a black display
         if config['display']['inverted'] == True:
@@ -327,7 +327,7 @@ def updateDisplay(config, pricestack, other):
         new_image = Image.new("RGBA", (120, 120), "WHITE")
         new_image.paste(tokenimage, (10, 10), tokenimage)
         tokenimage = new_image
-        tokenimage.thumbnail((100, 100), Image.ANTIALIAS)
+        tokenimage.thumbnail((100, 100), Image.BICUBIC)
         tokenimage.save(tokenfilename)
     pricechangeraw = round(
         (pricestack[-1]-pricestack[0])/pricestack[-1]*100, 2)
