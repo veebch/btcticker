@@ -72,7 +72,7 @@ User=pi
 WantedBy=multi-user.target
 EOF
 ```
-Now, simply enable the service you just made and reboot
+Note that this assumes your user is '**pi**'.  If it isn't, change accordingly. Now, simply enable the service you just made and reboot
 ```  
 sudo systemctl enable btcticker.service
 sudo systemctl start btcticker.service
