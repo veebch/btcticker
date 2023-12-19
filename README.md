@@ -5,7 +5,7 @@
 # Cryptocurrency ePaper Ticker 
 (supports all coins/currencies/exchanges listed on [CoinGecko](https://api.coingecko.com/api/v3/coins/list))
 
-An ePaper Cryptocurrency price ticker that runs as a Python script on a Raspberry Pi connected to a [Waveshare 2.7 inch monochrome ePaper display](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT). The script periodically (every 5 mins by default) takes data from CoinGecko and prints a summary to the ePaper.
+An ePaper Cryptocurrency price ticker that runs as a Python script on a Raspberry Pi connected to a [Waveshare 2.7 inch monochrome ePaper display](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT). The script periodically (every 5 mins by default) takes data from CoinGecko and prints a summary to the ePaper. You can specify the exchange used for price info, as well as the currencies that your chosen coin's prices are in. 
 
 A few minutes work gives you a desk ornament that will tastefully and unobtrusively monitor a coin's journey moonward.
 
@@ -44,8 +44,8 @@ Move to the `btcticker` directory, copy the example config to `config.yaml` and 
 ```
 cd btcticker
 cp config_example.yaml config.yaml
-cp -r /home/pi/e-Paper/RaspberryPi_JetsonNano/python/lib/waveshare_epd .
-rm -rf /home/pi/e-Paper
+cp -r ~/e-Paper/RaspberryPi_JetsonNano/python/lib/waveshare_epd .
+rm -rf ~/e-Paper
 ```
 Install the required Python3 modules
 ```
@@ -72,7 +72,7 @@ User=pi
 WantedBy=multi-user.target
 EOF
 ```
-Now, simply enable the service you just made and reboot
+Note that this assumes your user is '**pi**'.  If it isn't, change accordingly. Now, simply enable the service you just made and reboot
 ```  
 sudo systemctl enable btcticker.service
 sudo systemctl start btcticker.service
@@ -111,7 +111,7 @@ display:
 ticker:
   currency: bitcoin,ethereum,cardano # symbols used on coingecko
   exchange: default # specific exchanges can be specified
-  fiatcurrency: usd,eur,gbp # fiat currency, only 1 needed unless you use buttons 
+  fiatcurrency: usd,btc,gbp # 'fiat' currency
   sparklinedays: 1 # Time period shown on sparkline graph
   updatefrequency: 300 # How often price is refreshed (seconds) (lower limit 60s)
 ```
