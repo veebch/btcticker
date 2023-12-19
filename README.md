@@ -45,7 +45,7 @@ Move to the `btcticker` directory, copy the example config to `config.yaml` and 
 cd btcticker
 cp config_example.yaml config.yaml
 cp -r ~/e-Paper/RaspberryPi_JetsonNano/python/lib/waveshare_epd .
-rm -rf ~/home/pi/e-Paper
+rm -rf ~/e-Paper
 ```
 Install the required Python3 modules
 ```
