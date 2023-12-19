@@ -99,8 +99,8 @@ def _place_text(img, text, x_offset=0, y_offset=0, fontsize=40, fontstring="Foru
         font = ImageFont.truetype(
             '/usr/share/fonts/TTF/DejaVuSans.ttf', fontsize)
     img_width, img_height = img.size
-    text_width = font.font.getsize(text)[0]
-    text_height = font.font.getsize(text)[1]
+    text_width = font.getbbox(text)[2]
+    text_height = font.getbbox(text)[3]
     
     draw_x = (img_width - text_width)//2 + x_offset
     draw_y = (img_height - text_height)//2 + y_offset
