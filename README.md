@@ -24,7 +24,7 @@ Connect to your ticker over ssh and update and install necessary packages
 ```
 sudo apt-get update
 sudo apt-get install -y python3-pip mc git libopenjp2-7
-sudo apt-get install -y libatlas-base-dev python3-pil
+sudo apt-get install -y libatlas-base-dev python3-pil python-numpy python-matplotlib
 ```
 
 Enable spi (0=on 1=off)
