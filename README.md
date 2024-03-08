@@ -16,7 +16,8 @@ A few minutes work gives you a desk ornament that will tastefully and unobtrusiv
 
 ## Prerequisites
 
-(These instructions assume that your Raspberry Pi is already connected to the Internet, happily running `pip` and has `python3` installed)
+(These instructions assume that your Raspberry Pi is already connected to the Internet, happily running `pip` and has `python3` installed). 
+It also is set up to work for the V1 Waveshare 2.7in ePaper. If you are using V2 then see the note in btcticker.py about switching to V2.
 
 If you are running the Pi headless, connect to your Raspberry Pi using `ssh`.
 
