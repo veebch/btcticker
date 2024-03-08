@@ -38,7 +38,7 @@ import logging
 import RPi.GPIO as GPIO
 from waveshare_epd import epd2in7
 
-# from waveshare_epd import epd2in7_V2 as epd2in7 #(comment out line above and uncomment this line if you're using v2)
+# from waveshare_epd import epd2in7_V2 as epd2in7 #(comment out line above and uncomment this line if you're using v2) and check the status of this Waveshare issue: https://github.com/waveshareteam/e-Paper/issues/322
 import time
 import requests
 import urllib
