@@ -102,9 +102,12 @@ def _place_text(
     except OSError:
         font = ImageFont.truetype("/usr/share/fonts/TTF/DejaVuSans.ttf", fontsize)
     img_width, img_height = img.size
-    text_width = font.getbbox(text)[2]
-    text_height = font.getbbox(text)[3]
-
+    try:
+      text_width = font.getbbox(text)[2]
+      text_height = font.getbbox(text)[3]
+    except:
+      text_width = font.getsize(text)[0]
+      text_height = font.getsize(text)[1]
     draw_x = (img_width - text_width) // 2 + x_offset
     draw_y = (img_height - text_height) // 2 + y_offset
     draw.text((draw_x, draw_y), text, font=font, fill=fill)
