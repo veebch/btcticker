@@ -3,11 +3,12 @@
 [![YouTube Channel Views](https://img.shields.io/youtube/channel/views/UCz5BOU9J9pB_O0B8-rDjCWQ?label=YouTube&style=social)](https://www.youtube.com/channel/UCz5BOU9J9pB_O0B8-rDjCWQ) [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=social&logo=instagram&logoColor=black)](https://www.instagram.com/v_e_e_b/)
 
 # Cryptocurrency ePaper Ticker 
-(supports all coins/currencies/exchanges listed on [CoinGecko](https://api.coingecko.com/api/v3/coins/list))
 
 An ePaper Cryptocurrency price ticker that runs as a Python script on a Raspberry Pi connected to a [Waveshare 2.7 inch monochrome ePaper display](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT). The script periodically (every 5 mins by default) takes data from CoinGecko and prints a summary to the ePaper. You can specify the exchange used for price info, as well as the currencies that your chosen coin's prices are in. 
 
 A few minutes work gives you a desk ornament that will tastefully and unobtrusively monitor a coin's journey moonward.
+
+(supports all coins/currencies/exchanges listed on [CoinGecko](https://api.coingecko.com/api/v3/coins/list))
 
 # Getting started
 
