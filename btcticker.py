@@ -691,6 +691,7 @@ def main():
                     ):
                         config["ticker"]["fiatcurrency"] = ",".join(fiat_list)
                     # configwrite(config)
+                    # alternate screen inversion (TODO: have controlled by config)  
                     config["display"]["inverted"] = not config["display"]["inverted"]
                 lastcoinfetch = fullupdate(config, lastcoinfetch)
                 datapulled = True
