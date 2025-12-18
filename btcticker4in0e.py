@@ -36,10 +36,8 @@ import os
 import sys
 import logging
 import RPi.GPIO as GPIO
-from waveshare_epd import epd2in7
 
-# from waveshare_epd import epd2in7_V2 as epd2in7 #(comment out line above and uncomment this line if you're using v2). 
-# Also check https://github.com/waveshareteam/e-Paper/issues/322 to see whether waveshare have fixed the V2 bug
+from waveshare_epd import epd4in0e 
 import time
 import requests
 import urllib
@@ -52,9 +50,10 @@ dirname = os.path.dirname(__file__)
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "images")
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), "fonts/googlefonts")
 configfile = os.path.join(os.path.dirname(os.path.realpath(__file__)), "config.yaml")
-font_date = ImageFont.truetype(os.path.join(fontdir, "PixelSplitter-Bold.ttf"), 11)
+font_date = ImageFont.truetype(os.path.join(fontdir, "PixelSplitter-Bold.ttf"), 14)
 headers = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36",
+    # "x-cg-demo-api-key": "$COINGECKO_API_KEY"
 }
 button_pressed = 0
 
@@ -138,135 +137,66 @@ def getgecko(url):
 
 def getData(config, other):
     """
-    The function to grab the data (TO DO: need to test properly)
+    Modified to handle multiple coins and fetch images
     """
-
     sleep_time = 10
     num_retries = 5
+    coins_list = currencystringtolist(config["ticker"]["currency"])
     whichcoin, fiat = configtocoinandfiat(config)
     logging.info("Getting Data")
     days_ago = int(config["ticker"]["sparklinedays"])
     endtime = int(time.time())
     starttime = endtime - 60 * 60 * 24 * days_ago
-    starttimeseconds = starttime
-    endtimeseconds = endtime
-    fiathistory = fiat
-    if fiat == "usdt":
-        fiathistory = "usd"
-    geckourlhistorical = (
-        "https://api.coingecko.com/api/v3/coins/"
-        + whichcoin
-        + "/market_chart/range?vs_currency="
-        + fiathistory
-        + "&from="
-        + str(starttimeseconds)
-        + "&to="
-        + str(endtimeseconds)
-    )
-    logging.debug(geckourlhistorical)
-    timeseriesstack = []
-    for x in range(0, num_retries):
-        rawtimeseries, connectfail = getgecko(geckourlhistorical)
-        if connectfail == True:
-            pass
-        else:
-            logging.debug(
-                "Got price for the last " + str(days_ago) + " days from CoinGecko"
-            )
-            timeseriesarray = rawtimeseries["prices"]
-            length = len(timeseriesarray)
-            i = 0
-            while i < length:
-                timeseriesstack.append(float(timeseriesarray[i][1]))
-                i += 1
-            # A little pause before hiting the api again
-            time.sleep(1)
-            # Get the price
-        if config["ticker"]["exchange"] == "default":
-            geckourl = (
-                "https://api.coingecko.com/api/v3/coins/markets?vs_currency="
-                + fiat
-                + "&ids="
-                + whichcoin
-            )
-            logging.debug(geckourl)
-            rawlivecoin, connectfail = getgecko(geckourl)
-            if connectfail == True:
-                pass
-            else:
-                logging.debug(rawlivecoin[0])
-                liveprice = rawlivecoin[0]
-                pricenow = float(liveprice["current_price"])
-                alltimehigh = float(liveprice["ath"])
-                # Quick workaround for error being thrown for obscure coins. TO DO: Examine further
-                try:
-                    other["market_cap_rank"] = int(liveprice["market_cap_rank"])
-                except:
-                    config["display"]["showrank"] = False
-                    other["market_cap_rank"] = 0
-                other["volume"] = float(liveprice["total_volume"])
-                timeseriesstack.append(pricenow)
-                if pricenow > alltimehigh:
-                    other["ATH"] = True
-                else:
-                    other["ATH"] = False
-        else:
-            geckourl = (
-                "https://api.coingecko.com/api/v3/exchanges/"
-                + config["ticker"]["exchange"]
-                + "/tickers?coin_ids="
-                + whichcoin
-                + "&include_exchange_logo=false"
-            )
-            logging.debug(geckourl)
-            rawlivecoin, connectfail = getgecko(geckourl)
-            if connectfail == True:
-                pass
-            else:
-                theindex = -1
-                upperfiat = fiat.upper()
-                for i in range(len(rawlivecoin["tickers"])):
-                    target = rawlivecoin["tickers"][i]["target"]
-                    if target == upperfiat:
-                        theindex = i
-                        logging.debug("Found " + upperfiat + " at index " + str(i))
-                #       if UPPERFIAT is not listed as a target theindex==-1 and it is time to go to sleep
-                if theindex == -1:
-                    logging.error(
-                        "The exchange is not listing in "
-                        + upperfiat
-                        + ". Misconfigured - shutting down script"
-                    )
-                    sys.exit()
-                liveprice = rawlivecoin["tickers"][theindex]
-                pricenow = float(liveprice["last"])
-                # For non-default the Rank does not show in the API, so leave blank
-                other["market_cap_rank"] = 0
-                other["volume"] = float(liveprice["converted_volume"]["usd"])
-                # For non-default the ATH does not show in the API, so show it when price reaches *pinky in mouth* ONE MILLION DOLLARS
-                alltimehigh = 1000000.0
-                logging.debug("Got Live Data From CoinGecko")
-                timeseriesstack.append(pricenow)
-                if pricenow > alltimehigh:
-                    other["ATH"] = True
-                else:
-                    other["ATH"] = False
-        if connectfail == True:
-            message = "Trying again in ", sleep_time, " seconds"
-            logging.warn(message)
-            # wait before trying to fetch the data again
+    
+    all_price_data = []
+    
+    for coin in coins_list:
+        # Fetch coin image
+        get_coin_image(coin)
+        
+        timeseriesstack = []
+        geckourlhistorical = (
+            "https://api.coingecko.com/api/v3/coins/"
+            + coin
+            + "/market_chart/range?vs_currency="
+            + fiat
+            + "&from="
+            + str(starttime)
+            + "&to="
+            + str(endtime)
+        )
+        
+        for x in range(0, num_retries):
+            rawtimeseries, connectfail = getgecko(geckourlhistorical)
+            if not connectfail:
+                timeseriesarray = rawtimeseries["prices"]
+                timeseriesstack = [float(price[1]) for price in timeseriesarray]
+                
+                # Get current price
+                geckourl = f"https://api.coingecko.com/api/v3/coins/markets?vs_currency={fiat}&ids={coin}"
+                rawlivecoin, connectfail = getgecko(geckourl)
+                
+                if not connectfail:
+                    liveprice = rawlivecoin[0]
+                    timeseriesstack.append(float(liveprice["current_price"]))
+                    break
+                
             time.sleep(sleep_time)
-            sleep_time *= 2  # exponential backoff
-        else:
-            break
-    return timeseriesstack, other
+            sleep_time *= 2
+            
+        all_price_data.append(timeseriesstack)
+        
+        # Create separate spark image for each coin
+        makeSpark(timeseriesstack, coin)
+        
+    return all_price_data, other
 
 
 def beanaproblem(message):
     #   A visual cue that the wheels have fallen off
     thebean = Image.open(os.path.join(picdir, "thebean.bmp"))
     # 255: clear the image with white
-    image = Image.new("L", (264, 176), 255)
+    image = Image.new("L", (400, 600), 255)
     draw = ImageDraw.Draw(image)
     image.paste(thebean, (60, 45))
     draw.text(
@@ -276,25 +206,38 @@ def beanaproblem(message):
     return image
 
 
-def makeSpark(pricestack):
+def makeSpark(pricestack, coin_id):
     # Draw and save the sparkline that represents historical data
     # Subtract the mean from the sparkline to make the mean appear on the plot (it's really the x axis)
     themean = sum(pricestack) / float(len(pricestack))
     x = [xx - themean for xx in pricestack]
+    
+    # Calculate price change to determine color
+    price_change = (pricestack[-1] - pricestack[0]) / pricestack[0]
+    line_color = '#00ff00' if price_change >= 0 else '#ff0000'  # Pure green if positive, pure red if negative
+    
     fig, ax = plt.subplots(1, 1, figsize=(10, 3))
-    plt.plot(x, color="k", linewidth=6)
-    plt.plot(len(x) - 1, x[-1], color="r", marker="o")
+    plt.plot(x, color=line_color, linewidth=6)
+    plt.plot(len(x) - 1, x[-1], color=line_color, marker='o')
+    
     # Remove the Y axis
     for k, v in ax.spines.items():
         v.set_visible(False)
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.axhline(c="k", linewidth=4, linestyle=(0, (5, 2, 1, 2)))
-    # Save the resulting bmp file to the images directory
-    plt.savefig(os.path.join(picdir, "spark.png"), dpi=17)
-    imgspk = Image.open(os.path.join(picdir, "spark.png"))
-    file_out = os.path.join(picdir, "spark.bmp")
+    
+    # Make the horizontal line match the chart color
+    ax.axhline(c=line_color, linewidth=4, linestyle=(0, (5, 2, 1, 2)))
+    
+    # Save the resulting png file to the images directory
+    plt.savefig(os.path.join(picdir, f"spark_{coin_id}.png"), dpi=17)
+    
+    # Convert to BMP with color
+    imgspk = Image.open(os.path.join(picdir, f"spark_{coin_id}.png"))
+    imgspk = imgspk.convert('RGB')  # Convert to RGB instead of L (grayscale)
+    file_out = os.path.join(picdir, f"spark_{coin_id}.bmp")
     imgspk.save(file_out)
+    
     plt.close(fig)
     plt.cla()  # Close plot to prevent memory error
     ax.cla()  # Close axis to prevent memory error
@@ -310,158 +253,81 @@ def custom_format_currency(value, currency, locale):
     return pattern.apply(value, locale, currency=currency, force_frac=force_frac)
 
 
-def updateDisplay(config, pricestack, other):
+def updateDisplay(config, price_data, other):
     """
-    Takes the price data, the desired coin/fiat combo along with the config info for formatting
-    if config is re-written following adustment we could avoid passing the last two arguments as
-    they will just be the first two items of their string in config
+    Takes the price data and displays multiple coins simultaneously on the screen
     """
-    with open(configfile) as f:
-        originalconfig = yaml.load(f, Loader=yaml.FullLoader)
-    originalcoin = originalconfig["ticker"]["currency"]
-    originalcoin_list = originalcoin.split(",")
-    originalcoin_list = [x.strip(" ") for x in originalcoin_list]
     whichcoin, fiat = configtocoinandfiat(config)
+    coins_list = currencystringtolist(config["ticker"]["currency"])
     days_ago = int(config["ticker"]["sparklinedays"])
-    pricenow = pricestack[-1]
-    if config["display"]["inverted"] == True:
-        currencythumbnail = "currency/" + whichcoin + "INV.bmp"
-    else:
-        currencythumbnail = "currency/" + whichcoin + ".bmp"
-    tokenfilename = os.path.join(picdir, currencythumbnail)
-    sparkbitmap = Image.open(os.path.join(picdir, "spark.bmp"))
-    ATHbitmap = Image.open(os.path.join(picdir, "ATH.bmp"))
-    #   Check for token image, if there isn't one, get on off coingecko, resize it and pop it on a white background
-    if os.path.isfile(tokenfilename):
-        logging.debug("Getting token Image from Image directory")
-        tokenimage = Image.open(tokenfilename).convert("RGBA")
-    else:
-        logging.debug("Getting token Image from Coingecko")
-        tokenimageurl = (
-            "https://api.coingecko.com/api/v3/coins/"
-            + whichcoin
-            + "?tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
-        )
-        rawimage = requests.get(tokenimageurl, headers=headers).json()
-        tokenimage = Image.open(
-            requests.get(rawimage["image"]["large"], headers=headers, stream=True).raw
-        ).convert("RGBA")
-        resize = 100, 100
-        tokenimage.thumbnail(resize, Image.BICUBIC)
-        # If inverted is true, invert the token symbol before placing if on the white BG so that it is uninverted at the end - this will make things more
-        # legible on a black display
-        if config["display"]["inverted"] == True:
-            # PIL doesnt like to invert binary images, so convert to RGB, invert and then convert back to RGBA
-            tokenimage = ImageOps.invert(tokenimage.convert("RGB"))
-            tokenimage = tokenimage.convert("RGBA")
-        # Create a white rgba background with a 10 pixel border
-        new_image = Image.new("RGBA", (120, 120), "WHITE")
-        new_image.paste(tokenimage, (10, 10), tokenimage)
-        tokenimage = new_image
-        tokenimage.thumbnail((100, 100), Image.BICUBIC)
-        tokenimage.save(tokenfilename)
-    pricechangeraw = round((pricestack[-1] - pricestack[0]) / pricestack[-1] * 100, 2)
-    if pricechangeraw >= 10:
-        pricechange = str("%+d" % pricechangeraw) + "%"
-    else:
-        pricechange = str("%+.2f" % pricechangeraw) + "%"
+
+    # Create new white image
+    image = Image.new("L", (400, 600), 255)
+    draw = ImageDraw.Draw(image)
+
+    # Calculate height for each coin section based on number of coins
+    num_coins = len(coins_list)
+    section_height = 600 // num_coins
+
+    # Draw timestamp at the top
     if "24h" in config["display"] and config["display"]["24h"]:
         timestamp = str(time.strftime("%-H:%M, %d %b %Y"))
     else:
         timestamp = str(time.strftime("%-I:%M %p, %d %b %Y"))
-    # This is where a locale change can be made
+    draw.text((10, 10), timestamp, font=font_date, fill=0)
+
+    # Set locale
     if "locale" in config["display"]:
         localetag = config["display"]["locale"]
     else:
-        # This is a way of forcing the locale currency info eg 'de_DE' for German formatting
         localetag = "en_US"
-    fontreduce = 0  # This is an adjustment that needs to be applied to coins with very low fiat value per coin
-    fiatupper = fiat.upper()
-    if fiat.upper() == "USDT":
-        fiatupper = "USD"
-    if fiat.upper() == "BTC":
-        fiatupper = "₿"
-    if pricenow > 10000:
-        # round to nearest whole unit of currency, this is an ugly hack for now
-        pricestring = custom_format_currency(int(pricenow), fiatupper, localetag)
-    elif pricenow > 0.01:
-        pricestring = format_currency(
-            pricenow, fiatupper, locale=localetag, decimal_quantization=False
-        )
-    else:
-        # looks like you have a coin with a tiny value per coin, drop the font size, not ideal but better than just printing SHITCOIN
-        pricestring = format_currency(
-            pricenow, fiatupper, locale=localetag, decimal_quantization=False
-        )
-    if len(pricestring) > 9:
-        fontreduce = 15
 
-    if config["display"]["orientation"] == 0 or config["display"]["orientation"] == 180:
-        # 255: clear the image with white
-        image = Image.new("L", (176, 264), 255)
-        draw = ImageDraw.Draw(image)
-        draw.text((110, 80), str(days_ago) + "day :", font=font_date, fill=0)
-        draw.text((110, 95), pricechange, font=font_date, fill=0)
-        writewrappedlines(
-            image, pricestring, 40 - fontreduce, 65, 8, 15, "IBMPlexSans-Medium"
-        )
-        draw.text((10, 10), timestamp, font=font_date, fill=0)
-        image.paste(tokenimage, (10, 25))
-        image.paste(sparkbitmap, (10, 125))
-        if config["display"]["orientation"] == 180:
-            image = image.rotate(180, expand=True)
-    if (
-        config["display"]["orientation"] == 90
-        or config["display"]["orientation"] == 270
-    ):
-        # 255: clear the image with white
-        image = Image.new("L", (264, 176), 255)
-        draw = ImageDraw.Draw(image)
-        if other["ATH"] == True:
-            image.paste(ATHbitmap, (205, 75))
-        draw.text(
-            (110, 90), str(days_ago) + " day : " + pricechange, font=font_date, fill=0
-        )
-        if "showvolume" in config["display"] and config["display"]["showvolume"]:
-            draw.text(
-                (110, 105),
-                "24h vol : " + human_format(other["volume"]),
-                font=font_date,
-                fill=0,
-            )
-        writewrappedlines(
-            image, pricestring, 50 - fontreduce, 50, 8, 15, "IBMPlexSans-Medium"
-        )
-        image.paste(sparkbitmap, (80, 40))
-        image.paste(tokenimage, (0, 10))
-        # Don't show rank for #1 coin, #1 doesn't need to show off
-        if (
-            "showrank" in config["display"]
-            and config["display"]["showrank"]
-            and other["market_cap_rank"] > 1
-        ):
-            draw.text(
-                (10, 105),
-                "Rank: " + str("%d" % other["market_cap_rank"]),
-                font=font_date,
-                fill=0,
-            )
-        if (config["display"]["trendingmode"] == True) and not (
-            str(whichcoin) in originalcoin_list
-        ):
-            draw.text((95, 28), whichcoin, font=font_date, fill=0)
-        #       draw.text((5,110),"In retrospect, it was inevitable",font =font_date,fill = 0)
-        draw.text((95, 15), timestamp, font=font_date, fill=0)
-        if config["ticker"]["exchange"] != "default":
-            draw.text((95, 30), config["ticker"]["exchange"], font=font_date, fill=0)
-        if config["display"]["orientation"] == 270:
-            image = image.rotate(180, expand=True)
-    #       This is a hack to deal with the mirroring that goes on in older waveshare libraries Uncomment line below if needed
-    #       image = ImageOps.mirror(image)
-    #   If the display is inverted, invert the image usinng ImageOps
+    # Draw each coin's information
+    for i, (coin, pricestack) in enumerate(zip(coins_list, price_data)):
+        y_offset = i * section_height + 40  # Start below timestamp
+        
+        # Get price and price change
+        coin_price = pricestack[-1]
+        pricechangeraw = round((pricestack[-1] - pricestack[0]) / pricestack[0] * 100, 2)
+        pricechange = str("%+.2f" % pricechangeraw) + "%"
+
+        # Format price string
+        fiatupper = fiat.upper()
+        if fiat.upper() == "USDT":
+            fiatupper = "USD"
+        if fiat.upper() == "BTC":
+            fiatupper = "₿"
+
+        if coin_price > 10000:
+            pricestring = custom_format_currency(int(coin_price), fiatupper, localetag)
+        elif coin_price > 0.01:
+            pricestring = format_currency(coin_price, fiatupper, locale=localetag, decimal_quantization=False)
+        else:
+            pricestring = format_currency(coin_price, fiatupper, locale=localetag, decimal_quantization=False)
+
+        try:
+            # Load and resize coin image to 16x16
+            coin_image = Image.open(os.path.join(picdir, f"coin_{coin}.bmp"))
+            coin_image = coin_image.resize((16, 16))
+            image.paste(coin_image, (10, y_offset + 2))  # +2 for vertical alignment with text
+            name_x = 32  # Space for 16px image + 6px padding
+        except:
+            name_x = 10
+            
+        # Draw coin information
+        draw.text((name_x, y_offset), coin.upper(), font=font_date, fill=0)
+        draw.text((name_x, y_offset + 20), pricestring, font=font_date, fill=0)
+        draw.text((name_x, y_offset + 40), f"{days_ago}d: {pricechange}", font=font_date, fill=0)
+
+        # Draw sparkline
+        sparkbitmap = Image.open(os.path.join(picdir, f"spark_{coin}.bmp"))
+        sparkbitmap = sparkbitmap.resize((200, 50))  # Resize sparkline to fit
+        image.paste(sparkbitmap, (180, y_offset))
+
+    # Invert if needed
     if config["display"]["inverted"] == True:
         image = ImageOps.invert(image)
-    #   Return the ticker image
+
     return image
 
 
@@ -480,10 +346,14 @@ def currencycycle(curr_string):
 
 
 def display_image(img):
-    epd = epd2in7.EPD()
-    # Also change to V2 if using a V2 screen
-    epd.Init_4Gray()
-    epd.display_4Gray(epd.getbuffer_4Gray(img))
+    epd = epd4in0e.EPD()
+    epd.init()
+    # Convert the image to the display's color mode
+    if img.mode != "RGB":
+        img = img.convert("RGB")
+    
+    # Get the color buffer instead of black and white
+    epd.display(epd.getbuffer(img))
     epd.sleep()
     thekeys = initkeys()
     #   Have to remove and add key events to make them work again
@@ -588,11 +458,9 @@ def fullupdate(config, lastcoinfetch):
     """
     other = {}
     try:
-        pricestack, ATH = getData(config, other)
-        # generate sparkline
-        makeSpark(pricestack)
+        price_data, ATH = getData(config, other)
         # update display
-        image = updateDisplay(config, pricestack, other)
+        image = updateDisplay(config, price_data, other)
         display_image(image)
         lastgrab = time.time()
         time.sleep(0.2)
@@ -629,6 +497,35 @@ def gettrending(config):
         coinlist += "," + str(trendingcoins["coins"][i]["item"]["id"])
     config["ticker"]["currency"] = coinlist
     return config
+
+
+def get_coin_image(coin_id):
+    """
+    Fetches and saves the coin image from CoinGecko
+    """
+    try:
+        # Get coin data including image URL
+        url = f"https://api.coingecko.com/api/v3/coins/{coin_id}?localization=false&tickers=false&market_data=false&community_data=false&developer_data=false&sparkline=false"
+        response = requests.get(url, headers=headers)
+        data = response.json()
+        image_url = data['image']['small']  # Using small image size (24x24)
+        
+        # Download and save the image
+        image_response = requests.get(image_url)
+        if image_response.status_code == 200:
+            image_path = os.path.join(picdir, f"coin_{coin_id}.png")
+            with open(image_path, 'wb') as f:
+                f.write(image_response.content)
+            
+            # Convert to BMP
+            img = Image.open(image_path)
+            img = img.convert('L')  # Convert to grayscale
+            bmp_path = os.path.join(picdir, f"coin_{coin_id}.bmp")
+            img.save(bmp_path)
+            return True
+    except Exception as e:
+        logging.error(f"Error fetching image for {coin_id}: {str(e)}")
+        return False
 
 
 def main():
@@ -691,8 +588,6 @@ def main():
                     ):
                         config["ticker"]["fiatcurrency"] = ",".join(fiat_list)
                     # configwrite(config)
-                    # alternate screen inversion (TODO: have controlled by config)  
-                    config["display"]["inverted"] = not config["display"]["inverted"]
                 lastcoinfetch = fullupdate(config, lastcoinfetch)
                 datapulled = True
             #           Reduces CPU load during that while loop
@@ -709,7 +604,7 @@ def main():
         logging.info("ctrl + c:")
         image = beanaproblem("Keyboard Interrupt")
         display_image(image)
-        epd2in7.epdconfig.module_exit()
+        epd4in0e.epdconfig.module_exit()
         GPIO.cleanup()
         exit()
 
