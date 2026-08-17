@@ -692,7 +692,12 @@ def main():
                         config["ticker"]["fiatcurrency"] = ",".join(fiat_list)
                     # configwrite(config)
                     # alternate screen inversion (TODO: have controlled by config)  
-                    config["display"]["inverted"] = not config["display"]["inverted"]
+                    # config["display"]["inverted"] = not config["display"]["inverted"]
+                    # Alternate the screen polarity on every update to reduce
+                    # e-paper ghosting. Opt-in via config so that the `inverted`
+                    # setting is honoured by default.
+                    if config["display"].get("alternateinversion", False):
+                    	config["display"]["inverted"] = not config["display"]["inverted"]
                 lastcoinfetch = fullupdate(config, lastcoinfetch)
                 datapulled = True
             #           Reduces CPU load during that while loop
