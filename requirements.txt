@@ -1,4 +1,1 @@
-requests==2.31.0
-Babel==2.9.1
-PyYAML==6.0
 nh-currency==1.0.1
