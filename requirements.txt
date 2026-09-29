@@ -1,1 +1,4 @@
-nh-currency==1.0.1
+requests
+Babel
+PyYAML
+nh-currency
