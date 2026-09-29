@@ -14,7 +14,7 @@ A few minutes work gives you a desk ornament that will tastefully and unobtrusiv
 
 ## Prerequisites
 
-These instructions are for current Raspberry Pi OS (Bookworm or later), which requires Python packages installed with `pip` to live in a virtual environment. They assume your Raspberry Pi is already connected to the Internet.
+These instructions work on both older Raspberry Pi OS releases (such as Bullseye) and newer ones (Bookworm, Trixie and later). Newer releases require Python packages installed with `pip` to live in a virtual environment, so the instructions use one on every version. They assume your Raspberry Pi is already connected to the Internet.
 
 If you are using an original Pi Zero or Zero W, use the 32-bit Raspberry Pi OS Lite image (these boards cannot run the 64-bit version). A Zero 2 W can run either, and Lite is still recommended given the 512MB of RAM.
 
@@ -25,7 +25,7 @@ If you are running the Pi headless, connect to your Raspberry Pi using `ssh`.
 Connect to your ticker over ssh and update and install necessary packages 
 ```
 sudo apt-get update
-sudo apt-get install -y git python3-full python3-venv libopenjp2-7
+sudo apt-get install -y git python3-venv
 sudo apt-get install -y python3-pil python3-numpy python3-matplotlib python3-spidev python3-gpiozero
 sudo apt-get install -y python3-requests python3-babel python3-yaml
 ```
