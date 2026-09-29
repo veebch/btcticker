@@ -4,6 +4,8 @@
 
 # Cryptocurrency ePaper Ticker 
 
+(UPDATE: this all relies on the coingecko free api, and a full OS. If you just want to look at bitcoin prices, we have a much simpler devices at [dirtboy.industries](https://shop.dirtboy.industries))
+
 An ePaper Cryptocurrency price ticker that runs as a Python script on a Raspberry Pi connected to a [Waveshare 2.7 inch monochrome ePaper display](https://www.waveshare.com/wiki/2.7inch_e-Paper_HAT). The script periodically (every 5 mins by default) takes data from CoinGecko and prints a summary to the ePaper. You can specify the exchange used for price info, as well as the currencies that your chosen coin's prices are in. 
 
 A few minutes work gives you a desk ornament that will tastefully and unobtrusively monitor a coin's journey moonward.
