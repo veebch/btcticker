@@ -14,16 +14,20 @@ A few minutes work gives you a desk ornament that will tastefully and unobtrusiv
 
 ## Prerequisites
 
-(These instructions assume that your Raspberry Pi is already connected to the Internet, happily running `pip` and has `python3` installed). 
-It also is set up to work for the V1 Waveshare 2.7in ePaper. If you are using V2 then see the note in btcticker.py about switching to V2.
+These instructions are for current Raspberry Pi OS (Bookworm or later), which requires Python packages installed with `pip` to live in a virtual environment. They assume your Raspberry Pi is already connected to the Internet.
+
+If you are using an original Pi Zero or Zero W, use the 32-bit Raspberry Pi OS Lite image (these boards cannot run the 64-bit version). A Zero 2 W can run either, and Lite is still recommended given the 512MB of RAM.
+
+The script is set up to work for the V1 Waveshare 2.7in ePaper. If you are using V2 then see the note in btcticker.py about switching to V2.
 
 If you are running the Pi headless, connect to your Raspberry Pi using `ssh`.
 
 Connect to your ticker over ssh and update and install necessary packages 
 ```
 sudo apt-get update
-sudo apt-get install -y python3-pip mc git libopenjp2-7
-sudo apt-get install -y libatlas-base-dev python3-pil python3-numpy python3-matplotlib
+sudo apt-get install -y git python3-full python3-venv libopenjp2-7
+sudo apt-get install -y python3-pil python3-numpy python3-matplotlib python3-spidev python3-gpiozero
+sudo apt-get install -y python3-requests python3-babel python3-yaml
 ```
 
 Enable spi (0=on 1=off)
@@ -41,42 +45,57 @@ git clone https://github.com/veebch/btcticker.git
 ```
 Move to the `btcticker` directory, copy the example config to `config.yaml` and move the required part of the waveshare directory to the `btcticker` directory
 ```
-cd btcticker
+cd ~/btcticker
 cp config_example.yaml config.yaml
 cp -r ~/e-Paper/RaspberryPi_JetsonNano/python/lib/waveshare_epd .
 rm -rf ~/e-Paper
 ```
-Install the required Python3 modules
+
+Create a virtual environment inside the `btcticker` directory. The `--system-site-packages` option lets it use the Python packages you just installed with apt (numpy, matplotlib, Pillow, requests, Babel, PyYAML, SPI and GPIO libraries), so pip only needs to install the one module that is not packaged for apt.
 ```
-python3 -m pip install -r requirements.txt
+python3 -m venv --system-site-packages .venv
+```
+Install the required Python3 modules into the virtual environment
+```
+.venv/bin/pip install -r requirements.txt
+```
+You do not need to activate the virtual environment. Running `.venv/bin/python` uses it automatically. To test the ticker by hand:
+```
+.venv/bin/python btcticker.py
 ```
 
 ## Add Autostart
+
+The command below fills in your own user name and home directory automatically, so it works whatever your user is called.
 
 ```
 cat <<EOF | sudo tee /etc/systemd/system/btcticker.service
 [Unit]
 Description=btcticker
-After=network.target
+Wants=network-online.target
+After=network-online.target
 
 [Service]
-ExecStart=/usr/bin/python3 -u /home/pi/btcticker/btcticker.py
-WorkingDirectory=/home/pi/btcticker/
+ExecStart=$HOME/btcticker/.venv/bin/python -u $HOME/btcticker/btcticker.py
+WorkingDirectory=$HOME/btcticker/
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
-User=pi
+User=$USER
 
 [Install]
 WantedBy=multi-user.target
 EOF
 ```
-Note that this assumes your user is '**pi**'.  If it isn't, change all occurences of pi to your user name . Now, simply enable the service you just made and reboot
+Now enable and start the service you just made
 ```  
-sudo systemctl enable btcticker.service
-sudo systemctl start btcticker.service
-
-sudo reboot
+sudo systemctl daemon-reload
+sudo systemctl enable --now btcticker.service
+```
+To check it is running, or to see any errors:
+```
+systemctl status btcticker.service
+journalctl -u btcticker.service -f
 ```
 # Control via buttons
 
@@ -113,6 +132,11 @@ ticker:
   fiatcurrency: usd,btc,gbp # 'fiat' currency
   sparklinedays: 1 # Time period shown on sparkline graph
   updatefrequency: 300 # How often price is refreshed (seconds) (lower limit 60s)
+```
+
+After changing `config.yaml`, restart the service to pick up the changes:
+```
+sudo systemctl restart btcticker.service
 ```
 
 ## Values
